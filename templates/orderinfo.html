@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Заказ</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+          {% load static %}
+        <link href="{% static 'dropdowns.css' %}" rel="stylesheet">
+        <script src="{%  static 'jquery.js' %}"></script>
+        <script src="{% static 'create.js' %}"></script>
+
+    </head>
+    <body>
+
+    <style>
+        .themed-grid-col {
+          padding-top: .75rem;
+          padding-bottom: .75rem;
+          background-color: rgba(86, 61, 124, .15);
+          border: 1px solid rgba(86, 61, 124, .2);
+          font-size: 1.2rem;
+
+        }
+
+        .themed-container {
+          padding: .75rem;
+          margin-bottom: 1.5rem;
+          background-color: rgba(0, 123, 255, .15);
+          border: 1px solid rgba(0, 123, 255, .2);
+        }
+    </style>
+
+
+
+        <div class="container py-3" style="max-width: 100%">
+            <div style="display:none"><input id="taskid" name="id1c" value="{{ item.ID }}"></div>
+            <h1 class="d-flex align-items-center gap-2 py-2" style="font-size: 2rem; white-space: normal">Товары:</h2>
+
+            <div class="row mb-3" style="background-color: rgba(255, 61, 124, .15)">
+              <div class="col-5 themed-grid-col" style="text-align: center">Наименование</div>
+              <div class="col-1 themed-grid-col" style="text-align: center">Кол-во</div>
+              <div class="col-1 themed-grid-col" style="text-align: center">Тек. мес.</div>
+              <div class="col-1 themed-grid-col" style="text-align: center">Пред. 3 мес.</div>
+              <div class="col-1 themed-grid-col" style="text-align: center">Сред. 3 мес.</div>
+              <div class="col-2 themed-grid-col" style="text-align: center">Упак</div>
+              <div class="col-1 themed-grid-col" style="text-align: center">Прев.</div>
+            </div>
+
+
+
+            {% for ph in oi %}
+
+            <div class="row mb-3">
+              <div class="col-5 themed-grid-col" style="text-align: center">{{ ph.product }}{% if ph.character %} , {{ ph.character }} {%endif%}</div>
+              <div class="col-1 themed-grid-col" style="text-align: center">{{ ph.quantity|stringformat:".f" }}</div>
+              <div class="col-1 themed-grid-col" style="text-align: center">{{ ph.quantity1|stringformat:".f" }}</div>
+              <div class="col-1 themed-grid-col" style="text-align: center">{{ ph.quantity2|stringformat:".f" }}</div>
+              <div class="col-1 themed-grid-col" style="text-align: center">{{ ph.quantity3|stringformat:".2f" }}</div>
+              <div class="col-2 themed-grid-col" style="text-align: center">{{ ph.comment }}</div>
+              <div class="col-1 themed-grid-col" style="text-align: center">{{ ph.quantity4|stringformat:".2f" }}</div>
+            </div>
+
+
+            {% endfor %}
+
+           <div class="container py-3 col-6">
+                <a href="/" id="main_menu" class="w-100 btn btn-lg btn-primary" style="margin-top: 1rem; font-size: 2rem; ">Главное меню</a>
+            </div>
+        </div>
+    </body>
+</html>

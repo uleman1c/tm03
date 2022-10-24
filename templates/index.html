@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>Меню</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sign-in/">-->
+
+
+
+    <!-- Bootstrap core CSS -->
+<!-- <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+      {% load static %}
+    <link href="{% static 'signin.css' %}" rel="stylesheet">
+  </head>
+  <body class="text-center">
+
+    <main class="form-signin">
+      <h1 class="text-center" style="font-size: 1.2rem; white-space: normal; margin-bottom: 40px">Пользователь: {{ user.name }}</h1>
+        {% if user.id1c != '' %}
+      <a href="products" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Каталог</a>
+      <a href="checkout" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Корзина</a>
+      <a href="orders" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Заказы</a>
+      <a href="accepts" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Получение денег</a>
+        {% endif  %}
+        {% if user.idbitrix > 0 %}
+      <a href="tmchange" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">{{ tm_status_str }} рабочий день</a>
+      <a href="tasks" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Задачи</a>
+      <a href="leads" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Лиды</a>
+      <a href="companies" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Компании</a>
+        {% endif  %}
+
+        {% if user.dmbase and user.dmuser %}
+        <a href="dm?id=1" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Документооборот</a>
+        {% endif  %}
+
+        {% if user.dmbase2 and user.dmuser2 %}
+        <a href="dm?id=2" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Документооборот2</a>
+        {% endif  %}
+
+        {% if user.invent_enabled %}
+        <a href="invents" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Инвентаризация</a>
+        {% endif  %}
+
+        {% if user.files_enabled %}
+        <a href="files" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Файлы</a>
+        {% endif  %}
+
+      <a href="signout" class="w-100 btn btn-lg btn-danger" style="margin-top: 30px">Выход</a>
+    </main>
+
+
+
+  </body>
+</html>

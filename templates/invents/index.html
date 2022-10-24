@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Инвентаризация</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+      {% load static %}
+    <link href="{% static 'dropdowns.css' %}" rel="stylesheet">
+    <script src="{%  static 'jquery.js' %}"></script>
+    <script src="{% static 'create.js' %}?v=0001"></script>
+
+</head>
+<body>
+    <div class="container py-3" style="max-width: 100%">
+
+        <h3 class="text-center" style="font-size: xxx-large;">Инвентаризация</h3>
+
+        <div class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden" style="width: 100%; margin: 0">
+            <form class="p-2 border-bottom" style="padding-bottom: 0">
+                <div style="float: left; width: 100%">
+                    <input type="search" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %};" id="warehouse" class="form-control" onkeyup="keyUpWarehouse()" autocomplete="false" placeholder="Склад..." {% if cw %} value="{{ cw.name }}" id1c="{{ cw.id1c }}" {% endif %}>
+                    <ul id="warehouseList" class="list-unstyled mb-0"></ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden" style="width: 100%; margin: 0">
+            <form class="p-2 border-bottom" style="padding-bottom: 0">
+                <div style="float: left; width: 100%">
+                    <input type="search" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %};" id="product" class="form-control" onkeyup="keyUpProduct()" autocomplete="false" placeholder="Товар...">
+                    <ul id="productList" class="list-unstyled mb-0"></ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden" style="width: 100%; margin: 0">
+            <form class="p-2 border-bottom" style="padding-bottom: 0">
+                <div style="float: left; width: 100%">
+                    <input type="search" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %};" id="сharacteristic" class="form-control" onkeyup="keyUpCharactreristic()" autocomplete="false" placeholder="Характеристика...">
+                    <ul id="сharacteristicList" class="list-unstyled mb-0"></ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden" style="width: 100%; margin: 0">
+            <form class="p-2 border-bottom" style="padding-bottom: 0">
+                <div style="float: left; width: 100%">
+                    <input type="search" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %};" id="warehouseСell" class="form-control" onkeyup="keyUpWarehouseCell()" autocomplete="false" placeholder="Складская ячейка...">
+                    <ul id="warehouseСellList" class="list-unstyled mb-0"></ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden" style="width: 100%; margin: 0">
+            <form class="p-2 border-bottom" style="padding-bottom: 0">
+                <div style="float: left; width: 100%">
+					<input type="number" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %};" id="quantity" class="form-control" autocomplete="false" placeholder="Количество...">
+                </div>
+            </form>
+        </div>
+
+        <div class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden" style="width: 100%; margin: 0">
+            <form class="p-2 border-bottom" style="padding-bottom: 0">
+                <div style="float: left; width: 100%">
+					<textarea class="py-2 form-control" rows="4" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}" id="comment" placeholder="Комментарий"></textarea>
+                </div>
+            </form>
+        </div>
+					
+					
+        <a href="#" onclick="saveInvent()" id="checkout_order" class="btn btn-success" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; width: 100%">Сохранить</a>
+
+    </div>
+
+        {% if elements %}
+
+            <style>
+                .themed-grid-col {
+                  padding-top: .75rem;
+                  padding-bottom: .75rem;
+                  background-color: rgba(86, 61, 124, .15);
+                  border: 1px solid rgba(86, 61, 124, .2);
+                  font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %};
+
+                }
+
+                .no-themed-grid-col {
+                  padding-top: .75rem;
+                  padding-bottom: .75rem;
+                  background-color: rgba(255, 255, 124, .15);
+                  border: 1px solid rgba(0, 0, 0, .2);
+                  font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %};
+
+                }
+
+                .themed-container {
+                  padding: .75rem;
+                  margin-bottom: 1.5rem;
+                  background-color: rgba(0, 123, 255, .15);
+                  border: 1px solid rgba(0, 123, 255, .2);
+                }
+            </style>
+
+
+        <div class="container py-3" style="max-width: 95%">
+
+            {% if elements_to_send %}
+                <div class="row mb-3">
+                    <a href="#" onclick="sendto1c_invent('all')" id="checkout_order2" class="btn btn-success" style="font-size: 1.5rem; width: 100%">Отправить все</a>
+                </div>
+            {% endif %}
+
+            <div class="row">
+              <div class="col-3 themed-grid-col" style="text-align: center">Дата</div>
+              <div class="col-7 themed-grid-col" style="text-align: center">Склад / Номенклатура / Характеристика / Ячейка / Количество</div>
+              <div class="col-2 themed-grid-col" style="text-align: center">есть 1с</div>
+            </div>
+
+           {% for el in elements %}
+
+            <div class="row">
+              <div class="col-3 no-themed-grid-col">{{ el.created }}</div>
+              <div class="col-7 no-themed-grid-col">{{ el.warehouse.name }} / {{ el.product.fullname }} / {{ el.characteristic.name }} / {{ el.warehouse_cell.name }} / {{ el.quantity }}</div>
+              <div id="{{ el.id1c }}" class="col-2 no-themed-grid-col"  style="text-align: center">
+                  {% if el.delivered_1c %}
+                      Да
+                  {% else %}
+                      <a href="#" onclick="sendto1c_invent('{{ el.id1c }}')" id="checkout_order1" class="btn btn-success" style="font-size: 1.5rem; width: 100%">Отправить</a>
+                  {% endif %}
+                </div>
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+            <h3 class="text-center" style="font-size: 2rem;">Нет инвентаризаций</h3>
+        {% endif %}
+            </div>
+
+            <div class="container py-3 col-6">
+                <a href="/" id="main_menu" class="w-100 btn btn-lg btn-primary" style="font-size: 2rem; ">Главное меню</a>
+            </div>
+
+
+
+<!--        <div class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden" style="width: 100%; margin: 0">-->
+<!--            <form class="p-2 border-bottom" style="padding-bottom: 0">-->
+<!--                <div style="float: left; width: 65%">-->
+<!--                    <input type="search" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilter()" autocomplete="false" placeholder="Фильтр...">-->
+
+<!--                </div>-->
+<!--              <a href="../checkout" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; width: 35%" id="basket" class="btn btn-primary" >Корзина ({{ cur_basket_quantity }})</a>-->
+<!--            </form>-->
+<!--            <ul id="goodsList" class="list-unstyled mb-0">-->
+
+<!--                {% for el in elements %}-->
+
+<!--              <li>-->
+<!--                <div class="p-2" style="float: left; width: 100%; display: flex; align-items: center">-->
+<!--                  <div style="float: left; width: 65%">-->
+<!--                        <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; white-space: normal">{{ el.fullname }}</a>-->
+<!--                  </div>-->
+<!--                  <div style="float: left; width: 35%; display: flex; align-items: center">-->
+<!--                      <button id="del_{{ el.id1c }}" onclick="delBthClick('{{ el.id1c }}')" class="btn btn-danger" style="float: left; font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; height: 100%; width: 30%">-</button>-->
+<!--                      <div id="quan_{{ el.id1c }}" style="float: left; font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; width: 40%; ; text-align: center">{{ el.quantity }}</div>-->
+<!--                      <button id="add_{{ el.id1c }}" onclick="addBthClick('{{ el.id1c }}')" class="btn btn-success" style="float: left; font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; height: 100%; width: 30%">+</button>-->
+
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </li>-->
+
+<!--                {% endfor %}-->
+
+<!--            </ul>-->
+<!--          </div>-->
+    </div>
+
+
+</body>
+</html>

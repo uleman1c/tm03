@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Корзина</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+          {% load static %}
+        <link href="{% static 'dropdowns.css' %}" rel="stylesheet">
+        <script src="{%  static 'jquery.js' %}"></script>
+        <script src="{% static 'create.js' %}"></script>
+
+    </head>
+    <body>
+        <div class="container py-3" style="max-width: 100%">
+
+            {% if elements %}
+
+                {% for el in elements %}
+
+                <div class="p-2" style="float: left; width: 100%; display: flex; align-items: center">
+                  <div style="float: left; width: 75%">
+                        <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; white-space: normal">{{ el.product.fullname }}</a>
+                  </div>
+                  <div style="float: left; width: 25%; height: 100%; display: flex; align-items: center">
+                      <button id="del_{{ el.product.id1c }}" onclick="delBthClick('{{ el.product.id1c }}')" class="btn btn-danger" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; float: left; width: 30%">-</button>
+                      <div id="quan_{{ el.product.id1c }}" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; float: left; width: 40%; ; text-align: center">{{ el.quantity }}</div>
+                      <button id="add_{{ el.product.id1c }}" onclick="addBthClick('{{ el.product.id1c }}')" class="btn btn-success" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; float: left; width: 30%">+</button>
+
+                  </div>
+                </div>
+
+                {% endfor %}
+
+                <div class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden" style="width: 100%; margin: 0">
+                    <form class="p-2 border-bottom" style="padding-bottom: 0">
+                        <div style="float: left; width: 100%">
+                            <input type="search" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %};" id="contractor" list="contractors" class="form-control" onkeyup="keyUpContractor()" autocomplete="false" placeholder="Контрагент...">
+                            <!-- <input type="search" style="font-size: xxx-large;" id="contractor" oninput='onInputContractor()' list="contractors" class="form-control" onkeyup="keyUpContractor()" autocomplete="false" placeholder="Контрагент...">-->
+                            <!-- <input type="search" style="font-size: xxx-large" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilter()" autocomplete="false" placeholder="Фильтр..."> -->
+
+
+
+                            <datalist class="mx-0 shadow" style="width: 220px;" id="contractors">
+                            </datalist>
+                            <div style="display:none"><input id="output" name="id1c" ></div>
+                        </div>
+                    </form>
+                </div>
+
+                <textarea class="py-2 form-control" rows="4" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}" id="comment" placeholder="Комментарий"></textarea>
+                <a href="#" onclick="checkoutOrder()" id="checkout_order" class="btn btn-success" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %}; width: 100%">Оформить заказ</a>
+
+             {% else %}
+                <h3 class="text-center" style="font-size: {% if mobile_mode %} xxx-large{% else %} normal{% endif %};">В Вашей корзине нет товаров</h3>
+            {% endif %}
+        </div>
+    </body>
+</html>
