@@ -24,29 +24,30 @@
         
         <span id="procent"></span>
 
-        <h3 style="margin-right:20px">Найти</h3>
-
       </div>
 
-      <div style="display:flex">
-      
-        <h3 style="margin-right:20px">Найти</h3>
+    </div>
 
-<!--         <div class="form-floating">
-          <input type="text" class="form-control" id="floatingInput" name="username" placeholder="name@example.com">
-          <label for="floatingInput">Пользователь</label>
+    <div class="container py-3" style="max-width: 90%">
+      <form method="get">
+        {% csrf_token %}
+
+        <div style="display:flex">
+        
+          <div class="form-floating">
+            <input type="text" class="form-control" id="floatingInput" name="search_file" style="width: 50vw;" placeholder="name@example.com" value="{{ search_file }}">
+            <label for="floatingInput">Имя файла</label>
+          </div>
+  
+          
+          <button class="w-20 btn btn-lg btn-primary" type="submit">Найти</button>
+
         </div>
- -->        
-        <!-- <button class="w-100 btn btn-lg btn-primary" type="submit">Вход</button> -->
 
-      </div>
+      </form>
 
     </div>
 
-<!--     <div class="container py-3" style="max-width: 90%">
-    
-    </div>
- -->
             <style>
                 .themed-grid-col {
                   padding-top: .75rem;

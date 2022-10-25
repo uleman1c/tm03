@@ -3,6 +3,7 @@ import os
 import json
 import locale
 import sys
+from unicodedata import name
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -70,7 +71,7 @@ def files(request):
 
     if 'userLogged' not in request.session:
         return redirect('login')
-        
+
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
     filespath = 'I:\\Files\\'
@@ -160,7 +161,12 @@ def files(request):
         
     allfiles = []
 
-    lfiles = File.objects.filter(user=cu).order_by('-created').all()[:20]
+    search_file = request.GET.get('search_file')
+
+    if search_file:
+        lfiles = File.objects.filter(user=cu, name__icontains=search_file).order_by('-created').all()[:20]
+    else:
+        lfiles = File.objects.filter(user=cu).order_by('-created').all()[:20]
 
     allfiles = list(lfiles)
 
