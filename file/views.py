@@ -160,8 +160,23 @@ def files(request):
         
     allfiles = []
 
-    allfiles = File.objects.filter(user=cu).order_by('-created').all()[:20]
+    lfiles = File.objects.filter(user=cu).order_by('-created').all()[:20]
 
+    allfiles = list(lfiles)
+
+    for f in allfiles:
+
+        if f.size > 1024 * 1024 * 1024:
+
+            f.size = str(round(f.size / (1024 * 1024 * 1024), 1)) + " Гб"
+
+        elif f.size > 1024 * 1024:
+
+            f.size = str(round(f.size / (1024 * 1024), 1)) + " Мб"
+
+        elif f.size > 1024:
+
+            f.size = str(round(f.size / (1024), 1)) + " Кб"
 
     return render(request, 'files.html', locals())
 
