@@ -166,6 +166,9 @@ def files(request):
     if search_file:
         lfiles = File.objects.filter(user=cu, name__icontains=search_file).order_by('-created').all()[:20]
     else:
+
+        search_file = ""
+
         lfiles = File.objects.filter(user=cu).order_by('-created').all()[:20]
 
     allfiles = list(lfiles)
