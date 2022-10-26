@@ -103,12 +103,12 @@ def files(request):
         
             destination = open(filespath + curName, 'ab+')
             destination.write(request.body)
-           # destination.close()
+            destination.close()
                 
         
             # stat = os.stat(filespath + curName)
         
-            co.size = co.size + int(request.headers.get('Content-Length'))
+            co.size = co.size + int(request.headers.get('size'))
             co.save()
                     
             # if part:
@@ -122,9 +122,9 @@ def files(request):
                 co.size = 0
                 co.save()
                         
-        res = dict()
+        # res = dict()
 
-        return JsonResponse(res)        
+        # return JsonResponse(res)        
             
            # cfps = FilePart.objects.filter(file=co).order_by('number').all()
 
