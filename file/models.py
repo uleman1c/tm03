@@ -19,6 +19,8 @@ class File(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     is_deleted = models.BooleanField(default=False);
+    is_folder = models.BooleanField(default=False);
+    parent_id = models.CharField(max_length=40, default='');
 
     def __str__(self):
         return "Файл № %s от %s, %s" % (self.id, self.created, self.name)

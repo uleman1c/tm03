@@ -1,7 +1,9 @@
+from multiprocessing import parent_process
 import os
 
 import json
 import locale
+from subprocess import list2cmdline
 import sys
 from unicodedata import name
 
@@ -157,42 +159,104 @@ def files(request):
                    # c1 = c1 + 1
 
 
+    parent_id = request.GET.get('parent_id')
 
+    if not parent_id:
+
+        parent_id = ""
+
+
+    affFolders = []
+    lfiles = File.objects.filter(user=cu, parent_id=parent_id, is_folder=True).order_by('name').all()
+    affFolders = list(lfiles)
+
+    if parent_id != "":
         
+        lfiles = File.objects.filter(user=cu, idname=parent_id).all()
+
+        firstFolder = list(lfiles)
+        firstFolder[0].name = '..'
+        firstFolder[0].idname = firstFolder[0].parent_id
+
+        affFolders.insert(0, firstFolder[0])
+
+
+
+
+
+    setStrSize(affFolders)
+
     allfiles = []
 
     search_file = request.GET.get('search_file')
 
     if search_file:
-        lfiles = File.objects.filter(user=cu, name__icontains=search_file).order_by('-created').all()[:20]
+        lfiles = File.objects.filter(user=cu, parent_id=parent_id,  is_folder=False, name__icontains=search_file).order_by('-created').all()[:20]
     else:
 
         search_file = ""
 
-        lfiles = File.objects.filter(user=cu).order_by('-created').all()[:20]
+        lfiles = File.objects.filter(user=cu,  parent_id=parent_id, is_folder=False).order_by('-created').all()[:20]
 
     allfiles = list(lfiles)
 
-    for f in allfiles:
-
-        if f.size > 1024 * 1024 * 1024:
-
-            f.size = str(round(f.size / (1024 * 1024 * 1024), 1)) + " Гб"
-
-        elif f.size > 1024 * 1024:
-
-            f.size = str(round(f.size / (1024 * 1024), 1)) + " Мб"
-
-        elif f.size > 1024:
-
-            f.size = str(round(f.size / (1024), 1)) + " Кб"
-
-        else:
-
-            f.size = str(f.size) + " б"
+    setStrSize(allfiles)
 
 
     return render(request, 'files.html', locals())
+
+def setStrSize(allfiles):
+    for f in allfiles:
+        if f.size > 1024 * 1024 * 1024:
+            f.size = str(round(f.size / (1024 * 1024 * 1024), 1)) + " Гб"
+
+        elif f.size > 1024 * 1024:
+            f.size = str(round(f.size / (1024 * 1024), 1)) + " Мб"
+
+        elif f.size > 1024:
+            f.size = str(round(f.size / (1024), 1)) + " Кб"
+
+        else:
+            f.size = str(f.size) + " б"
+
+def addFolder(request):
+
+    if 'userLogged' not in request.session:
+        return redirect('login')
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    filespath = 'I:\\Files\\'
+    
+    if request.method == 'POST':
+
+        co = File.objects.create(user=cu, name=request.POST.get('filename'), is_folder=True, parent_id=request.POST.get('parent_id'))
+
+        res = dict()
+        res['parent_id'] = co.idname
+
+        return JsonResponse(res)
+
+def setFolder(request):
+
+    if 'userLogged' not in request.session:
+        return redirect('login')
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    filespath = 'I:\\Files\\'
+    
+    if request.method == 'POST':
+
+        co = File.objects.filter(user=cu, idname=request.POST.get('idname')).all().get()
+
+        co.parent_id = request.POST.get('parent_id')
+        co.save()
+
+        res = dict()
+        res['parent_id'] = co.parent_id
+
+        return JsonResponse(res)
 
 
 def filesold(request):
