@@ -24,4 +24,5 @@ urlpatterns = [
     path('filepart_clear_data/', views.filepart_clear_data, name='filepart_clear_data'),
     path('addfolder/', views.addFolder, name='addfolder'),
     path('setfolder/', views.setFolder, name='setfolder'),
+    path('settobasket/', views.setToBasket, name='settobasket'),
 ]

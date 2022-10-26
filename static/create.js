@@ -23,6 +23,28 @@ function addCatalog(){
 
 }
 
+function setToBasket(idname){
+
+    var url = "/settobasket/";
+    var data = {};
+    data.idname = idname;
+     $.ajax({
+         url: url,
+         type: 'POST',
+         data: data,
+         cache: true,
+         success: function (data) {
+
+            location.href = "/files?parent_id=" + data.parent_id;
+
+        },
+         error: function(){
+             console.log("error")
+         }
+     })
+
+}
+
 function keyUpContractor(e) {
 	
 	var t = $('#contractor').val();

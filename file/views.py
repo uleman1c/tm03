@@ -170,7 +170,7 @@ def files(request):
 
 
     affFolders = []
-    lfiles = File.objects.filter(user=cu, parent_id=parent_id, is_folder=True).order_by('name').all()
+    lfiles = File.objects.filter(user=cu, parent_id=parent_id, is_folder=True, is_deleted=False).order_by('name').all()
     affFolders = list(lfiles)
 
     setStrSize(affFolders)    
@@ -193,12 +193,12 @@ def files(request):
     search_file = request.GET.get('search_file')
 
     if search_file:
-        lfiles = File.objects.filter(user=cu, parent_id=parent_id,  is_folder=False, name__icontains=search_file).order_by('-created').all()[:20]
+        lfiles = File.objects.filter(user=cu, parent_id=parent_id,  is_folder=False, name__icontains=search_file, is_deleted=False).order_by('-created').all()[:20]
     else:
 
         search_file = ""
 
-        lfiles = File.objects.filter(user=cu,  parent_id=parent_id, is_folder=False).order_by('-created').all()[:20]
+        lfiles = File.objects.filter(user=cu,  parent_id=parent_id, is_folder=False, is_deleted=False).order_by('-created').all()[:20]
 
     allfiles = list(lfiles)
 
@@ -259,6 +259,30 @@ def setFolder(request):
         res['parent_id'] = co.parent_id
 
         return JsonResponse(res)
+
+def setToBasket(request):
+
+    if 'userLogged' not in request.session:
+        return redirect('login')
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    filespath = 'I:\\Files\\'
+    
+    if request.method == 'POST':
+
+        co = File.objects.filter(user=cu, idname=request.POST.get('idname')).all().get()
+
+        co.is_deleted = True
+        co.save()
+
+        res = dict()
+        res['parent_id'] = co.parent_id
+
+        return JsonResponse(res)
+
+
+
 
 
 def filesold(request):

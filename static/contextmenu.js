@@ -22,6 +22,13 @@ function menu(event) {
     event = event || window.event;
     event.cancelBubble = true;
 
+    var elem = event.target.closest('.draggable');
+
+    var rm = $(".right-menu");
+
+    rm.empty();
+    rm.append('<div class="w-100 btn btn-lg btn-danger" onclick="setToBasket(\'' + elem.id + '\')">Поместить в корзину ' + elem.innerHTML + '</div>');
+
     // Задаём позицию контекстному меню
     var menu = $('.right-menu').css({
         top: defPosition(event).y + "px",
