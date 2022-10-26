@@ -103,12 +103,12 @@ def files(request):
         
             destination = open(filespath + curName, 'ab+')
             destination.write(request.body)
-            destination.close()
+           # destination.close()
                 
         
-            stat = os.stat(filespath + curName)
+            # stat = os.stat(filespath + curName)
         
-            co.size = stat.st_size
+            co.size = co.size + int(request.headers.get('Content-Length'))
             co.save()
                     
             # if part:
