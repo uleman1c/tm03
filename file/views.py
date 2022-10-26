@@ -173,6 +173,8 @@ def files(request):
     lfiles = File.objects.filter(user=cu, parent_id=parent_id, is_folder=True).order_by('name').all()
     affFolders = list(lfiles)
 
+    setStrSize(affFolders)    
+    
     if parent_id != "":
         
         lfiles = File.objects.filter(user=cu, idname=parent_id).all()
@@ -180,14 +182,11 @@ def files(request):
         firstFolder = list(lfiles)
         firstFolder[0].name = '..'
         firstFolder[0].idname = firstFolder[0].parent_id
+        firstFolder[0].size = ''
 
         affFolders.insert(0, firstFolder[0])
 
 
-
-
-
-    setStrSize(affFolders)
 
     allfiles = []
 
