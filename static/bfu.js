@@ -62,6 +62,7 @@ function sendPartOfFile() {
     var url = "";
     req.open("POST", url, true);
     req.setRequestHeader('id', uuid);
+    req.setRequestHeader('parentid', $('#parent_id').val());
     req.setRequestHeader('filename', encodeURIComponent(curFile.name));
     req.setRequestHeader('part', numPart);
 

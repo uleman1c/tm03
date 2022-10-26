@@ -81,15 +81,18 @@ def files(request):
     if request.method == 'POST':
 
         curUid = request.headers.get('id')
+        curparent_id = request.headers.get('parentid')
         part = request.headers.get('part')
 
+        if not curparent_id:
+            curparent_id = ''
 
 #        curUid = request.POST.get('id')
         
         if File.objects.filter(idname=curUid).count() == 0:
  #           filename = request.POST.get('filename')
             filename = urllib.parse.unquote(request.headers.get('filename'))
-            co = File.objects.create(user=cu, idname=curUid, name=filename)
+            co = File.objects.create(user=cu, idname=curUid, name=filename, parent_id=curparent_id)
         else:
             co = File.objects.filter(idname=curUid).all().get()
 
