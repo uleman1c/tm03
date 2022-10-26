@@ -103,6 +103,7 @@ def files(request):
         
             destination = open(filespath + curName, 'ab+')
             destination.write(request.body)
+            destination.close()
                 
         
             stat = os.stat(filespath + curName)
@@ -121,7 +122,9 @@ def files(request):
                 co.size = 0
                 co.save()
                         
-                
+        res = dict()
+
+        return JsonResponse(res)        
             
            # cfps = FilePart.objects.filter(file=co).order_by('number').all()
 
