@@ -45,6 +45,34 @@ function setToBasket(idname){
 
 }
 
+function rename(idname, filename){
+
+    var filename = prompt("Переименовать", filename);
+
+    if(filename){
+
+        var url = "/filerename/";
+        var data = {};
+        data.filename = filename;
+        data.idname = idname;
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            cache: true,
+            success: function (data) {
+
+                location.href = "/files?parent_id=" + data.parent_id;
+
+            },
+            error: function(){
+                console.log("error")
+            }
+        })
+    }
+}
+
+
 function keyUpContractor(e) {
 	
 	var t = $('#contractor').val();

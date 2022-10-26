@@ -282,6 +282,28 @@ def setToBasket(request):
         return JsonResponse(res)
 
 
+def fileRename(request):
+
+    if 'userLogged' not in request.session:
+        return redirect('login')
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    filespath = 'I:\\Files\\'
+    
+    if request.method == 'POST':
+
+        co = File.objects.filter(user=cu, idname=request.POST.get('idname')).all().get()
+
+        co.name = request.POST.get('filename')
+        co.save()
+
+        res = dict()
+        res['parent_id'] = co.parent_id
+
+        return JsonResponse(res)
+
+
 
 
 

@@ -27,7 +27,8 @@ function menu(event) {
     var rm = $(".right-menu");
 
     rm.empty();
-    rm.append('<div class="w-100 btn btn-lg btn-danger" onclick="setToBasket(\'' + elem.id + '\')">Поместить в корзину ' + elem.innerHTML + '</div>');
+    rm.append('<div class="w-100 btn btn-lg btn-danger" onclick="setToBasket(\'' + elem.id + '\')">Поместить в корзину</div>');
+    rm.append('<div class="w-100 btn btn-lg btn-primary" onclick="rename(\'' + elem.id + '\', \'' + elem.innerHTML + '\')">Переименовать</div>');
 
     // Задаём позицию контекстному меню
     var menu = $('.right-menu').css({
