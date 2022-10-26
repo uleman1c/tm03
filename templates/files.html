@@ -7,14 +7,17 @@
       {% load static %}
     <link href="{% static 'dropdowns.css' %}" rel="stylesheet">
     <script src="{% static 'jquery.js' %}"></script>
-    <script src="{% static 'create.js' %}?v=0066"></script>
+    <script src="{% static 'create.js' %}?v=0068"></script>
     <script src="{% static 'bfu.js' %}?v=0001"></script>
     <script src="{% static 'contextmenu.js' %}?v=0002"></script>
+    <script src="{% static 'dragdrop.js' %}?v=0001"></script>
 </head>
 <body>
     <div class="container py-3" style="max-width: 90%">
 
       <div style="display:flex">
+
+        <button type="button" style="width: 25%; margin-right: 1%" onclick="addCatalog()">Создать папку</button>
 
         <h3 style="margin-right:20px">Файлы</h3>
 
@@ -32,6 +35,7 @@
       <form method="get">
         {% csrf_token %}
 
+        <input id="parent_id" name="parent_id" value="{{ parent_id }}" style="display: none;">
         <div style="display:flex">
         
           <div class="form-floating">
@@ -77,7 +81,7 @@
 	  
         <div class="container py-3" style="max-width: 95%" oncontextmenu="return menu(event);">
 
-        {% if allfiles %}
+        {% if affFolders or allfiles  %}
 
 			<div class="context-menu" style = "display: none; ">
 				<div class="context" oncontextmenu="return menu(event);">
@@ -86,17 +90,49 @@
 			</div>
 			
             <div class="row">
-              <div class="col-3 themed-grid-col" style="text-align: center">Дата</div>
-              <div class="col-7 themed-grid-col" style="text-align: center">Имя файла</div>
+              <div class="col-10 themed-grid-col" style="text-align: center">Имя файла</div>
               <div class="col-2 themed-grid-col" style="text-align: center">Размер</div>
             </div>
+
+            {% for el in affFolders %}
+
+            <div class="row">
+
+              <a class="col-1 no-themed-grid-col" href="?parent_id={{ el.idname }}">
+                <div style="position: center;" >
+                  <svg focusable="true" viewBox="0 0 24 24" height="24px" width="24px" fill="#5f6368">
+                    <g>
+                      <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"></path>
+                      <path d="M0 0h24v24H0z" fill="none"></path>
+                    </g>
+                  </svg>
+                </div>
+              </a>
+
+
+              <div id="{{ el.idname }}" class="col-9 no-themed-grid-col draggable droppable">{{ el.name }}</div>
+              <div class="col-2 no-themed-grid-col"  style="text-align: center">{{ el.size }}</div>
+            </div>
+
+            {% endfor %}
+
+
+
+
 
            {% for el in allfiles %}
 
             <div class="row">
-              <div class="col-3 no-themed-grid-col">{{ el.created }}</div>
-              <a class="col-7 no-themed-grid-col" href="../getfile/?id={{ el.idname }}">{{ el.name }}</a>
-              <div id="{{ el.id1c }}" class="col-2 no-themed-grid-col"  style="text-align: center">{{ el.size }}</div>
+
+              <a class="col-1 no-themed-grid-col" href="../getfile/?id={{ el.idname }}">
+                <img focusable="true" viewBox="0 0 24 24" height="24px" width="24px" fill="#5f6368" src="{% static 'download.svg' %}">
+                
+                </img>
+              </a>
+
+
+              <div id="{{ el.idname }}" class="col-9 no-themed-grid-col draggable">{{ el.name }}</div>
+              <div class="col-2 no-themed-grid-col"  style="text-align: center">{{ el.size }}</div>
             </div>
 
             {% endfor %}

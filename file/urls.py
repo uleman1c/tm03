@@ -22,5 +22,6 @@ urlpatterns = [
     path('files/', views.files, name='files'),
     path('getfile/', views.getfile, name='getfile'),
     path('filepart_clear_data/', views.filepart_clear_data, name='filepart_clear_data'),
-    # path('sendto1c_invent/', views.sendto1c_invent, name='sendto1c_invent'),
+    path('addfolder/', views.addFolder, name='addfolder'),
+    path('setfolder/', views.setFolder, name='setfolder'),
 ]

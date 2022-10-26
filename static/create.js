@@ -1,3 +1,28 @@
+function addCatalog(){
+
+    var filename = prompt("Добавить папку", "Новая папка");
+
+    var url = "/addfolder/";
+    var data = {};
+    data.filename = filename;
+    data.parent_id = $('#parent_id').val();
+     $.ajax({
+         url: url,
+         type: 'POST',
+         data: data,
+         cache: true,
+         success: function (data) {
+
+            location.href = "/files?parent_id=" + data.parent_id;
+
+        },
+         error: function(){
+             console.log("error")
+         }
+     })
+
+}
+
 function keyUpContractor(e) {
 	
 	var t = $('#contractor').val();
