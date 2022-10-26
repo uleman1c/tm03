@@ -49,6 +49,32 @@ document.onmousemove = function(e) {
     dragObject.avatar.style.left = e.pageX - dragObject.shiftX + 'px';
     dragObject.avatar.style.top = e.pageY - dragObject.shiftY + 'px';
   
+    dropElem = findDroppable(e);
+
+    if(dropElem){
+
+      if(dragObject.dropElem){
+
+        dragObject.dropElem.style.border = dragObject.dropElemstyleborder;
+
+      }
+
+      dragObject.dropElem = dropElem;
+      dragObject.dropElemstyleborder = dropElem.style.border;
+
+      dropElem.style.border = "5px solid rgba(0, 0, 0, .2)";
+
+    } else {
+
+      if(dragObject.dropElem){
+
+        dragObject.dropElem.style.border = dragObject.dropElemstyleborder;
+
+      }
+
+
+    }
+
     return false;
   }
 
@@ -129,12 +155,10 @@ document.onmousemove = function(e) {
                  console.log("error")
              }
          })
-
-
-
-
-//      /*  */... успешный перенос ...
     } else {
+      if (dragObject.avatar){
+        dragObject.avatar.rollback();
+      }
 //      ... отмена переноса ...
     }
   }
