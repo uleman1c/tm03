@@ -71,6 +71,10 @@
 
                 }
 
+                .no-themed-grid-col:hover {
+                    background: rgb(178, 178, 240);
+                }
+
                 .themed-container {
                   padding: .75rem;
                   margin-bottom: 1.5rem;
@@ -96,9 +100,9 @@
 
             {% for el in affFolders %}
 
-            <div class="row">
+            <div class="row no-themed-grid-col">
 
-              <a class="col-1 no-themed-grid-col" href="?parent_id={{ el.idname }}">
+              <a class="col-1" href="?parent_id={{ el.idname }}">
                 <div style="position: center;" >
                   <svg focusable="true" viewBox="0 0 24 24" height="24px" width="24px" fill="#5f6368">
                     <g>
@@ -110,8 +114,8 @@
               </a>
 
 
-              <div id="{{ el.idname }}" class="col-9 no-themed-grid-col draggable droppable">{{ el.name }}</div>
-              <div class="col-2 no-themed-grid-col"  style="text-align: center">{{ el.size }}</div>
+              <div id="{{ el.idname }}" class="col-9 draggable droppable">{{ el.name }}</div>
+              <div class="col-2"  style="text-align: center">{{ el.size }}</div>
             </div>
 
             {% endfor %}
@@ -122,17 +126,17 @@
 
            {% for el in allfiles %}
 
-            <div class="row">
+            <div class="row  no-themed-grid-col">
 
-              <a class="col-1 no-themed-grid-col" href="../getfile/?id={{ el.idname }}">
+              <a class="col-1" href="../getfile/?id={{ el.idname }}">
                 <img focusable="true" viewBox="0 0 24 24" height="24px" width="24px" fill="#5f6368" src="{% static 'download.svg' %}">
                 
                 </img>
               </a>
 
 
-              <div id="{{ el.idname }}" class="col-9 no-themed-grid-col draggable">{{ el.name }}</div>
-              <div class="col-2 no-themed-grid-col"  style="text-align: center">{{ el.size }}</div>
+              <div id="{{ el.idname }}" class="col-9 draggable">{{ el.name }}</div>
+              <div class="col-2"  style="text-align: center">{{ el.size }}</div>
             </div>
 
             {% endfor %}
