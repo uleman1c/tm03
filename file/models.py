@@ -66,3 +66,27 @@ class FilePart(models.Model):
         super(FilePart, self).save(force_insert, force_update, using, update_fields)
 
 
+class ExternalLink(models.Model):
+
+    file = models.ForeignKey(File, on_delete=models.CASCADE)
+
+    idname = models.CharField(max_length=40, default='')
+
+    created = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    def __str__(self):
+        return "Внешняя ссылка от %s, %s" % (self.created, self.file.name)
+
+    class Meta:
+        verbose_name = 'Внешняя ссылка'
+        verbose_name_plural = 'Внешние ссылки'
+
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+             
+        if self.idname == '':
+            self.idname = uuid.uuid1()
+
+        super(ExternalLink, self).save(force_insert, force_update, using, update_fields)
+

@@ -147,7 +147,7 @@
         {% endif %}
         </div>
 
-		<div class="right-menu" style = "display: none; position: absolute; background: #fff;" >
+		<div class="right-menu w-25" style = "display: none; position: absolute; background: #fff;" >
 			<div class="w-100 btn btn-lg btn-danger" >dfabsdghsdfgsdf</div>
 		</div>
 	 
@@ -182,6 +182,18 @@
         <div class="row mt-3">
           <button class="w-25 ms-3 btn btn-lg btn-success" onclick="saveFile()">Сохранить</button>
           <button class="w-25 ms-3 btn btn-lg btn-primary" onclick="$('#popupet').hide()">Закрыть</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="b-popup" id="popupexternallink" style="display: none;" >
+      <div class="b-popup-content" style="height: 25%;">
+        <div class="row mt-3">
+          <h1 id="externallinkfile"></h1>
+          <h1 id="externallinkidname" style="font-size: 2vh;"></h1>
+        </div>
+        <div class="row mt-3">
+          <button class="w-25 ms-3 btn btn-lg btn-primary" onclick="$('#popupexternallink').hide()">Закрыть</button>
         </div>
       </div>
     </div>

@@ -224,6 +224,63 @@ def setStrSize(allfiles):
         else:
             f.size = str(f.size) + " б"
 
+def el(request):
+
+    filespath = 'I:\\Files\\'
+    
+    if request.method == 'POST':
+
+        if 'userLogged' not in request.session:
+            return redirect('login')
+
+        res = dict()
+        res['success'] = False
+
+        cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+        eluid = request.POST.get('eluid')
+        idname = request.POST.get('idname')
+
+        if File.objects.filter(user=cu, idname=idname).count() > 0:
+
+            fo = File.objects.filter(user=cu, idname=idname).all().get()
+
+            el = ExternalLink.objects.create(file=fo, idname=eluid)
+
+            res['success'] = True
+
+            
+        return JsonResponse(res)
+
+
+    elif request.method == 'GET':
+
+        idname = request.GET.get('id')
+
+        if ExternalLink.objects.filter(idname=idname).count() > 0:
+
+            el = ExternalLink.objects.filter(idname=idname).all().get()
+
+            if el.created.astimezone(pytz.timezone('Europe/Moscow')) > (datetime.now().astimezone(pytz.timezone('Europe/Moscow')) - timedelta(hours=1)):
+
+                fo = el.file
+
+                fr = FileResponse(open(filespath + fo.idname + ".tmp",'rb'))
+
+                fr['Content-Disposition'] = 'attachment; filename=' + urllib.parse.quote(fo.name.encode('utf8'))
+                fr['X-Sendfile'] = urllib.parse.quote(fo.name.encode('utf8'))
+
+                return fr
+
+            else:
+                
+                return render(request, '404.html')
+
+        else:
+
+            return render(request, '404.html')
+
+
 def addFolder(request):
 
     if 'userLogged' not in request.session:

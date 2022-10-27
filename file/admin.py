@@ -2,7 +2,7 @@ from django.contrib import admin
 
 import file
 from RequestHeaders.models import *
-from file.models import File, FilePart
+from file.models import File, FilePart, ExternalLink
 
 
 class FileAdmin(admin.ModelAdmin):
@@ -23,5 +23,17 @@ class FilePartAdmin(admin.ModelAdmin):
         model = FilePart
 
 
+
+class ExternalLinkAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in ExternalLink._meta.fields]
+
+    search_fields = [field.name for field in ExternalLink._meta.fields]
+
+    class Meta:
+        model = ExternalLink
+
+
 admin.site.register(File, FileAdmin)
 admin.site.register(FilePart, FilePartAdmin)
+admin.site.register(ExternalLink, ExternalLinkAdmin)
+
