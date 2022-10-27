@@ -178,30 +178,34 @@ function editText(idname, filename){
 
 
 
-/*     var filename = prompt("Переименовать", filename);
+}
 
-    if(filename){
+function createExternalLink(idname, filename){
 
-        var url = "/filerename/";
-        var data = {};
-        data.filename = filename;
-        data.idname = idname;
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: data,
-            cache: true,
-            success: function (data) {
+    var url = "/el/";
+    var eluid = newUid();
+    var data = {};
+    data.eluid = eluid;
+    data.idname = idname;
+    $.ajax({
+        url: url,
+        type: 'POST',
+        cache: true,
+        data: data,
+        success: function (data) {
 
-                location.href = "/files?parent_id=" + data.parent_id;
+            $('#externallinkfile').attr("data-idname", idname);
+            $('#externallinkfile').html(filename);
+            $('#externallinkidname').html("https://transtechn.ru:8001/el?id=" + eluid);
+            $('#popupexternallink').show();    
 
-            },
-            error: function(){
-                console.log("error")
-            }
-        })
-    }
- */
+        },
+        error: function(){
+            console.log("error")
+        }
+    })
+
+
 
 }
 
