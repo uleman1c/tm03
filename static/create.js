@@ -2,26 +2,49 @@ function addCatalog(){
 
     var filename = prompt("Добавить папку", "Новая папка");
 
-    var url = "/addfolder/";
-    var data = {};
-    data.filename = filename;
-    data.parent_id = $('#parent_id').val();
-     $.ajax({
-         url: url,
-         type: 'POST',
-         data: data,
-         cache: true,
-         success: function (data) {
+    if(filename){
 
-            location.href = "/files?parent_id=" + data.parent_id;
+        var url = "/addfolder/";
+        var data = {};
+        data.filename = filename;
+        data.parent_id = $('#parent_id').val();
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            cache: true,
+            success: function (data) {
 
-        },
-         error: function(){
-             console.log("error")
-         }
-     })
+                location.href = "/files?parent_id=" + data.parent_id;
+
+            },
+            error: function(){
+                console.log("error")
+            }
+        })
+    }
 
 }
+
+function addFile(){
+
+    var filename = prompt("Добавить файл", "Новый файл");
+
+    if(filename){
+
+        $('#editidname').attr('data-idname', newUid());
+        $('#editidname').html(filename);
+
+        $('#editidname').attr("data-isnew", true);
+
+        $('#popupet').show();
+
+    }
+
+}
+
+
+
 
 function setToBasket(idname){
 
@@ -44,6 +67,57 @@ function setToBasket(idname){
      })
 
 }
+
+function saveFile(){
+
+    var idname = $('#editidname').attr('data-idname');
+    var filename = $('#editidname').html();
+
+    var is_new = $('#editidname').attr("data-isnew");
+
+    var req = new XMLHttpRequest();
+
+    var data = $('#edittext').val();
+
+    var url = "";
+    req.open("POST", url, false);
+    req.setRequestHeader('id', newUid());
+    req.setRequestHeader('parentid', $('#parent_id').val());
+    req.setRequestHeader('filename', encodeURIComponent(filename));
+    req.setRequestHeader('part', 0);
+    req.setRequestHeader('size', data.length);
+
+    req.send(data);
+
+    req.onreadystatechange = function () { // (3)
+
+        if (this.readyState != 4) return;
+
+        // button.innerHTML = 'Готово!';
+
+        if (this.status != 200) {
+
+            setTimeout(onError, 1000);
+            // alert(this.status + ': ' + this.statusText);
+
+        } else {
+
+            onLoad();
+
+        }
+
+    }    
+
+
+    if(!is_new){
+        setToBasket(idname);
+    }
+
+
+
+}
+
+
 
 function rename(idname, filename){
 
@@ -70,6 +144,65 @@ function rename(idname, filename){
             }
         })
     }
+}
+
+function str2ab(str) {
+    var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+    var bufView = new Uint16Array(buf);
+    for (var i = 0, strLen = str.length; i < strLen; i++) {
+      bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+  }
+
+function editText(idname, filename){
+
+    var url = "/getfile/?id=" + idname;
+    $.ajax({
+        url: url,
+        type: 'POST',
+        cache: true,
+        success: function (data) {
+
+            $('#editidname').attr("data-idname", idname);
+            $('#editidname').html(filename);
+            $('#popupet').show();
+
+            $('#edittext').html(data);
+
+        },
+        error: function(){
+            console.log("error")
+        }
+    })
+
+
+
+/*     var filename = prompt("Переименовать", filename);
+
+    if(filename){
+
+        var url = "/filerename/";
+        var data = {};
+        data.filename = filename;
+        data.idname = idname;
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            cache: true,
+            success: function (data) {
+
+                location.href = "/files?parent_id=" + data.parent_id;
+
+            },
+            error: function(){
+                console.log("error")
+            }
+        })
+    }
+ */
+
 }
 
 
