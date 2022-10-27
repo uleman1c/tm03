@@ -194,10 +194,21 @@ function createExternalLink(idname, filename){
         data: data,
         success: function (data) {
 
+            reltext = "https://transtechn.ru:8001/el?id=" + eluid;
+
             $('#externallinkfile').attr("data-idname", idname);
             $('#externallinkfile').html(filename);
-            $('#externallinkidname').html("https://transtechn.ru:8001/el?id=" + eluid);
+            $('#externallinkidname').html(reltext);
             $('#popupexternallink').show();    
+
+            navigator.clipboard.writeText(reltext)
+            .then(() => {
+                $('#externallinkcopied').show(); 
+            })
+            .catch(err => {
+              console.log('Something went wrong', err);
+            });            
+
 
         },
         error: function(){
