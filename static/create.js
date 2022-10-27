@@ -113,7 +113,7 @@ function saveFile(){
         setToBasket(idname);
     }
 
-
+    location.reload();
 
 }
 
