@@ -37,6 +37,8 @@ function addFile(){
 
         $('#editidname').attr("data-isnew", true);
 
+        $('#edittext').val('');
+
         $('#popupet').show();
 
     }
