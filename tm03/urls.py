@@ -65,6 +65,8 @@ urlpatterns = [
     path('', include('order_info.urls')),
     path('', include('invent.urls')),
     path('', include('file.urls')),
+    path('', include('block_schema.urls')),
+    path('', include('access_key.urls')),
 
 ]
 

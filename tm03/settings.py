@@ -55,7 +55,9 @@ INSTALLED_APPS = [
     'bitrixqueue',
     'order_info',
     'invent',
-    'file'
+    'file',
+    'block_schema',
+    'access_key'
 ]
 
 MIDDLEWARE = [
