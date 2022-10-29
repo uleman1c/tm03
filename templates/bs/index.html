@@ -42,25 +42,82 @@
             <img src="{% static 'bs/search.svg' %}">
             <input type="text" placeholder="Search blocks">
         </div>
-        <div id="subnav">
-            <div id="triggers" class="navactive side">Узлы</div>
-            <div id="actions" class="navdisabled side">Действия</div>
-            <div id="loggers" class="navdisabled side">Заметки</div>
+        <div id="subnav" style="display: none;">
+            <div id="triggers" class="navactive side" style="display: none;">Узлы</div>
+            <div id="actions" class="navdisabled side" style="display: none;">Действия</div>
+            <div id="loggers" class="navdisabled side">Узлы</div>
         </div>
-        <div id="blocklist"><div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype" value="1"><div class="grabme"><img src="{% static 'bs/grabme.svg' %}"></div><div class="blockin">                  <div class="blockico"><span></span><img src="{% static 'bs/eye.svg' %}"></div><div class="blocktext">                        <p class="blocktitle">New visitor</p><p class="blockdesc">Triggers when somebody visits a specified page</p>        </div></div></div><div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype" value="2"><div class="grabme"><img src="{% static 'bs/grabme.svg' %}"></div><div class="blockin">                    <div class="blockico"><span></span><img src="{% static 'bs/action.svg' %}"></div><div class="blocktext">                        <p class="blocktitle">Action is performed</p><p class="blockdesc">Triggers when somebody performs a specified action</p></div></div></div><div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype" value="3"><div class="grabme"><img src="{% static 'bs/grabme.svg' %}"></div><div class="blockin">                    <div class="blockico"><span></span><img src="{% static 'bs/time.svg' %}"></div><div class="blocktext">                        <p class="blocktitle">Time has passed</p><p class="blockdesc">Triggers after a specified amount of time</p>          </div></div></div><div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype" value="4"><div class="grabme"><img src="{% static 'bs/grabme.svg' %}"></div><div class="blockin">                    <div class="blockico"><span></span><img src="{% static 'bs/error.svg' %}"></div><div class="blocktext">                        <p class="blocktitle">Error prompt</p><p class="blockdesc">Triggers when a specified error happens</p>              </div></div></div></div>
+        <div id="blocklist">
+            <div class="blockelem create-flowy noselect">
+                <input type="hidden" name="blockelemtype" class="blockelemtype" value="1">
+                <div class="grabme">
+                    <img src="{% static 'bs/grabme.svg' %}">
+                </div>
+                <div class="blockin">
+                    <div class="blockico">
+                        <span></span>
+                        <img src="{% static 'bs/eye.svg' %}">
+                    </div>
+                    <div class="blocktext">
+                        <p class="blocktitle editblocktitle">Новый этап</p>
+                        <p class="blockdesc">Этап приготовления блюда</p>
+                    </div>
+                </div>
+            </div>
+            <div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype"
+                    value="2">
+                <div class="grabme"><img src="{% static 'bs/grabme.svg' %}"></div>
+                <div class="blockin">
+                    <div class="blockico"><span></span><img src="{% static 'bs/action.svg' %}"></div>
+                    <div class="blocktext">
+                        <p class="blocktitle">Новое действие</p>
+                        <p class="blockdesc">Действие по приготовлению</p>
+                    </div>
+                </div>
+            </div>
+            <div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype"
+                    value="3">
+                <div class="grabme"><img src="{% static 'bs/grabme.svg' %}"></div>
+                <div class="blockin">
+                    <div class="blockico"><span></span><img src="{% static 'bs/time.svg' %}"></div>
+                    <div class="blocktext">
+                        <p class="blocktitle">Время</p>
+                        <p class="blockdesc">Время ожидания</p>
+                    </div>
+                </div>
+            </div>
+            <div class="blockelem create-flowy noselect"><input type="hidden" name="blockelemtype" class="blockelemtype"
+                    value="4">
+                <div class="grabme"><img src="{% static 'bs/grabme.svg' %}"></div>
+                <div class="blockin">
+                    <div class="blockico"><span></span><img src="{% static 'bs/error.svg' %}"></div>
+                    <div class="blocktext">
+                        <p class="blocktitle">Ошибка</p>
+                        <p class="blockdesc">Сообщение об ошибке</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <div id="propwrap">
         <div id="properties">
             <div id="close">
                 <img src="{% static 'bs/close.svg' %}">
             </div>
-            <p id="header2">Properties</p>
-            <div id="propswitch">
-                <div id="dataprop">Data</div>
-                <div id="alertprop">Alerts</div>
-                <div id="logsprop">Logs</div>
+            <p id="header2">Свойства</p>
+            <p class="blocktitle"><b>Заголовок</b><br>
+            <input id="inputblocktitle" class="blocktitle" type="text" style="width: 90%;" onchange="onInputBlockTitle()">
+            </p>
+            <p class="blockdesc">Описание<Br>
+            <textarea id="inputblockdesc" class="blockdesc" name="comment" rows="3" style="width: 90%;" onchange="onInputBlockDesc()"></textarea></p>
+              
+            <div id="propswitch" style="display: none;">
+                <div id="dataprop">Данные</div>
+                <div id="alertprop">Сообщения</div>
+                <div id="logsprop">Журналы</div>
             </div>
-            <div id="proplist">
+            <div id="proplist" style="display: none;">
                 <p class="inputlabel">Select database</p>
                 <div class="dropme">Database 1 <img src="{% static 'bs/dropdown.svg' %}"></div>
                 <p class="inputlabel">Check properties</p>
@@ -69,11 +126,49 @@
                 <div class="checkus"><img src="{% static 'bs/checkoff.svg' %}"><p>Give priority to this block</p></div>
             </div>
             <div id="divisionthing"></div>
-            <div id="removeblock">Delete blocks</div>
+            <div id="removeblock" style="display: none;">Delete blocks</div>
         </div>
     </div>
     <div id="canvas">
     </div>
+
+    <style>
+      .b-popup{
+      width:100%;
+      height:100%;
+      background-color: rgba(0,0,0,0.5);
+      overflow:hidden;
+      position:fixed;
+      top:0px;
+      }
+      .b-popup .b-popup-content{
+          margin:140px auto 0px auto;
+          width:50%;
+          height: 50%;
+          padding:10px;
+          background-color: #c5c5c5;
+          border-radius:5px;
+          box-shadow: 0px 0px 10px #000;
+          position: relative;
+      } 
+    </style>    
+    <div class="b-popup" id="popupet" style="display: none;" >
+        <div class="b-popup-content">
+          <div class="row" style="display: none;" >
+            <h1 style="width: fit-content;">Файл: </h1>
+            <h1 style="width: fit-content;"id="editidname"></h1>
+          </div>
+          <div style="width: 100%; height: 80%;">
+            <textarea id="edittext" style="width: 100%; height: 100%; resize: none;"></textarea>
+          </div>
+          <div class="row pb-3 ps-3 pe-3" style="width: 100%; position: absolute; top: 100%; transform: translate(0, -100%); display: flex; justify-content: space-between">
+            <button class="w-25  btn btn-lg btn-success" onclick="saveFile()">Сохранить</button>
+            <button class="w-25 btn btn-lg btn-primary" onclick="$('#popupet').hide()">Закрыть</button>
+          </div>
+        </div>
+      </div>
+   
+
 
     <script>
         onload();
