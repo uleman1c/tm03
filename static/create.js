@@ -1,3 +1,104 @@
+function getFileWS(filename, idname){
+
+/*     lo = new WebSocket("ws://localhost:8019/ws/live-score/zdvvz/"); //?token=[YOUR TOKEN]
+    lo.onmessage = (data) => console.log(data);
+    lo.onopen = () => {
+        console.log("sending city");
+        lo.send(JSON.stringify({"game_city": 1}));
+    }
+
+ */
+    const chatSocket = new WebSocket(
+        (window.location.protocol == 'https:' ? 'wss' : 'ws') + '://'
+        + window.location.host
+        + '/ws/chat/'
+        + 'roomName'
+        + '/'
+    );
+
+    chatSocket.onopen = function(e){
+
+        chatSocket.send(JSON.stringify({
+            'message': idname
+        }));
+    };
+
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+//        document.querySelector('#chat-log').value += (data.message + '\n');
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+/*     document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+ */
+/*     document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+        messageInputDom.value = '';
+    };
+ */
+
+
+/*     let socket = new WebSocket("wss://localhost:9090");
+
+    let blob = new Blob([idname], {type: 'text/plain'});
+
+    socket.onopen = function() {
+        alert("Соединение установлено.");
+      };
+      
+      socket.onclose = function(event) {
+        if (event.wasClean) {
+          alert('Соединение закрыто чисто');
+        } else {
+          alert('Обрыв соединения'); // например, "убит" процесс сервера
+        }
+        alert('Код: ' + event.code + ' причина: ' + event.reason);
+      };
+      
+      socket.onmessage = function(event) {
+        alert("Получены данные " + event.data);
+      };
+      
+      socket.onerror = function(error) {
+        alert("Ошибка " + error.message);
+      };    
+ */
+
+/*     socket.send(blob)
+    
+    data = socket.recv(1024)
+    socket.close()
+    
+    
+    
+
+
+    let link = document.createElement('a');
+    link.download = filename;
+    
+    blob = new Blob(['Hello, world!'], {type: 'text/plain'});
+    
+    link.href = URL.createObjectURL(blob);
+    
+    link.click();
+    
+    URL.revokeObjectURL(link.href);    
+ */
+}
+
 function addCatalog(){
 
     var filename = prompt("Добавить папку", "Новая папка");
