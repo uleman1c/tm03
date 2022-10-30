@@ -48,3 +48,30 @@ class ChatConsumer(WebsocketConsumer):
             'message': message
         }))
         
+
+class FileConsumer(WebsocketConsumer):
+    def connect(self):
+        
+       # self.file_name = self.scope['url_route']['kwargs']['file_name']
+
+       self.accept()
+
+    def disconnect(self, close_code):
+        pass
+
+    def receive(self, text_data):
+
+        text_data_json = json.loads(text_data)
+        curUid = text_data_json['file_name']
+        pos = text_data_json['pos']
+
+        filespath = 'I:\\Files\\'
+
+        fr = open(filespath + curUid + ".tmp",'rb')
+
+        fr.seek(pos)
+
+        part_size = 120000
+
+        self.send(bytes_data=fr.read(part_size))
+

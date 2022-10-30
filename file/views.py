@@ -213,16 +213,18 @@ def files(request):
 def setStrSize(allfiles):
     for f in allfiles:
         if f.size > 1024 * 1024 * 1024:
-            f.size = str(round(f.size / (1024 * 1024 * 1024), 1)) + " Гб"
+            f.size2 = str(round(f.size / (1024 * 1024 * 1024), 1)) + " Гб"
 
         elif f.size > 1024 * 1024:
-            f.size = str(round(f.size / (1024 * 1024), 1)) + " Мб"
+            f.size2 = str(round(f.size / (1024 * 1024), 1)) + " Мб"
 
         elif f.size > 1024:
-            f.size = str(round(f.size / (1024), 1)) + " Кб"
+            f.size2 = str(round(f.size / (1024), 1)) + " Кб"
 
         else:
-            f.size = str(f.size) + " б"
+            f.size2 = str(f.size) + " б"
+
+        f.size = locale.format_string('%.0f', f.size, grouping=False)
 
 def el(request):
 

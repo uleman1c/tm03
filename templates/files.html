@@ -41,7 +41,7 @@
         
           <div class="form-floating">
             <input type="text" class="form-control" id="floatingInput" name="search_file" style="width: 50vw;" placeholder="name@example.com" value="{{ search_file }}">
-            <label for="floatingInput">Имя файла</label>
+            <label for="floatingInput" >Имя файла</label>
           </div>
   
           
@@ -96,7 +96,7 @@
 			
             <div class="row">
               <div class="col-10 themed-grid-col" style="text-align: center">Имя файла</div>
-              <div class="col-2 themed-grid-col" style="text-align: center">Размер</div>
+              <div class="col-2 themed-grid-col" id="tablecolumnfilesize" style="text-align: center">Размер</div>
             </div>
 
             {% for el in affFolders %}
@@ -116,7 +116,8 @@
 
 
               <div id="{{ el.idname }}" class="col-9 draggable droppable">{{ el.name }}</div>
-              <div class="col-2"  style="text-align: center">{{ el.size }}</div>
+              <div class="col-2"  style="text-align: center; display: none;">{{ el.size }}</div>
+              <div class="col-2"  style="text-align: center">{{ el.size2 }}</div>
             </div>
 
             {% endfor %}
@@ -129,7 +130,7 @@
 
             <div class="row  no-themed-grid-col">
 
-              <a class="col-1" href="#" onClick="getFileWS('{{ el.name }}', '{{ el.idname }}')">      <!-- "../getfile/?id={{ el.idname }}"> -->
+              <a class="col-1" href="#" onClick="getFileWS('{{ el.name }}', '{{ el.idname }}', '{{ el.size }}')">      <!-- "../getfile/?id={{ el.idname }}"> -->
                 <img focusable="true" viewBox="0 0 24 24" height="24px" width="24px" fill="#5f6368" src="{% static 'download.svg' %}">
                 
                 </img>
@@ -137,7 +138,8 @@
 
 
               <div id="{{ el.idname }}" class="col-9 draggable">{{ el.name }}</div>
-              <div class="col-2"  style="text-align: center">{{ el.size }}</div>
+              <div class="col-2"  style="text-align: center; display: none;">{{ el.size }}</div>
+              <div class="col-2"  style="text-align: center">{{ el.size2 }}</div>
             </div>
 
             {% endfor %}
