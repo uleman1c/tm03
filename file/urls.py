@@ -21,6 +21,7 @@ urlpatterns = [
     # path('', views.home, name='he'),
     path('files/', views.files, name='files'),
     path('getfile/', views.getfile, name='getfile'),
+    path('gfbp/', views.gfbp, name='gfbp'),
     path('filepart_clear_data/', views.filepart_clear_data, name='filepart_clear_data'),
     path('addfolder/', views.addFolder, name='addfolder'),
     path('setfolder/', views.setFolder, name='setfolder'),

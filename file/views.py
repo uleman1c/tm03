@@ -17,7 +17,7 @@ import pytz
 
 import urllib.parse
 import io
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
 from django.db import connection
 
 
@@ -64,6 +64,38 @@ def getfile(request):
         fr['X-Sendfile'] = urllib.parse.quote(fo.name.encode('utf8'))
 
         return fr
+
+    return ""
+
+
+def gfbp(request):
+
+    if 'userLogged' not in request.session:
+        return redirect('login')
+        
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    filespath = 'I:\\Files\\'
+    
+    curUid = request.headers.get('id')
+    pos = int(request.headers.get('pos'))
+
+    if File.objects.filter(user=cu, idname=curUid).count() > 0:
+
+        fo = File.objects.filter(user=cu, idname=curUid).all().get()
+
+        frf = open(filespath + curUid + ".tmp",'rb')
+
+        frf.seek(pos)
+
+        part_size = 120000
+
+        # fr = FileResponse(frf.read(part_size))
+        
+        # fr['Content-Disposition'] = 'attachment; filename=' + urllib.parse.quote(fo.name.encode('utf8'))
+        # fr['X-Sendfile'] = urllib.parse.quote(fo.name.encode('utf8'))
+
+        return HttpResponse(frf.read(part_size), content_type='application/octet-stream')
 
     return ""
     

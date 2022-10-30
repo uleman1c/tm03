@@ -130,8 +130,10 @@
 
             <div class="row  no-themed-grid-col">
 
-              <a class="col-1" href="#" onClick="getFileWS('{{ el.name }}', '{{ el.idname }}', '{{ el.size }}')">      <!-- "../getfile/?id={{ el.idname }}"> -->
-                <img focusable="true" viewBox="0 0 24 24" height="24px" width="24px" fill="#5f6368" src="{% static 'download.svg' %}">
+              <!--<a class="col-1" href="#" onClick="getFileWS('{{ el.name }}', '{{ el.idname }}', '{{ el.size }}')">       "../getfile/?id={{ el.idname }}"> -->
+              <a class="col-1" href="#" onClick="getFileByParts('{{ el.name }}', '{{ el.idname }}', '{{ el.size }}')">       <!--"../getfile/?id={{ el.idname }}"> -->
+              <!--<a class="col-1" href="../getfile/?id={{ el.idname }}">-->
+                  <img focusable="true" viewBox="0 0 24 24" height="24px" width="24px" fill="#5f6368" src="{% static 'download.svg' %}">
                 
                 </img>
               </a>
