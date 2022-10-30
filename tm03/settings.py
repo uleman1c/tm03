@@ -34,6 +34,8 @@ ALLOWED_HOSTS = ['transtechn.ru', 'ulemanprog.site', '.localhost', '127.0.0.1', 
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,8 +59,22 @@ INSTALLED_APPS = [
     'invent',
     'file',
     'block_schema',
-    'access_key'
+    'access_key',
+    
 ]
+
+
+# Конфигурация Channels
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("10.0.0.3", 6379)],
+            "symmetric_encryption_keys": [SECRET_KEY],
+        },
+    },
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -89,7 +105,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tm03.wsgi.application'
+# WSGI_APPLICATION = 'tm03.wsgi.application'
+
+ASGI_APPLICATION = "tm03.asgi.application"
 
 
 # Database

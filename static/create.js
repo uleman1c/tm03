@@ -1,3 +1,69 @@
+function getFileWS(filename, idname, ssize){
+
+   var link = document.createElement('a');
+    link.download = filename;
+
+    var pos = 0;
+
+    const part_size = 120000;
+
+    var blobs = [];
+
+    document.querySelector("#tablecolumnfilesize").innerHTML = "Размер " + Math.floor(pos * 100 / ssize) + "%";
+
+    const chatSocket = new WebSocket(
+        (window.location.protocol == 'https:' ? 'wss' : 'ws') + '://'
+        + window.location.host
+        + '/ws/files/' 
+    );
+
+    chatSocket.onopen = function(e){
+
+        chatSocket.send(JSON.stringify({
+            'file_name': idname,
+            'pos': pos
+        }));
+    };
+
+    chatSocket.onmessage = function(e) {
+
+        blobs.push(e.data);
+
+        if(e.data.size < part_size){
+
+            link.href = URL.createObjectURL(new Blob(blobs, {type: "application/zip"}));
+    
+            link.click();
+            
+            URL.revokeObjectURL(link.href);             
+
+            chatSocket.close();
+
+            document.querySelector("#tablecolumnfilesize").innerHTML = "Размер";
+
+        }
+        else{
+
+            pos = pos + part_size;
+
+            document.querySelector("#tablecolumnfilesize").innerHTML = "Размер " + Math.floor(pos * 100 / ssize) + "%";
+
+            chatSocket.send(JSON.stringify({
+                'file_name': idname,
+                'pos': pos
+            }));
+    
+
+        }
+
+    };
+
+    chatSocket.onclose = function(e) {
+        //console.error('Chat socket closed unexpectedly');
+    };
+
+}
+
 function addCatalog(){
 
     var filename = prompt("Добавить папку", "Новая папка");
