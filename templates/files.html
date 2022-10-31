@@ -94,6 +94,12 @@
 				</div>
 			</div>
 			
+      <div class="row" style="display: flex;">
+        {% for el in  pathToFolder %}
+        <a href="?parent_id={{ el.id }}" style="width: fit-content; padding-right: 0%;">{{ el.name }}/</a>
+        {% endfor %}
+      </div>
+
             <div class="row">
               <div class="col-10 themed-grid-col" style="text-align: center">Имя файла</div>
               <div class="col-2 themed-grid-col" id="tablecolumnfilesize" style="text-align: center">Размер</div>

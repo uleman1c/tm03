@@ -153,94 +153,69 @@ def files(request):
             if co.size != int(size):
                 co.size = 0
                 co.save()
+
+        res = dict()
+        res['success'] = True
+
+        return JsonResponse(res)
                         
-        # res = dict()
+    elif request.method == 'GET':
 
-        # return JsonResponse(res)        
-            
-           # cfps = FilePart.objects.filter(file=co).order_by('number').all()
+        parent_id = request.GET.get('parent_id')
 
-           # if cfps.count() > 0:
-               # resName = str(cfps[0].idname) + ".tmp"
-               # resFile = open(filespath + resName, 'ab+')
-               
-               # c = 1
-               # while c < cfps.count():
-                   # partName = str(cfps[c].idname) + ".tmp"
-                   
-                   # partFile = open(filespath + partName, 'rb')
+        if not parent_id:
 
-                   # buf = partFile.read(int(cfps[c].size))
+            parent_id = ""
 
-                   # resFile.write(buf)
+        pathToFolder = []
+        curparent_id = parent_id
 
-                   # partFile.close()
+        while curparent_id != '':
+            parent = File.objects.filter(user=cu, idname=curparent_id, is_folder=True).all().get()
+            pathToFolder.insert(0, {'name': parent.name, 'id': parent.idname})
+            curparent_id = parent.parent_id
 
-                   # c = c + 1
-
-               # resFile.close()
-               
-               # resFile = None
-
-               # co.idname = cfps[0].idname 
-               # co.save()
-
-               # c1 = 1
-               # while c1 < cfps.count():
-                   # partName = str(cfps[c1].idname) + ".tmp"
-                   
-                   # try:
-                        # os.remove(filespath + partName)
-                   # except:
-                       # d = 1
-
-                   # c1 = c1 + 1
+        pathToFolder.insert(0, {'name': '..', 'id': ''})
 
 
-    parent_id = request.GET.get('parent_id')
+        affFolders = []
+        lfiles = File.objects.filter(user=cu, parent_id=parent_id, is_folder=True, is_deleted=False).order_by('name').all()
+        affFolders = list(lfiles)
 
-    if not parent_id:
-
-        parent_id = ""
-
-
-    affFolders = []
-    lfiles = File.objects.filter(user=cu, parent_id=parent_id, is_folder=True, is_deleted=False).order_by('name').all()
-    affFolders = list(lfiles)
-
-    setStrSize(affFolders)    
-    
-    if parent_id != "":
+        setStrSize(affFolders)    
         
-        lfiles = File.objects.filter(user=cu, idname=parent_id).all()
+        if parent_id != "":
+            
+            lfiles = File.objects.filter(user=cu, idname=parent_id).all()
 
-        firstFolder = list(lfiles)
-        firstFolder[0].name = '..'
-        firstFolder[0].idname = firstFolder[0].parent_id
-        firstFolder[0].size = ''
+            firstFolder = list(lfiles)
+            firstFolder[0].name = '..'
+            firstFolder[0].idname = firstFolder[0].parent_id
+            firstFolder[0].size = ''
 
-        affFolders.insert(0, firstFolder[0])
-
-
-
-    allfiles = []
-
-    search_file = request.GET.get('search_file')
-
-    if search_file:
-        lfiles = File.objects.filter(user=cu, parent_id=parent_id,  is_folder=False, name__icontains=search_file, is_deleted=False).order_by('-created').all()[:20]
-    else:
-
-        search_file = ""
-
-        lfiles = File.objects.filter(user=cu,  parent_id=parent_id, is_folder=False, is_deleted=False).order_by('-created').all()[:20]
-
-    allfiles = list(lfiles)
-
-    setStrSize(allfiles)
+            affFolders.insert(0, firstFolder[0])
 
 
-    return render(request, 'files.html', locals())
+
+        allfiles = []
+
+        search_file = request.GET.get('search_file')
+
+        if search_file:
+            lfiles = File.objects.filter(user=cu, parent_id=parent_id,  is_folder=False, name__icontains=search_file, is_deleted=False).order_by('-created').all()[:20]
+        else:
+
+            search_file = ""
+
+            lfiles = File.objects.filter(user=cu,  parent_id=parent_id, is_folder=False, is_deleted=False).order_by('-created').all()[:20]
+
+        allfiles = list(lfiles)
+
+        setStrSize(allfiles)
+
+
+        return render(request, 'files.html', locals())
+
 
 def setStrSize(allfiles):
     for f in allfiles:
