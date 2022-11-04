@@ -20,13 +20,17 @@
         <button type="button" class="me-1 btn btn-lg btn-primary" onclick="addCatalog()">Создать папку</button>
         <button type="button" class="me-1 btn btn-lg btn-primary" onclick="addFile()">Создать файл</button>
 
-        <h3 style="margin-right:20px">Файлы</h3>
+        <button class="me-1 btn btn-lg btn-primary" onclick="document.querySelector('.inputFile').click();">Добавить файл ...</button>
+        <input id="inputFile" class="inputFile" onchange="onSelectFile(event)" type="file" style="display: none;">
 
-        <input type="file" name="photo" multiple id="loadfile">
+        <h3 style="margin-right:20px; display: none;">Файлы</h3>
 
-        <a href="#" onClick="big_file_upload($('#loadfile'))">Отправить</a>
+        <input type="file" name="photo" multiple id="loadfile" style="display: none;">
+
+        <a href="#" onClick="big_file_upload($('#loadfile'))" style="display: none;">Отправить</a>
         
         <span id="procent"></span>
+
 
       </div>
 
@@ -82,6 +86,11 @@
                   background-color: rgba(0, 123, 255, .15);
                   border: 1px solid rgba(0, 123, 255, .2);
                 }
+
+                .dragover {
+                  
+                  border: 3px solid rgba(0, 123, 255, .2);
+                }
             </style>
 	  
         <div class="container py-3" style="max-width: 95%" oncontextmenu="return menu(event);">
@@ -100,11 +109,12 @@
         {% endfor %}
       </div>
 
+          <div id="drop-area" class="container" style="max-width: 95%">
+
             <div class="row">
               <div class="col-10 themed-grid-col" style="text-align: center">Имя файла</div>
               <div class="col-2 themed-grid-col" id="tablecolumnfilesize" style="text-align: center">Размер</div>
             </div>
-
             {% for el in affFolders %}
 
             <div class="row no-themed-grid-col">
@@ -155,6 +165,8 @@
         {% else %}
             <h3 class="text-center" style="font-size: 2rem;">Нет файлов</h3>
         {% endif %}
+          </div>
+
         </div>
 
 		<div class="right-menu w-25" style = "display: none; position: absolute; background: #fff;" >
