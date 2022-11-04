@@ -1,3 +1,38 @@
+
+document.addEventListener("DOMContentLoaded", function() {
+
+  const dropArea = document.getElementById('drop-area');
+
+  dropArea.addEventListener('dragover', (event) => {
+
+    dropArea.classList.add("dragover");
+
+    event.stopPropagation();
+    event.preventDefault();
+    // Style the drag-and-drop as a "copy file" operation.
+    event.dataTransfer.dropEffect = 'copy';
+  });
+
+   dropArea.addEventListener('dragleave', (event) => {
+
+    dropArea.classList.remove("dragover");
+
+  });
+
+ dropArea.addEventListener('drop', (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const fileList = event.dataTransfer.files;
+
+    big_file_upload_files(fileList);
+
+  });
+
+});
+
+
+
+
 var dragObject = {};
 
 document.onmousedown = function(e) {

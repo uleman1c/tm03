@@ -137,3 +137,22 @@ function big_file_upload(f){
 
 }
 
+function big_file_upload_files(f){
+	
+	upload_chunk_size = 120000;
+	
+	files = f;
+
+    numFile = 0;
+
+    startingByte = 0;
+
+    sendNext();
+
+}
+
+function onSelectFile(e){
+
+    big_file_upload($('#inputFile'));
+
+}
