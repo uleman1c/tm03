@@ -376,7 +376,7 @@ function createExternalLink(idname, filename){
         data: data,
         success: function (data) {
 
-            reltext = "https://transtechn.ru:8001/el?id=" + eluid;
+            reltext = "https://downloadfilesdrive.site:8005/files/" + eluid;
 
             $('#externallinkfile').attr("data-idname", idname);
             $('#externallinkfile').html(filename);

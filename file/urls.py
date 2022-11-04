@@ -28,4 +28,5 @@ urlpatterns = [
     path('settobasket/', views.setToBasket, name='settobasket'),
     path('filerename/', views.fileRename, name='filerename'),
     path('el/', views.el, name='el'),
+    path('eln/', views.eln, name='eln'),
 ]

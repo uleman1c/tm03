@@ -290,6 +290,40 @@ def el(request):
             return render(request, '404.html')
 
 
+def eln(request):
+
+    filespath = 'I:\\Files\\'
+    
+    if request.method == 'GET':
+
+        idname = request.GET.get('id')
+
+        if ExternalLink.objects.filter(idname=idname).count() > 0:
+
+            el = ExternalLink.objects.filter(idname=idname).all().get()
+
+            if el.created.astimezone(pytz.timezone('Europe/Moscow')) > (datetime.now().astimezone(pytz.timezone('Europe/Moscow')) - timedelta(hours=1)):
+
+                fo = el.file
+
+                fr = FileResponse(open(filespath + fo.idname + ".tmp",'rb'))
+
+                fr['Content-Disposition'] = 'attachment; filename=' + urllib.parse.quote(fo.name.encode('utf8'))
+                fr['X-Sendfile'] = urllib.parse.quote(fo.name.encode('utf8'))
+
+
+
+                return JsonResponse({'filename': fo.name, 'id': fo.idname})
+
+            else:
+                
+                return render(request, '404.html')
+
+        else:
+
+            return render(request, '404.html')
+
+
 def addFolder(request):
 
     if 'userLogged' not in request.session:
