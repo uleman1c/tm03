@@ -289,6 +289,55 @@ def el(request):
 
             return render(request, '404.html')
 
+def ul(request):
+
+    filespath = 'I:\\Files\\'
+    
+    if request.method == 'POST':
+
+        if 'userLogged' not in request.session:
+            return redirect('login')
+
+        res = dict()
+        res['success'] = False
+
+        cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+        eluid = request.POST.get('eluid')
+        idname = request.POST.get('parentid')
+
+        if File.objects.filter(user=cu, idname=idname).count() > 0:
+
+            fo = File.objects.filter(user=cu, idname=idname).all().get()
+
+            el = UploadlLink.objects.create(file=fo, idname=eluid)
+
+            res['success'] = True
+
+            
+        return JsonResponse(res)
+
+
+    elif request.method == 'GET':
+
+        idname = request.GET.get('id')
+
+        if UploadlLink.objects.filter(idname=idname).count() > 0:
+
+            el = UploadlLink.objects.filter(idname=idname).all().get()
+
+            if el.created.astimezone(pytz.timezone('Europe/Moscow')) > (datetime.now().astimezone(pytz.timezone('Europe/Moscow')) - timedelta(hours=1)):
+
+                return JsonResponse({'success': True})
+
+            else:
+                
+                return render(request, '404.html')
+
+        else:
+
+            return render(request, '404.html')
+
 
 def eln(request):
 

@@ -90,3 +90,28 @@ class ExternalLink(models.Model):
 
         super(ExternalLink, self).save(force_insert, force_update, using, update_fields)
 
+
+class UploadlLink(models.Model):
+
+    file = models.ForeignKey(File, on_delete=models.CASCADE)
+
+    idname = models.CharField(max_length=40, default='')
+
+    created = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    def __str__(self):
+        return "Ссылка загрузки от %s, %s" % (self.created, self.file.name)
+
+    class Meta:
+        verbose_name = 'Ссылка загрузки'
+        verbose_name_plural = 'Ссылки загрузки'
+
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+             
+        if self.idname == '':
+            self.idname = uuid.uuid1()
+
+        super(UploadlLink, self).save(force_insert, force_update, using, update_fields)
+
