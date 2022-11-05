@@ -29,5 +29,6 @@ urlpatterns = [
     path('filerename/', views.fileRename, name='filerename'),
     path('el/', views.el, name='el'),
     path('eln/', views.eln, name='eln'),
-    path('ul/', views.ul, name='ul'),
+    path('ul/', views.ul, name='ul'),    
+    path('ulgf/', views.ulgf, name='ulgf'),
 ]
