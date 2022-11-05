@@ -380,7 +380,7 @@ function createExternalLink(idname, filename){
         data: data,
         success: function (data) {
 
-            reltext = "https://downloadfilesdrive.site:8005/files/" + eluid;
+            reltext = "https://downloadfilesdrive.site:8005/files/" + eluid + "=download";
 
             $('#externallinkfile').attr("data-idname", idname);
             $('#externallinkfile').html(filename);

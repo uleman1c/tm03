@@ -313,7 +313,7 @@ def eln(request):
 
 
 
-                return JsonResponse({'filename': fo.name, 'id': fo.idname})
+                return JsonResponse({'filename': fo.name, 'id': fo.idname, "size": fo.size})
 
             else:
                 
