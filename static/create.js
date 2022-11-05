@@ -406,6 +406,56 @@ function createExternalLink(idname, filename){
 
 }
 
+function addUploadLink(){
+
+    if(!$('#parent_id').val()){
+
+        alert('Нужно зайти в папку');
+
+    } else {
+
+        var url = "/ul/";
+        var eluid = newUid();
+        var data = {};
+        data.eluid = eluid;
+        data.parentid = $('#parent_id').val();
+        $.ajax({
+            url: url,
+            type: 'POST',
+            cache: true,
+            data: data,
+            success: function (data) {
+
+                if(!data.success) {
+                    alert('Не удалось создать ссылку загрузки')
+                } else {
+
+                    reltext = "https://uploadfilesdrive.site:8003/files/" + eluid;
+
+                    $('#externallinkfile').attr("data-idname", '');
+                    $('#externallinkfile').html('');
+                    $('#externallinkidname').html(reltext);
+                    $('#popupexternallink').show();    
+
+                    navigator.clipboard.writeText(reltext)
+                    .then(() => {
+                        $('#externallinkcopied').show(); 
+                    })
+                    .catch(err => {
+                    console.log('Something went wrong', err);
+                    });            
+                }
+
+            },
+            error: function(){
+                console.log("error")
+            }
+        })
+    }
+
+
+}
+
 
 function keyUpContractor(e) {
 	
