@@ -326,6 +326,67 @@ def ul(request):
 
             el = UploadlLink.objects.filter(idname=idname).all().get()
 
+            if el.created.astimezone(pytz.timezone('Europe/Moscow')) > (datetime.now().astimezone(pytz.timezone('Europe/Moscow')) - timedelta(hours=24)):
+
+                return JsonResponse({'success': True})
+
+            else:
+                
+                return render(request, '404.html')
+
+        else:
+
+            return render(request, '404.html')
+
+
+def ulgf(request):
+
+    filespath = 'I:\\Files\\'
+    
+    if request.method == 'POST':
+
+        reqjs = json.loads(request.body)
+
+        res = dict()
+        res['success'] = False
+
+        if reqjs['mode'] == 'getuid':
+
+            if UploadlLink.objects.filter(idname=reqjs['ulid']).count() > 0:
+
+                ulo = UploadlLink.objects.filter(idname=reqjs['ulid']).all().get()
+
+                
+                fo = File.objects.create(user=ulo.file.user, parent_id=ulo.file.idname, name=urllib.parse.unquote(reqjs['filename']))
+
+                res['success'] = True
+                res['id'] = fo.idname
+
+        elif reqjs['mode'] == 'setsize':
+
+            if File.objects.filter(idname=reqjs['id']).count() > 0:
+
+                fo = File.objects.filter(idname=reqjs['id']).all().get()
+
+                fo.size = fo.size + int(reqjs['size'])
+
+                fo.save()
+
+                res['success'] = True
+                res['id'] = fo.idname
+                res['size'] = fo.size
+            
+        return JsonResponse(res)
+
+
+    elif request.method == 'GET':
+
+        idname = request.GET.get('id')
+
+        if UploadlLink.objects.filter(idname=idname).count() > 0:
+
+            el = UploadlLink.objects.filter(idname=idname).all().get()
+
             if el.created.astimezone(pytz.timezone('Europe/Moscow')) > (datetime.now().astimezone(pytz.timezone('Europe/Moscow')) - timedelta(hours=1)):
 
                 return JsonResponse({'success': True})
