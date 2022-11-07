@@ -328,7 +328,14 @@ def ul(request):
 
             if el.created.astimezone(pytz.timezone('Europe/Moscow')) > (datetime.now().astimezone(pytz.timezone('Europe/Moscow')) - timedelta(hours=24)):
 
-                return JsonResponse({'success': True})
+                lfiles = File.objects.filter(parent_id=el.file.idname).order_by('-created').all()[:20]
+
+                jlfiles = list()
+
+                for  lf in lfiles:
+                    jlfiles.append({'filename': lf.name, 'size': lf.size, 'created': lf.created})
+
+                return JsonResponse({'success': True, 'files': jlfiles})
 
             else:
                 
