@@ -31,7 +31,14 @@ def accepts(request):
     if data_dict.get('success') == True:
         cash_status = data_dict.get('responses')[0].get('getCashStatus')
 
-    cash_status_str = format(cash_status, '.2f')
+    try:
+
+        cash_status_str = format(cash_status, '.2f')
+
+    except:
+
+        cash_status_str = 'error'
+
     form = AcceptCash(request.POST or None)
 
 
