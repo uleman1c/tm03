@@ -333,7 +333,7 @@ def ul(request):
                 jlfiles = list()
 
                 for  lf in lfiles:
-                    jlfiles.append({'filename': lf.name, 'size': lf.size, 'created': lf.created})
+                    jlfiles.append({'filename': lf.name, 'size': int(lf.size), 'created': lf.created.strftime('%Y%m%d%H%M%S')})
 
                 return JsonResponse({'success': True, 'files': jlfiles})
 
