@@ -328,7 +328,7 @@ def ul(request):
 
             if el.created.astimezone(pytz.timezone('Europe/Moscow')) > (datetime.now().astimezone(pytz.timezone('Europe/Moscow')) - timedelta(hours=24)):
 
-                lfiles = File.objects.filter(parent_id=el.file.idname).order_by('-created').all()[:20]
+                lfiles = File.objects.filter(parent_id=el.file.idname, is_deleted=False).order_by('-created').all()[:20]
 
                 jlfiles = list()
 
