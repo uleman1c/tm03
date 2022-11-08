@@ -456,6 +456,134 @@ function addUploadLink(){
 
 }
 
+function newUploadLinkId(parent_id){
+
+    var url = "/ul/";
+    var eluid = newUid();
+    var data = {};
+    data.eluid = eluid;
+    data.parentid = parent_id;
+    $.ajax({
+        url: url,
+        type: 'POST',
+        cache: true,
+        data: data,
+        success: function (data) {
+
+            if(!data.success) {
+                alert('Не удалось создать ссылку загрузки')
+            } else {
+
+                addUploadLinkId(parent_id);
+                    
+            }
+
+        },
+        error: function(){
+            console.log("error")
+        }
+    })                   
+
+}
+
+
+function addUploadLinkId(parent_id){
+
+    var url = "/ulbyparentid/";
+    var data = {};
+    data.parent_id = parent_id;
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        cache: true,
+        data: data,
+        success: function (data) {
+
+            if(!data.success) {
+                alert('Не удалось получить ссылку загрузки')
+            } else {
+
+                if(data.id) {
+
+                    reltext = "https://uploadfilesdrive.site:8003/files/" + data.id;
+
+                    document.querySelector('#createnewuploadlink').addEventListener('click', function(event) {
+                        newUploadLinkId(parent_id);
+                    });
+
+                    $('#externallinkfileid').html(parent_id);
+                    $('#externallinkfile').attr("data-idname", '');
+                    $('#externallinkfile').html('');
+                    $('#externallinkidname').html(reltext);
+                    $('#externallinkenabled').html('expired ' + data.enabled);
+                    $('#popupexternallink').show();    
+
+                    navigator.clipboard.writeText(reltext)
+                    .then(() => {
+                        $('#externallinkcopied').show(); 
+                    })
+                    .catch(err => {
+                    console.log('Something went wrong', err);
+                    });            
+
+                } else {
+
+                    newUploadLinkId(parent_id);
+
+
+
+                }
+            }
+
+        },
+        error: function(){
+            console.log("error")
+        }
+    });
+            
+/*
+    var url = "/ul/";
+    var eluid = newUid();
+    var data = {};
+    data.eluid = eluid;
+    data.parentid = parent_id;
+    $.ajax({
+        url: url,
+        type: 'POST',
+        cache: true,
+        data: data,
+        success: function (data) {
+
+            if(!data.success) {
+                alert('Не удалось создать ссылку загрузки')
+            } else {
+
+                reltext = "https://uploadfilesdrive.site:8003/files/" + eluid;
+
+                $('#externallinkfile').attr("data-idname", '');
+                $('#externallinkfile').html('');
+                $('#externallinkidname').html(reltext);
+                $('#popupexternallink').show();    
+
+                navigator.clipboard.writeText(reltext)
+                .then(() => {
+                    $('#externallinkcopied').show(); 
+                })
+                .catch(err => {
+                console.log('Something went wrong', err);
+                });            
+            }
+
+        },
+        error: function(){
+            console.log("error")
+        }
+    })
+*/
+
+}
+
 
 function keyUpContractor(e) {
 	

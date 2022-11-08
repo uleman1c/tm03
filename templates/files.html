@@ -31,7 +31,7 @@
         
         <span id="procent"></span>
 
-        <button type="button" class="me-1 btn btn-lg btn-primary" onclick="addUploadLink()">Создать ссылку загрузки</button>
+<!--          <button type="button" class="me-1 btn btn-lg btn-primary" onclick="addUploadLink()">Создать ссылку загрузки</button>-->
 
       </div>
 
@@ -212,15 +212,18 @@
     </div>
     
     <div class="b-popup" id="popupexternallink" style="display: none;" >
-      <div class="b-popup-content" style="height: 25%;">
+      <div class="b-popup-content" style="height: 35%;">
         <div class="row mt-3">
           <h1 id="externallinkfile"></h1>
+          <h1 id="externallinkfileid" style="display: none;"></h1>
           <div>
             <h1 id="externallinkidname" style="font-size: 2vh; text-align: center; margin-top: 2vh; margin-bottom: 2vh;"></h1>
+            <h1 id="externallinkenabled" style="font-size: 2vh; text-align: center; margin-top: 2vh; margin-bottom: 2vh;"></h1>
           </div>
           <h1 id="externallinkcopied" style="display: none; font-size: 2vh; color: green;">Скопирована в буфер обмена</h1>
         </div>
         <div class="row mt-3">
+          <button class="w-25 ms-3 btn btn-lg btn-success" id="createnewuploadlink">Создать новую</button>
           <button class="w-25 ms-3 btn btn-lg btn-primary" onclick="$('#popupexternallink').hide()">Закрыть</button>
         </div>
       </div>

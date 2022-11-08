@@ -32,6 +32,8 @@ function menu(event) {
     rm.append('<div class="w-100 btn btn-lg btn-primary" onclick="editText(\'' + elem.id + '\', \'' + elem.innerHTML + '\')">Редактировать</div>');
     if(!elem.classList.contains('droppable')){
         rm.append('<div class="w-100 btn btn-lg btn-primary" onclick="createExternalLink(\'' + elem.id + '\', \'' + elem.innerHTML + '\')">Создать внешнюю ссылку</div>');
+    } else {
+        rm.append('<div class="w-100 btn btn-lg btn-primary" onclick="addUploadLinkId(\'' + elem.id + '\')">Создать ссылку загрузки</div>');
     }
 
     // Задаём позицию контекстному меню

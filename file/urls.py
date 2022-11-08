@@ -31,4 +31,4 @@ urlpatterns = [
     path('eln/', views.eln, name='eln'),
     path('ul/', views.ul, name='ul'),    
     path('ulgf/', views.ulgf, name='ulgf'),
-]
+    path('ulbyparentid/', views.ulbyparentid, name='ulbyparentid'),]

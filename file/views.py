@@ -289,6 +289,8 @@ def el(request):
 
             return render(request, '404.html')
 
+
+
 def ul(request):
 
     filespath = 'I:\\Files\\'
@@ -344,6 +346,28 @@ def ul(request):
         else:
 
             return render(request, '404.html')
+
+def ulbyparentid(request):
+
+    parent_id = request.GET.get('parent_id')
+
+    res = dict()
+    res['success'] = True
+
+    if File.objects.filter(idname=parent_id).count() > 0:
+        
+        fo = File.objects.filter(idname=parent_id).all().get()
+
+        if UploadlLink.objects.filter(file=fo).count() > 0:
+
+            el = UploadlLink.objects.filter(file=fo).order_by('-created').all()[:1].get()
+
+            if el.created.astimezone(pytz.timezone('Europe/Moscow')) > (datetime.now().astimezone(pytz.timezone('Europe/Moscow')) - timedelta(hours=24)):
+
+                res['id'] = el.idname
+                res['enabled'] = (el.created.astimezone(pytz.timezone('Europe/Moscow')) + timedelta(hours=24)).strftime("%d.%m.%Y %H:%M:%S")
+            
+    return JsonResponse(res)
 
 
 def ulgf(request):
