@@ -106,7 +106,8 @@
 			
       <div class="row">
         {% for el in  remind_list %}
-        <h1>{{ el.remind }}  {{ el.comments }}</h1>
+        <div style="width: fit-content;">{{ el.remind }}</div>
+        <div style="width: fit-content;">{{ el.comments }}</div>
         {% endfor %}
       </div>
 
