@@ -406,6 +406,53 @@ function createExternalLink(idname, filename){
 
 }
 
+function showReminder(idname, filename){
+
+    document.querySelector('#reminderfile').innerHTML = filename;
+    document.querySelector('#reminderfileid').innerHTML = idname;
+    document.querySelector('#popupreminder').style.display = 'block';
+
+}
+
+
+function createReminder(){
+
+    var filename = document.querySelector('#reminderfile').innerHTML;
+    var idname = document.querySelector('#reminderfileid').innerHTML;
+    var comments = document.querySelector('#editremindertext').value;
+    var remind = document.querySelector('#datetimereminder').value;
+
+    var curDate = new Date(remind)
+    var strDate = curDate.toISOString().replaceAll('-', '').replaceAll(':', '').replaceAll('T', '').substr(0, 14);
+
+    var url = "/remind/";
+    var eluid = newUid();
+    var data = {};
+    data.comments = comments;
+    data.idname = idname;
+    data.remind = strDate;
+    $.ajax({
+        url: url,
+        type: 'POST',
+        cache: true,
+        data: data,
+        success: function (data) {
+
+            if(data.success){
+
+                document.querySelector('#popupreminder').style.display = 'none';
+            } else {
+                alert(data.message);
+            }
+        },
+        error: function(){
+            console.log("error")
+        }
+    })
+
+}
+
+
 function addUploadLink(){
 
     if(!$('#parent_id').val()){

@@ -67,7 +67,7 @@ urlpatterns = [
     path('', include('file.urls')),
     path('', include('block_schema.urls')),
     path('', include('access_key.urls')),
-
+    path('', include('reminder.urls')),
 ]
 
               # + static(settings.STATIC_URL, document_root = os.path.join(settings.BASE_DIR, 'static'))
