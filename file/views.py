@@ -168,7 +168,7 @@ def files(request):
         remind_list = list()
 
         for elr in r_list:
-            remind_list.append({'remind': elr.remind, 'comments': elr.comments})
+            remind_list.append({'remind': elr.remind, 'comments': elr.comments, 'fileid': elr.file.idname, 'filename': elr.file.name})
 
         parent_id = request.GET.get('parent_id')
 

@@ -106,8 +106,12 @@
 			
       <div class="row">
         {% for el in  remind_list %}
-        <div style="width: fit-content;">{{ el.remind }}</div>
-        <div style="width: fit-content;">{{ el.comments }}</div>
+        <div>
+          <a href="#" onclick="editText('{{el.fileid}}', '{{el.filename}}')" style="display: flex; padding-left: 10%;">
+            <div style="width: fit-content; padding-right: 5%;">{{ el.remind }}</div>
+            <div style="width: fit-content;">{{ el.comments }}</div>
+          </a>
+        </div>
         {% endfor %}
       </div>
 
