@@ -229,6 +229,31 @@
       </div>
     </div>
     
+    <div class="b-popup" id="popupreminder" style="display: none;" >
+      <div class="b-popup-content" style="height: 35%;">
+        <div class="row mt-3">
+          <h1 id="reminderfile"></h1>
+          <h1 id="reminderfileid" style="display: none;"></h1>
+          <div>
+            <div style="display: flex;">
+              <h1>Дата напоминания:</h1>
+              <input id="datetimereminder" type="datetime-local"></input>
+            </div>
+            <div style="width: 100%; height: 80%;">
+              <textarea id="editremindertext" style="width: 100%; height: 100%; resize: none;"></textarea>
+            </div>            
+            <h1 id="externallinkidname" style="font-size: 2vh; text-align: center; margin-top: 2vh; margin-bottom: 2vh;"></h1>
+            <h1 id="externallinkenabled" style="font-size: 2vh; text-align: center; margin-top: 2vh; margin-bottom: 2vh;"></h1>
+          </div>
+          <h1 id="externallinkcopied" style="display: none; font-size: 2vh; color: green;">Скопирована в буфер обмена</h1>
+        </div>
+        <div class="row pb-3" style="position: absolute; width: 100%; top: 100%; transform: translate(0px, -100%);">
+          <button class="w-25 ms-3 btn btn-lg btn-success" onclick="createReminder()">Создать</button>
+          <button class="w-25 ms-3 btn btn-lg btn-primary" onclick="document.querySelector('#popupreminder').style.display = 'none';">Закрыть</button>
+        </div>
+      </div>
+    </div>
+    
 <!-- 		<div class="edittext" style = "display: none; position: absolute; background: #fff;" >
       <textarea id="edittext"></textarea>
 		</div>
