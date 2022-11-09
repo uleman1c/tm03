@@ -15,7 +15,7 @@ def remind(request):
 
         idname = request.POST.get('idname')
         comments = request.POST.get('comments')
-        remind = datetime.datetime.strptime(request.POST.get('remind'), '%Y%M%d%H%m%S')
+        remind = datetime.datetime.strptime(request.POST.get('remind'), '%Y%m%d%H%M%S')
 
         if File.objects.filter(idname=idname).count() > 0:
 
