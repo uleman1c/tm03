@@ -104,6 +104,12 @@
 				</div>
 			</div>
 			
+      <div class="row">
+        {% for el in  remind_list %}
+        <h1>{{ el.remind }}  {{ el.comments }}</h1>
+        {% endfor %}
+      </div>
+
       <div class="row" style="display: flex;">
         {% for el in  pathToFolder %}
         <a href="?parent_id={{ el.id }}" style="width: fit-content; padding-right: 0%;">{{ el.name }}/</a>

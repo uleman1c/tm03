@@ -21,7 +21,7 @@ def remind(request):
 
             fo = File.objects.filter(idname=idname).all().get()
 
-            Reminder.objects.create(file=fo, comments=comments, remind=remind)
+            Reminder.objects.create(user=fo.user, file=fo, comments=comments, remind=remind)
 
             res['success'] = True
 

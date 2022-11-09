@@ -11,6 +11,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import requests
 
+from reminder.models import Reminder
+
 from .forms import *
 from datetime import timezone, datetime, timedelta
 import pytz 
@@ -160,6 +162,13 @@ def files(request):
         return JsonResponse(res)
                         
     elif request.method == 'GET':
+
+        r_list = Reminder.objects.filter(user=cu, remind__gte=datetime.now()).order_by('remind').all()[:20]
+
+        remind_list = list()
+
+        for elr in r_list:
+            remind_list.append({'remind': elr.remind, 'comments': elr.comments})
 
         parent_id = request.GET.get('parent_id')
 
