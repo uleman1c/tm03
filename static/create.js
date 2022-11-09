@@ -440,7 +440,8 @@ function createReminder(){
 
             if(data.success){
 
-                document.querySelector('#popupreminder').style.display = 'none';
+                window.location.reload();
+                //document.querySelector('#popupreminder').style.display = 'none';
             } else {
                 alert(data.message);
             }
