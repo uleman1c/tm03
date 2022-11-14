@@ -15,6 +15,7 @@ class Users1c(models.Model):
     dmuser2 = models.CharField(max_length=255, blank=True)
     invent_enabled = models.BooleanField(default=False)
     files_enabled = models.BooleanField(default=False)
+    recipes_enabled = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.name = self.name.lower()

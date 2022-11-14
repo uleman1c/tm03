@@ -1,5 +1,143 @@
+function checkoutRecipe(){
+
+    var aGoods = document.querySelectorAll('#goods #gooditem');
+
+    arG = [];
+
+    aGoods.forEach(function(goodItem){
+
+        gq = goodItem.querySelector('#goodsQuantity');
+        gf = goodItem.querySelector('#goodsFilter');
+
+        if(gf.getAttribute('id1c') && gq.value){
+
+            arG.push({'name': gf.value, 'id1c': gf.getAttribute('id1c'), 'quantity': gq.value}); 
+        }
+    });
+
+    if (document.querySelector('#contractor').value && arG){
+
+        var url = "/add_recipe/";
+        var data = {};
+        data.contractor = document.querySelector('#contractor').getAttribute('id1c');
+        data.comment = document.querySelector('#comment').value;
+        data.colorNumber = document.querySelector('#colorNumber').value;
+        data.length = arG.length;
+        data.goods = arG;
+
+        $.ajax({
+             url: url,
+             type: 'POST',
+             data: data,
+             cache: true,
+             success: function (data) {
+                 console.log(data);
+                 location.href = "../recipes/";
+             },
+             error: function(){
+                 console.log("error")
+             }
+         })
 
 
+
+    }
+
+}
+
+
+
+function selectGood(numstr, id1c, name){
+
+    //alert(id1c + ' ' + name);
+
+
+    var gl = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #goodsList');
+
+    gl.innerHTML = "";
+
+    var gf = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #goodsFilter');
+
+    gf.value = name;
+    gf.setAttribute('id1c', id1c);
+
+
+
+}
+
+
+function keyUpGoodsFilterWOB(numstr) {
+    var t = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #goodsFilter').value;
+    var url = "/goodsfilter/";
+    var data = {};
+    data.search_filter = t;
+
+     $.ajax({
+         url: url,
+         type: 'POST',
+         data: data,
+         cache: true,
+         success: function (data) {
+
+            var gl = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #goodsList');
+
+            gl.innerHTML = "";
+
+            for (datavalue in data.products) {
+
+                value = data.products[datavalue];
+
+                curFullName = value.fullname.replaceAll('"', '&#34;');
+
+                var li = document.createElement("li");
+                li.innerHTML = '<li>'
+                        + '<div class="p-2" style="float: left; width: 100%; display: flex; align-items: center">'
+                            + '<div style="float: left; width: 65%">'
+                                + '<a class="dropdown-item d-flex align-items-center gap-2 py-2" onClick="selectGood(' + numstr + ', \'' + value.id1c + '\', \'' + curFullName + '\')" style="white-space: normal" >' + curFullName + '</a>'
+                            + '</div>'
+                        + '</div>'
+                    + '</li>';
+                gl.appendChild(li);
+
+            }
+
+
+         },
+         error: function(){
+             console.log("error")
+         }
+     })
+
+}
+
+var numstr = 1;
+
+function addGoodItem(e) {
+
+    $("#goods").append(
+        '<div id="gooditem" data-numstr="' + numstr + '">'
+        +'<div style="float: left; width: 65%">'
+            +'<input type="search" style="font-size:  normal" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilterWOB(' + numstr + ')" autocomplete="false" placeholder="Фильтр...">'
+        +'</div>'
+        +'<input type="number" id="goodsQuantity" class="form-control" style="width: 30%; float: left;" autocomplete="false" placeholder="Количество...">'
+        +'<ul id="goodsList" class="list-unstyled mb-0"></ul>'
+        +'<a href="#" onclick="delGoodItem(' + numstr + ')" id="checkout_order" class="btn btn-danger" style="width: 5%;">-</a>'
+    +'</div>');
+
+    numstr = numstr + 1;
+
+}
+
+function delGoodItem(numstr) {
+
+    if(document.querySelector('#goods').childElementCount > 1){
+
+        var gl = document.querySelector('#gooditem[data-numstr="' + numstr + '"]');
+
+        document.querySelector('#goods').removeChild(gl);
+
+    }
+}
 
 
 function getFileWS(filename, idname, ssize){
