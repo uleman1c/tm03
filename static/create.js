@@ -117,7 +117,7 @@ function addGoodItem(e) {
     $("#goods").append(
         '<div id="gooditem" data-numstr="' + numstr + '">'
         +'<div style="float: left; width: 65%">'
-            +'<input type="search" style="font-size:  normal" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilterWOB(' + numstr + ')" autocomplete="false" placeholder="Фильтр...">'
+            +'<input type="search" style="font-size:  normal" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilterWOB(' + numstr + ')" autocomplete="false" placeholder="Номенклатура...">'
         +'</div>'
         +'<input type="number" id="goodsQuantity" class="form-control" style="width: 30%; float: left;" autocomplete="false" placeholder="Количество...">'
         +'<ul id="goodsList" class="list-unstyled mb-0"></ul>'
