@@ -1,4 +1,6 @@
 import datetime
+import json
+import sys
 from django.shortcuts import render
 from django.http import JsonResponse
 from contractors.models import Contractors
@@ -7,7 +9,8 @@ from recipe.models import Recipe, RecipeGoods
 
 from users1c.models import Users1c
 
-# Create your views here.
+import pytz 
+import requests
 
 
 def recipes(request):
@@ -69,3 +72,65 @@ def add_recipe(request):
     else:
 
         return render(request, 'recipes/record.html', locals())
+
+
+def sendto1c_recipe(request):
+
+    if request.method == 'POST':
+
+        id1c = request.POST['id1c']
+
+        if id1c == 'all':
+            co = Recipe.objects.filter(delivered_1c=False).all()
+        else:
+            co = Recipe.objects.filter(id1c=id1c).all()
+
+        res = dict()
+
+        orders_list = list()
+
+        for cco in co:
+            order_info = dict()
+            order_info['id1c'] = cco.id1c
+            order_info['contractor'] = cco.contractor.id1c
+            order_info['user'] = cco.user.id1c
+            order_info['color_number'] = cco.color_number
+            order_info['comment'] = cco.comments
+            
+            order_info['created'] = cco.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%Y%m%d%H%M%S')
+
+            goods = list()
+
+            for good in RecipeGoods.objects.filter(recipe=cco).all():
+
+                goods.append({'id1c': good.product.id1c, 'quantity': str(good.quantity)})
+
+            order_info['goods'] = goods
+
+            orders_list.append(order_info)
+
+        res['site'] = dict()
+        res['site']['recipes'] = orders_list
+
+        server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj"
+        # server_address = "https://ow.ap-ex.ru/tm_po/hs/exch/req"
+        # server_address = "http://localhost/tech_man/hs/exch/req"
+
+        try:
+            data_dict = requests.post(server_address, data=json.dumps(res), auth=("exch", "123456")).json()
+        except Exception:
+            res['exeption'] = str(sys.exc_info())
+            data_dict = {}
+
+        if data_dict.get('success') == True:
+            res['success'] = True
+            for cco in co:
+                cco.delivered1c = True
+                cco.save()
+
+        res['req'] = data_dict
+
+        return JsonResponse(res)
+
+
+

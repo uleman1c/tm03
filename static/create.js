@@ -1535,3 +1535,27 @@ function sendto1c_invent(id1c){
 
 }
 
+function sendto1c_recipe(id1c){
+
+    var url = "/sendto1c_recipe/";
+    var data = {};
+    data.id1c = id1c;
+
+     $.ajax({
+         url: url,
+         type: 'POST',
+         data: data,
+         cache: true,
+         success: function (data) {
+             console.log(data);
+             if (data.success == true)
+                 location.reload();
+         },
+         error: function(err1, err2, err3){
+             console.log("error")
+         }
+     })
+
+
+}
+
