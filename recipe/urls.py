@@ -22,4 +22,6 @@ urlpatterns = [
     path('recipes/', views.recipes, name='recipes'),
     path('add_recipe/', views.add_recipe, name='add_recipe'),
     path('sendto1c_recipe/', views.sendto1c_recipe, name='sendto1c_recipe'),
-    ]
+    path('leftovers/', views.leftovers, name='leftovers'),
+    path('reqexec/', views.reqexec, name='reqexec'),
+        ]

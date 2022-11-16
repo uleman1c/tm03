@@ -28,6 +28,61 @@ def recipes(request):
     return render(request, 'recipes/index.html', locals())
 
 
+def leftovers(request):
+
+    if 'userLogged' not in request.session:
+        return render(request, 'login.html', locals())
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    # elements = Recipe.objects.filter(user=cu).order_by('delivered1c', '-created').all()[:20]
+    # elements_to_send = Recipe.objects.filter(user=cu, delivered1c=False).all()
+
+    server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" # + "?request=getLeftovers&warehouse=" + cu.warehouse.id1c
+    # server_address = "https://ow.ap-ex.ru/tm_po/hs/exch/req"
+    # server_address = "http://localhost/tech_man/hs/exch/req"
+
+
+    data = []
+    data.append({'request': 'getLeftoversFromUpr', 'parameters': {'warehouse': cu.warehouse.id1c}})
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.post(server_address, auth=("exch", "123456"),  data=json.dumps(data)).json()
+        requestid = data_dict['requestid']
+
+    except Exception as ex:
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+    return render(request, 'recipes/leftovers.html', locals())
+
+
+def reqexec(request):
+
+    server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" + "?request=getRequestExecuted&warehouse=" + request.GET.get('requestid')
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+        requestid = data_dict['requestid']
+
+    except Exception as ex:
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+    return JsonResponse()
+
 
 def add_recipe(request):
 

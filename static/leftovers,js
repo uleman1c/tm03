@@ -1,0 +1,12 @@
+document.addEventListener('DOMContentLoaded', function(){ 
+  
+  if((e = document.querySelector("#requestid")) !== null){
+    e.classList.add('last');
+
+    alert(e.value);
+
+  }
+     
+
+});
+

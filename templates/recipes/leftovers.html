@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="{%  static 'bootstrap.min.css' %}">
+    <script src="{%  static 'jquery.js' %}"></script>
+    <script src="{% static 'leftovers.js' %}?v=0001"></script>
+    <title>Остатки</title>
+</head>
+<body>
+
+    <style>
+        .themed-grid-col {
+          padding-top: .75rem;
+          padding-bottom: .75rem;
+          background-color: rgba(86, 61, 124, .15);
+          border: 1px solid rgba(86, 61, 124, .2);
+
+        }
+
+        .themed-container {
+          padding: .75rem;
+          margin-bottom: 1.5rem;
+          background-color: rgba(0, 123, 255, .15);
+          border: 1px solid rgba(0, 123, 255, .2);
+        }
+    </style>
+
+        <div class="container py-3" style="max-width: 95%">
+
+            <input type="text" id="requestid" style="display: none;" value="{{ requestid }}">
+            <h3 class="text-center" style="font-size: 2rem;">Остатки по складу {{ cu.warehouse.name }}</h3>
+
+             <div class="row mb-3">
+              <div class="col-10 themed-grid-col" style="text-align: center">Номенклатура</div>
+              <div class="col-2 themed-grid-col" style="text-align: center">Количество</div>
+            </div>
+
+        {% if elements %}
+
+           {% for el in elements %}
+
+            <div class="row mb-3">
+              <div class="col-3 themed-grid-col">{{ el.created }}</div>
+              <div class="col-7 themed-grid-col">{{ el.contractor.name }} / {{ el.color_number }} / {{ el.comments }}</div>
+              <div id="{{ el.id1c }}" class="col-2 themed-grid-col">
+                  {% if el.delivered1c %}
+                      Да
+                  {% else %}
+                      <a href="#" onclick="sendto1c_recipe('{{ el.id1c }}')" id="checkout_order" class="btn btn-success" style="font-size: 1.5rem; width: 100%">Отправить</a>
+                  {% endif %}</div>
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+            <h3 class="text-center" style="font-size: 2rem;">Нет остатков</h3>
+        {% endif %}
+            <div class="container py-3 col-6">
+                <a href="/" id="main_menu" class="w-100 btn btn-lg btn-primary">Главное меню</a>
+            </div>
+
+    </div>
+
+
+</body>
+</html>

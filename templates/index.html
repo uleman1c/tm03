@@ -34,13 +34,15 @@
 
     <main class="form-signin">
       <h1 class="text-center" style="font-size: 1.2rem; white-space: normal; margin-bottom: 40px">Пользователь: {{ user.name }}</h1>
-        {% if user.id1c != '' %}
+        {% if user.orders_enabled %}
       <a href="products" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Каталог</a>
       <a href="checkout" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Корзина</a>
       <a href="orders" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Заказы</a>
+        {% endif  %}
+        {% if user.acceptcash_enabled %}
       <a href="accepts" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Получение денег</a>
         {% endif  %}
-        {% if user.idbitrix > 0 %}
+        {% if user.bitrix_enabled %}
       <a href="tmchange" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">{{ tm_status_str }} рабочий день</a>
       <a href="tasks" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Задачи</a>
       <a href="leads" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Лиды</a>
@@ -65,6 +67,10 @@
 
         {% if user.recipes_enabled %}
         <a href="recipes" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Рецепты</a>
+        {% endif  %}
+
+        {% if user.leftovers_enabled %}
+        <a href="leftovers" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Остатки</a>
         {% endif  %}
 
       <a href="signout" class="w-100 btn btn-lg btn-danger" style="margin-top: 30px">Выход</a>

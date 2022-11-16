@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from products.models import Warehouses
+
 
 class Users1c(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -16,6 +18,12 @@ class Users1c(models.Model):
     invent_enabled = models.BooleanField(default=False)
     files_enabled = models.BooleanField(default=False)
     recipes_enabled = models.BooleanField(default=False)
+    acceptcash_enabled = models.BooleanField(default=False)
+    bitrix_enabled = models.BooleanField(default=False)
+    orders_enabled = models.BooleanField(default=False)
+    leftovers_enabled = models.BooleanField(default=False)
+    warehouse = models.ForeignKey(Warehouses, on_delete=models.CASCADE, blank=True, null=True)
+
 
     def save(self, *args, **kwargs):
         self.name = self.name.lower()
