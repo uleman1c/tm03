@@ -65,7 +65,7 @@ def leftovers(request):
 
 def reqexec(request):
 
-    server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" + "?request=getRequestExecuted&warehouse=" + request.GET.get('requestid')
+    server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" + "?request=getRequestExecuted&requestid=" + request.headers.get('requestid')
 
     res = dict()
 
@@ -74,14 +74,40 @@ def reqexec(request):
     try:
 
         data_dict = requests.get(server_address, auth=("exch", "123456")).json()
-        requestid = data_dict['requestid']
+        res['executed'] = data_dict['responses'][0]['RequestExecuted']
 
     except Exception as ex:
         tasks_list = list()
         res['message'] = str(sys.exc_info())
         res['result'] = False
 
-    return JsonResponse()
+    return JsonResponse(res)
+
+
+def getleftovers(request):
+
+    if 'userLogged' not in request.session:
+        return render(request, 'login.html', locals())
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" + "?request=getLeftoversUpr&warehouse=" + cu.warehouse.id1c
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+        res['leftovers'] = data_dict['responses'][0]['LeftoversUpr']
+
+    except Exception as ex:
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+    return JsonResponse(res)
 
 
 def add_recipe(request):
