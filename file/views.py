@@ -201,6 +201,8 @@ def files(request):
 
         else:
 
+            search_file = ''
+
             lfiles = File.objects.filter(user=cu, parent_id=parent_id, is_folder=True, is_deleted=False).order_by('name').all()
             affFolders = list(lfiles)
 
