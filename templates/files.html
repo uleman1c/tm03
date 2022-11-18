@@ -124,8 +124,9 @@
           <div id="drop-area" class="container" style="max-width: 95%">
 
             <div class="row">
-              <div class="col-10 themed-grid-col" style="text-align: center">Имя файла</div>
-              <div class="col-2 themed-grid-col" id="tablecolumnfilesize" style="text-align: center">Размер</div>
+              <div class="col-9 themed-grid-col" style="text-align: center">Имя файла</div>
+              <div class="col-2 themed-grid-col" style="text-align: center">Создан</div>
+              <div class="col-1 themed-grid-col" id="tablecolumnfilesize" style="text-align: center">Размер</div>
             </div>
             {% for el in affFolders %}
 
@@ -143,9 +144,10 @@
               </a>
 
 
-              <div id="{{ el.idname }}" class="col-9 draggable droppable">{{ el.name }}</div>
+              <div id="{{ el.idname }}" class="col-8 draggable droppable">{{ el.name }}</div>
+              <div class="col-2" style="text-align: center">{{ el.created }}</div>
               <div class="col-2"  style="text-align: center; display: none;">{{ el.size }}</div>
-              <div class="col-2"  style="text-align: center">{{ el.size2 }}</div>
+              <div class="col-1"  style="text-align: center">{{ el.size2 }}</div>
             </div>
 
             {% endfor %}
@@ -167,9 +169,10 @@
               </a>
 
 
-              <div id="{{ el.idname }}" class="col-9 draggable">{{ el.name }}</div>
+              <div id="{{ el.idname }}" class="col-8 draggable">{{ el.name }}</div>
+              <div class="col-2" style="text-align: center">{{ el.created }}</div>
               <div class="col-2"  style="text-align: center; display: none;">{{ el.size }}</div>
-              <div class="col-2"  style="text-align: center">{{ el.size2 }}</div>
+              <div class="col-1"  style="text-align: center">{{ el.size2 }}</div>
             </div>
 
             {% endfor %}
