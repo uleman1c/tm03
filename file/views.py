@@ -188,39 +188,43 @@ def files(request):
 
 
         affFolders = []
-        lfiles = File.objects.filter(user=cu, parent_id=parent_id, is_folder=True, is_deleted=False).order_by('name').all()
-        affFolders = list(lfiles)
-
-        setStrSize(affFolders)    
-        
-        if parent_id != "":
-            
-            lfiles = File.objects.filter(user=cu, idname=parent_id).all()
-
-            firstFolder = list(lfiles)
-            firstFolder[0].name = '..'
-            firstFolder[0].idname = firstFolder[0].parent_id
-            firstFolder[0].size = ''
-
-            affFolders.insert(0, firstFolder[0])
-
-
 
         allfiles = []
 
         search_file = request.GET.get('search_file')
 
         if search_file:
-            lfiles = File.objects.filter(user=cu, parent_id=parent_id,  is_folder=False, name__icontains=search_file, is_deleted=False).order_by('-created').all()[:20]
+
+
+
+            lfiles = File.objects.filter(user=cu, is_folder=False, name__icontains=search_file, is_deleted=False).order_by('-created').all()[:20]
+
         else:
 
-            search_file = ""
+            lfiles = File.objects.filter(user=cu, parent_id=parent_id, is_folder=True, is_deleted=False).order_by('name').all()
+            affFolders = list(lfiles)
+
+            setStrSize(affFolders)    
+            
+            if parent_id != "":
+                
+                lfiles = File.objects.filter(user=cu, idname=parent_id).all()
+
+                firstFolder = list(lfiles)
+                firstFolder[0].name = '..'
+                firstFolder[0].idname = firstFolder[0].parent_id
+                firstFolder[0].size = ''
+
+                affFolders.insert(0, firstFolder[0])
 
             lfiles = File.objects.filter(user=cu,  parent_id=parent_id, is_folder=False, is_deleted=False).order_by('-created').all()[:20]
 
         allfiles = list(lfiles)
 
         setStrSize(allfiles)
+
+        if search_file:
+            setFullPath(allfiles)
 
 
         return render(request, 'files.html', locals())
@@ -241,6 +245,21 @@ def setStrSize(allfiles):
             f.size2 = str(f.size) + " б"
 
         f.size = locale.format_string('%.0f', f.size, grouping=False)
+
+def setFullPath(allfiles):
+    for f in allfiles:
+
+        fullPath = ''
+        curParentId = f.parent_id
+        while curParentId != '':
+
+            cp = File.objects.filter(idname=curParentId).all().get()
+
+            fullPath = cp.name + '\\' + fullPath
+
+            curParentId = cp.parent_id
+
+        f.name = fullPath + f.name
 
 def el(request):
 
