@@ -4,7 +4,7 @@ import sys
 from django.shortcuts import render
 from django.http import JsonResponse
 from contractors.models import Contractors
-from products.models import Products
+from products.models import Characteristics, Products
 from recipe.models import Recipe, RecipeGoods
 
 from users1c.models import Users1c
@@ -123,9 +123,16 @@ def add_recipe(request):
 
         comment = request.POST['comment']
         color_number = request.POST['colorNumber']
+        end_product = request.POST['endproduct']
+        end_product_text = request.POST['endproducttext']
+        quantity = int(request.POST['endproductquantity'])
 
-        ro = Recipe.objects.create(user=cu, contractor=cc, comments=comment,
-                                      color_number=color_number)
+        ep = None
+        if end_product:
+            ep = Products.objects.filter(id1c=end_product).all().get()
+
+        ro = Recipe.objects.create(user=cu, contractor=cc, comments=comment, end_product=ep,
+                                      color_number=color_number, end_product_text=end_product_text, quantity=quantity)
 
         length = int(request.POST['length'])
 
@@ -134,7 +141,13 @@ def add_recipe(request):
 
             go = Products.objects.filter(id1c=request.POST['goods[' + str(curInd) + '][id1c]']   ).all().get()
 
-            RecipeGoods.objects.create(recipe=ro, product=go, quantity=request.POST['goods[' + str(curInd) + '][quantity]'] )
+            cidc = request.POST['goods[' + str(curInd) + '][cid1c]']
+
+            cho = None
+            if cidc:
+                cho = Characteristics.objects.filter(id1c=cidc).all().get()
+
+            RecipeGoods.objects.create(recipe=ro, product=go, characteristic=cho, quantity=request.POST['goods[' + str(curInd) + '][quantity]'] )
 
             curInd = curInd + 1
 
@@ -175,16 +188,35 @@ def sendto1c_recipe(request):
             order_info['id1c'] = cco.id1c
             order_info['contractor'] = cco.contractor.id1c
             order_info['user'] = cco.user.id1c
+
+            order_info['warehouse'] = ''
+            if cco.user.warehouse:
+                order_info['warehouse'] = cco.user.warehouse.id1c
+
             order_info['color_number'] = cco.color_number
             order_info['comment'] = cco.comments
-            
+
+            order_info['end_product'] = ''
+            if cco.end_product:
+                order_info['end_product'] = cco.end_product.id1c
+                
+
+            order_info['end_product_text'] = cco.end_product_text
+            order_info['quantity'] = str(cco.quantity)
+
             order_info['created'] = cco.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%Y%m%d%H%M%S')
 
             goods = list()
 
             for good in RecipeGoods.objects.filter(recipe=cco).all():
 
-                goods.append({'id1c': good.product.id1c, 'quantity': str(good.quantity)})
+                characteristic_id1c = ''
+                if good.characteristic:
+                    characteristic_id1c = good.characteristic.id1c
+                
+
+                goods.append({'id1c': good.product.id1c, 'characteristic_id1c': characteristic_id1c, 'quantity': str(good.quantity)})
+
 
             order_info['goods'] = goods
 
