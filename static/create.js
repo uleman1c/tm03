@@ -8,20 +8,26 @@ function checkoutRecipe(){
 
         gq = goodItem.querySelector('#goodsQuantity');
         gf = goodItem.querySelector('#goodsFilter');
+        cf = goodItem.querySelector('#сharacteristicsFilter');
 
         if(gf.getAttribute('id1c') && gq.value){
 
-            arG.push({'name': gf.value, 'id1c': gf.getAttribute('id1c'), 'quantity': gq.value}); 
+            arG.push({'name': gf.value, 'id1c': gf.getAttribute('id1c'), 'cid1c': cf.getAttribute('id1c'), 'quantity': gq.value}); 
         }
     });
 
-    if (document.querySelector('#contractor').value && arG){
+    if (document.querySelector('#contractor').value 
+        && document.querySelector('#endProductQuantity').value 
+        && arG){
 
         var url = "/add_recipe/";
         var data = {};
         data.contractor = document.querySelector('#contractor').getAttribute('id1c');
         data.comment = document.querySelector('#comment').value;
+        data.endproduct = document.querySelector('#endProductFilter').getAttribute('id1c');
+        data.endproducttext = document.querySelector('#endProductText').value;
         data.colorNumber = document.querySelector('#colorNumber').value;
+        data.endproductquantity = document.querySelector('#endProductQuantity').value;
         data.length = arG.length;
         data.goods = arG;
 
@@ -49,9 +55,6 @@ function checkoutRecipe(){
 
 function selectGood(numstr, id1c, name){
 
-    //alert(id1c + ' ' + name);
-
-
     var gl = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #goodsList');
 
     gl.innerHTML = "";
@@ -61,10 +64,72 @@ function selectGood(numstr, id1c, name){
     gf.value = name;
     gf.setAttribute('id1c', id1c);
 
+    var gf = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #сharacteristicsFilter');
+
+    gf.value = '';
+    gf.setAttribute('id1c', '');
+
+}
+
+function selectEndProduct(id1c, name){
+
+    var gl = document.querySelector('#endProduct #goodsList');
+
+    gl.innerHTML = "";
+
+    var gf = document.querySelector('#endProduct #endProductFilter');
+
+    gf.value = name;
+    gf.setAttribute('id1c', id1c);
+
 
 
 }
 
+
+function keyUpEndProductFilter() {
+    var t = document.querySelector('#endProduct #endProductFilter').value;
+    var url = "/goodsfilter/";
+    var data = {};
+    data.search_filter = t;
+
+     $.ajax({
+         url: url,
+         type: 'POST',
+         data: data,
+         cache: true,
+         success: function (data) {
+
+            var gl = document.querySelector('#endProduct #goodsList');
+
+            gl.innerHTML = "";
+
+            for (datavalue in data.products) {
+
+                value = data.products[datavalue];
+
+                curFullName = value.fullname.replaceAll('"', '&#34;');
+
+                var li = document.createElement("li");
+                li.innerHTML = '<li>'
+                        + '<div class="p-2" style="float: left; width: 100%; display: flex; align-items: center">'
+                            + '<div style="float: left; width: 100%">'
+                                + '<a class="dropdown-item d-flex align-items-center gap-2 py-2" onClick="selectEndProduct(\'' + value.id1c + '\', \'' + curFullName + '\')" style="white-space: normal" >' + curFullName + '</a>'
+                            + '</div>'
+                        + '</div>'
+                    + '</li>';
+                gl.appendChild(li);
+
+            }
+
+
+         },
+         error: function(){
+             console.log("error")
+         }
+     })
+
+}
 
 function keyUpGoodsFilterWOB(numstr) {
     var t = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #goodsFilter').value;
@@ -92,7 +157,7 @@ function keyUpGoodsFilterWOB(numstr) {
                 var li = document.createElement("li");
                 li.innerHTML = '<li>'
                         + '<div class="p-2" style="float: left; width: 100%; display: flex; align-items: center">'
-                            + '<div style="float: left; width: 65%">'
+                            + '<div style="float: left; width: 100%">'
                                 + '<a class="dropdown-item d-flex align-items-center gap-2 py-2" onClick="selectGood(' + numstr + ', \'' + value.id1c + '\', \'' + curFullName + '\')" style="white-space: normal" >' + curFullName + '</a>'
                             + '</div>'
                         + '</div>'
@@ -110,16 +175,86 @@ function keyUpGoodsFilterWOB(numstr) {
 
 }
 
+function selectCharactreristic(numstr, id1c, name){
+
+    //alert(id1c + ' ' + name);
+
+
+    var gl = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #сharacteristicsList');
+
+    gl.innerHTML = "";
+
+    var gf = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #сharacteristicsFilter');
+
+    gf.value = name;
+    gf.setAttribute('id1c', id1c);
+
+
+
+}
+
+
+function keyUpCharactreristicWOB(numstr) {
+
+    var product_id1c = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #goodsFilter').getAttribute('id1c');
+
+    if (product_id1c) {
+
+        var t = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #сharacteristicsFilter').value;
+        var url = "/characteristicsfilter/";
+        var data = {};
+        data.search_filter = t;
+        data.product = product_id1c;
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            cache: true,
+            success: function (data) {
+
+                var gl = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #сharacteristicsList');
+
+                gl.innerHTML = "";
+    
+                for (datavalue in data.characteristics){
+
+                    value = data.characteristics[datavalue];
+
+                    var li = document.createElement("li");
+                    li.innerHTML = '<li>'
+                            + '<div class="p-2" style="float: left; width: 100%; display: flex; align-items: center">'
+                                + '<div style="float: left; width: 100%">'
+                                    + '<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#" onclick="selectCharactreristic(' + numstr + ', \'' + value.id1c + '\', \'' + value.name + '\')" style="white-space: normal" data-id1c="' + value.id1c + '">' + value.name + '</a>'
+                                + '</div>'
+                            + '</div>'
+                        + '</li>';
+                    gl.appendChild(li);
+                    }
+            },
+            error: function () {
+                console.log("error")
+            }
+        })
+    }
+}
+
+
+
 var numstr = 1;
 
 function addGoodItem(e) {
 
     $("#goods").append(
         '<div id="gooditem" data-numstr="' + numstr + '">'
-        +'<div style="float: left; width: 65%">'
+        +'<div style="float: left; width: 50%">'
             +'<input type="search" style="font-size:  normal" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilterWOB(' + numstr + ')" autocomplete="false" placeholder="Номенклатура...">'
         +'</div>'
-        +'<input type="number" id="goodsQuantity" class="form-control" style="width: 30%; float: left;" autocomplete="false" placeholder="Количество...">'
+        +'<div style="float: left; width: 25%">'
+            +'<input type="search" id="сharacteristicsFilter" class="form-control" onkeyup="keyUpCharactreristicWOB(' + numstr + ')" autocomplete="false" placeholder="Характеристика...">'
+            +'<ul id="сharacteristicsList" class="list-unstyled mb-0"></ul>'
+        +'</div>'
+        +'<input type="number" id="goodsQuantity" class="form-control" style="width: 20%; float: left;" autocomplete="false" placeholder="Количество...">'
         +'<ul id="goodsList" class="list-unstyled mb-0"></ul>'
         +'<a href="#" onclick="delGoodItem(' + numstr + ')" id="checkout_order" class="btn btn-danger" style="width: 5%;">-</a>'
     +'</div>');

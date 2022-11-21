@@ -8,7 +8,7 @@ from django.db import models
 
 from contractors.models import Contractors
 from currency.models import Currency
-from products.models import Products
+from products.models import Characteristics, Products
 from users1c.models import Users1c
 
 
@@ -17,13 +17,16 @@ class Recipe(models.Model):
     contractor = models.ForeignKey(Contractors, on_delete=models.CASCADE)
 
     comments = models.TextField(blank=True, null=True, default=None)
+    end_product = models.ForeignKey(Products, blank=True, null=True, default=None, on_delete=models.CASCADE)
+    end_product_text = models.TextField(blank=True, null=True, default=None)
     color_number = models.CharField(max_length=15, default=None)
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, default=1)
 
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     id1c = models.CharField(max_length=40, default='')
 
-    delivered1c = models.BooleanField(default=False);
-    id_deleted = models.BooleanField(default=False);
+    delivered1c = models.BooleanField(default=False)
+    id_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return "Рецепт № %s от %s, %s" % (self.id, self.created, self.contractor.name)
@@ -42,6 +45,7 @@ class Recipe(models.Model):
 class RecipeGoods(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     product = models.ForeignKey(Products, blank=True, null=True, default=None, on_delete=models.CASCADE)
+    characteristic = models.ForeignKey(Characteristics, on_delete=models.CASCADE, null=True, default=None, blank=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, default=1)
 
     def __str__(self):

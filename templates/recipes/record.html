@@ -22,19 +22,37 @@
 					</form>
 				</div>
 
-                <input type="text" id="colorNumber" class="form-control" autocomplete="false" placeholder="Номер цвета...">
+                <div style="display: flex;">
+                    <div style="float: left; width: 80%">
+                        <div id="endProduct">
+                            <input type="search" id="endProductFilter" class="form-control" onkeyup="keyUpEndProductFilter()" autocomplete="false" placeholder="Продукция из справочника...">
+                            <ul id="goodsList" class="list-unstyled mb-0"></ul>
+                        </div>
+                        <div>
+                            <input type="text" id="endProductText" style="float: left; width: 70%" class="form-control" autocomplete="false" placeholder="Продукция...">
+                            <input type="text" id="colorNumber" style="width: 30%" class="form-control" autocomplete="false" placeholder="Номер цвета...">
+                        </div>
+                    </div>
+                    <div style="width: 20%;">
+                        <input type="number" id="endProductQuantity" class="form-control" style="height: 100%; width: 100%; float: left;" autocomplete="false" placeholder="Количество...">
+                    </div>
+                </div>
 
                 <textarea class="py-2 form-control" rows="4" id="comment" placeholder="Комментарий"></textarea>
 
                 <p style="margin-bottom: 0%;">Товары</p>
                 <div id="goods">
                     <div id="gooditem" data-numstr="0">
-                        <div style="float: left; width: 65%">
-                            <input type="search" style="font-size:  normal" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilterWOB(0)" autocomplete="false" placeholder="Номенклатура...">
+                        <div style="float: left; width: 50%">
+                            <input type="search" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilterWOB(0)" autocomplete="false" placeholder="Номенклатура...">
+                       </div>
+                        <div style="float: left; width: 25%">
+                            <input type="search" id="сharacteristicsFilter" class="form-control" onkeyup="keyUpCharactreristicWOB(0)" autocomplete="false" placeholder="Характеристика...">
+                            <ul id="сharacteristicsList" class="list-unstyled mb-0"></ul>
                         </div>
-                        <input type="number" id="goodsQuantity" class="form-control" style="width: 30%; float: left;" autocomplete="false" placeholder="Количество...">
+                        <input type="number" id="goodsQuantity" class="form-control" style="width: 20%; float: left;" autocomplete="false" placeholder="Количество...">
                         <ul id="goodsList" class="list-unstyled mb-0"></ul>
-                        <a href="#" onclick="delGoodItem(0)" id="checkout_order" class="btn btn-danger" style="width: 5%;">-</a>
+                       <a href="#" onclick="delGoodItem(0)" id="checkout_order" class="btn btn-danger" style="width: 5%;">-</a>
                     </div>
                 </div>
 
