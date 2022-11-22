@@ -47,7 +47,7 @@ from requests.structures import CaseInsensitiveDict
 
 from back_server import get_params
 
-bitrix_address = get_params().bitrix_addr
+bitrix_address = get_params().get('bitrix_addr')
 
 
 def home(request):
@@ -56,9 +56,11 @@ def home(request):
 
     user = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    server_address = bitrix_address + 'timeman.status?user_id=' + str(user.idbitrix)
+    server_address = bitrix_address + '/timeman.status?user_id=' + str(user.idbitrix)
 
     try:
+
+        server_address = bitrix_address + '/timeman.status?user_id=' + str(user.idbitrix)
 
         data_dict = requests.get(server_address).json()
 
