@@ -10,6 +10,8 @@ from RequestHeaders.models import add_request_header
 from .forms import *
 import pytz
 
+from back_server import AUTH_DATA
+
 def accepts(request):
     if 'userLogged' not in request.session:
         return render(request, 'login.html', locals())
@@ -18,13 +20,11 @@ def accepts(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
     
-    server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" + "?request=getCashStatus&manager=" + cu.id1c
-    # server_address = "https://ow.ap-ex.ru/tm_po/hs/exch/req"
-    # server_address = "http://localhost/tech_man/hs/exch/req"
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" + "?request=getCashStatus&manager=" + cu.id1c
 
     cash_status = 0
     try:
-        data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
     except Exception:
         data_dict = {'success':True, 'responses': [{'getCashStatus':str(sys.exc_info())}]}
 
@@ -127,12 +127,10 @@ def sendto1c_acc(request):
         res['site'] = dict()
         res['site']['accepts'] = orders_list
 
-        server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj"
-        # server_address = "https://ow.ap-ex.ru/tm_po/hs/exch/req"
-        # server_address = "http://localhost/tech_man/hs/exch/req"
+        server_address = AUTH_DATA['addr'] + "/hs/dta/obj"
 
         try:
-            data_dict = requests.post(server_address, data=json.dumps(res), auth=("exch", "123456")).json()
+            data_dict = requests.post(server_address, data=json.dumps(res), auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
         except Exception:
             res['exeption'] = str(sys.exc_info())
             data_dict = {}

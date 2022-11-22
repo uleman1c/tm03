@@ -16,6 +16,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from selenium.webdriver.support import expected_conditions as EC
 
+from back_server import AUTH_DATA
 
 def get_month():
 
@@ -63,7 +64,7 @@ def get_month():
         res['plans_from_hermes']['rows'] = m_rows
 
         try:
-            req = requests.post("http://109.167.245.57/upp/hs/exch/gf", data=json.dumps(res), auth=('exch', '123456'))
+            req = requests.post(AUTH_DATA['efr_upp_addr'] + '/hs/exch/gf', data=json.dumps(res), auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
         except Exception:
             res['exeption'] = str(sys.exc_info())
             print(res['exeption'])

@@ -8,6 +8,8 @@ import requests
 from RequestHeaders.models import add_request_header
 from .forms import *
 
+from back_server import  AUTH_DATA
+
 
 def order(request):
     if 'userLogged' not in request.session:
@@ -98,12 +100,10 @@ def sendto1c(request):
         res['site'] = dict()
         res['site']['orders'] = orders_list
 
-        server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj"
-        # server_address = "https://ow.ap-ex.ru/tm_po/hs/exch/req"
-        # server_address = "http://localhost/tech_man/hs/exch/req"
+        server_address = AUTH_DATA['addr'] + "/hs/dta/obj"
 
         try:
-            data_dict = requests.post(server_address, data=json.dumps(res), auth=("exch", "123456")).json()
+            data_dict = requests.post(server_address, data=json.dumps(res), auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
         except Exception:
             res['exeption'] = str(sys.exc_info())
             data_dict = {}

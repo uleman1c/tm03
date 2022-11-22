@@ -2,7 +2,7 @@ import datetime
 import json
 import sys
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse, HttpResponse
 from contractors.models import Contractors
 from products.models import Characteristics, Products
 from recipe.models import Recipe, RecipeGoods
@@ -11,6 +11,8 @@ from users1c.models import Users1c
 
 import pytz 
 import requests
+
+from back_server import AUTH_DATA
 
 
 def recipes(request):
@@ -38,10 +40,7 @@ def leftovers(request):
     # elements = Recipe.objects.filter(user=cu).order_by('delivered1c', '-created').all()[:20]
     # elements_to_send = Recipe.objects.filter(user=cu, delivered1c=False).all()
 
-    server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" # + "?request=getLeftovers&warehouse=" + cu.warehouse.id1c
-    # server_address = "https://ow.ap-ex.ru/tm_po/hs/exch/req"
-    # server_address = "http://localhost/tech_man/hs/exch/req"
-
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" # + "?request=getLeftovers&warehouse=" + cu.warehouse.id1c
 
     data = []
     data.append({'request': 'getLeftoversFromUpr', 'parameters': {'warehouse': cu.warehouse.id1c}})
@@ -52,7 +51,7 @@ def leftovers(request):
 
     try:
 
-        data_dict = requests.post(server_address, auth=("exch", "123456"),  data=json.dumps(data)).json()
+        data_dict = requests.post(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']),  data=json.dumps(data)).json()
         requestid = data_dict['requestid']
 
     except Exception as ex:
@@ -65,15 +64,14 @@ def leftovers(request):
 
 def reqexec(request):
 
-    server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" + "?request=getRequestExecuted&requestid=" + request.headers.get('requestid')
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" + "?request=getRequestExecuted&requestid=" + request.headers.get('requestid')
 
     res = dict()
-
     res['result'] = True
 
     try:
 
-        data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
         res['executed'] = data_dict['responses'][0]['RequestExecuted']
 
     except Exception as ex:
@@ -91,7 +89,7 @@ def getleftovers(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" + "?request=getLeftoversUpr&warehouse=" + cu.warehouse.id1c
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" + "?request=getLeftoversUpr&warehouse=" + cu.warehouse.id1c
 
     res = dict()
 
@@ -99,7 +97,7 @@ def getleftovers(request):
 
     try:
 
-        data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
         res['leftovers'] = data_dict['responses'][0]['LeftoversUpr']
 
     except Exception as ex:
@@ -108,6 +106,55 @@ def getleftovers(request):
         res['result'] = False
 
     return JsonResponse(res)
+
+def getoutcome(request):
+
+    if 'userLogged' not in request.session:
+        return render(request, 'login.html', locals())
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" + "?request=getOutcomeUpr&warehouse=" + cu.warehouse.id1c
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+        res['outcome'] = data_dict['responses'][0]['OutcomeUpr']
+
+        for el in res['outcome']:
+            if el['ДатаОтгрузки']:
+                el['ДатаОтгрузки'] = datetime.datetime.strptime(el['ДатаОтгрузки'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y')
+
+    except Exception as ex:
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+    return JsonResponse(res)
+
+def prnform(request):
+
+    server_address = AUTH_DATA['addr'] + '/hs/dta/prn/doc/ПеремещениеТоваров/' + request.GET.get('id') + '/dfdghfgd'
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
+
+    except Exception as ex:
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+    return HttpResponse(content=data_dict.content, content_type='application/pdf')
+
 
 
 def add_recipe(request):
@@ -168,6 +215,35 @@ def add_recipe(request):
         return render(request, 'recipes/record.html', locals())
 
 
+def outcome(request):
+
+    if 'userLogged' not in request.session:
+        return render(request, 'login.html', locals())
+
+    user = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" 
+
+    data = []
+    data.append({'request': 'getOutcomeFromUpr', 'parameters': {'warehouse': user.warehouse.id1c}})
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.post(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']),  data=json.dumps(data)).json()
+        requestid = data_dict['requestid']
+
+    except Exception as ex:
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+    return render(request, 'outcome/index.html', locals())
+
+
 def sendto1c_recipe(request):
 
     if request.method == 'POST':
@@ -225,12 +301,9 @@ def sendto1c_recipe(request):
         res['site'] = dict()
         res['site']['recipes'] = orders_list
 
-        server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj"
-        # server_address = "https://ow.ap-ex.ru/tm_po/hs/exch/req"
-        # server_address = "http://localhost/tech_man/hs/exch/req"
-
+        server_address = AUTH_DATA['addr'] + "/hs/dta/obj"
         try:
-            data_dict = requests.post(server_address, data=json.dumps(res), auth=("exch", "123456")).json()
+            data_dict = requests.post(server_address, data=json.dumps(res), auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
         except Exception:
             res['exeption'] = str(sys.exc_info())
             data_dict = {}

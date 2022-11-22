@@ -62,54 +62,6 @@ def get_tm_status(user, pwd):
 
         res = str(len(btns_start)) + str(len(btns_stop)) + str(len(btns_pause))
 
-        # tm_popup = driver.find_element(By.CLASS_NAME, 'tm-popup-button-handler')
-        # btns_start = tm_popup.find_elements(By.XPATH, '//button[contains(@class, "ui-btn ui-btn-success ui-btn-icon-start")]')
-        #
-        # if btns_start:
-        #     btns_start[0].click()
-
-
-
-
-        # now = datetime.date.today()
-        # to = now + datetime.timedelta(days=25)
-        #
-        # m_rows = list()
-        #
-        # if now.month == to.month:
-        #     read_month(driver, now.day, now.month, now.year, to.day, wait, m_rows)
-        # else:
-        #     read_month(driver, now.day, now.month, now.year, calendar.monthrange(now.year, now.month)[1], wait, m_rows)
-        #     read_month(driver, 1, to.month, to.year, to.day, wait, m_rows)
-        #
-        # res = dict()
-        # res['plans_from_hermes'] = dict()
-        # res['plans_from_hermes']['rows'] = m_rows
-        #
-        # try:
-        #     req = requests.post("http://109.167.245.57/upp/hs/exch/gf", data=json.dumps(res), auth=('exch', '123456'))
-        # except Exception:
-        #     res['exeption'] = str(sys.exc_info())
-        #     print(res['exeption'])
-        #
-        #
-        # try:
-        #     data_dict = json.loads(req.content)
-        # except:
-        #     data_dict = {}
-
-
-
-
-        # if data_dict['success'] == True:
-        #     res['success'] = True
-        #     for cco in co:
-        #         cco.delivered1c = True
-        #         cco.save()
-
-        # res['req'] = data_dict
-
-
     except Exception as ex:
         print(ex)
     finally:
