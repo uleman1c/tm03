@@ -12,7 +12,7 @@ from users1c.models import Users1c
 import pytz 
 import requests
 
-from back_server import get_params
+from back_server import AUTH_DATA
 
 
 def recipes(request):
@@ -40,7 +40,7 @@ def leftovers(request):
     # elements = Recipe.objects.filter(user=cu).order_by('delivered1c', '-created').all()[:20]
     # elements_to_send = Recipe.objects.filter(user=cu, delivered1c=False).all()
 
-    server_address = get_params().addr + "/hs/dta/obj" # + "?request=getLeftovers&warehouse=" + cu.warehouse.id1c
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" # + "?request=getLeftovers&warehouse=" + cu.warehouse.id1c
 
     data = []
     data.append({'request': 'getLeftoversFromUpr', 'parameters': {'warehouse': cu.warehouse.id1c}})
@@ -51,7 +51,7 @@ def leftovers(request):
 
     try:
 
-        data_dict = requests.post(server_address, auth=(get_params().user, get_params().pwd),  data=json.dumps(data)).json()
+        data_dict = requests.post(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']),  data=json.dumps(data)).json()
         requestid = data_dict['requestid']
 
     except Exception as ex:
@@ -64,13 +64,13 @@ def leftovers(request):
 
 def reqexec(request):
 
-    server_address = get_params().addr + "/hs/dta/obj" + "?request=getRequestExecuted&requestid=" + request.headers.get('requestid')
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" + "?request=getRequestExecuted&requestid=" + request.headers.get('requestid')
 
     res['result'] = True
 
     try:
 
-        data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd)).json()
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
         res['executed'] = data_dict['responses'][0]['RequestExecuted']
 
     except Exception as ex:
@@ -88,13 +88,13 @@ def getleftovers(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    server_address = get_params().addr + "/hs/dta/obj" + "?request=getLeftoversUpr&warehouse=" + cu.warehouse.id1c
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" + "?request=getLeftoversUpr&warehouse=" + cu.warehouse.id1c
 
     res['result'] = True
 
     try:
 
-        data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd)).json()
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
         res['leftovers'] = data_dict['responses'][0]['LeftoversUpr']
 
     except Exception as ex:
@@ -220,9 +220,9 @@ def sendto1c_recipe(request):
         res['site'] = dict()
         res['site']['recipes'] = orders_list
 
-        server_address = get_params().addr + "/hs/dta/obj"
+        server_address = AUTH_DATA['addr'] + "/hs/dta/obj"
         try:
-            data_dict = requests.post(server_address, data=json.dumps(res), auth=(get_params().user, get_params().pwd)).json()
+            data_dict = requests.post(server_address, data=json.dumps(res), auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
         except Exception:
             res['exeption'] = str(sys.exc_info())
             data_dict = {}

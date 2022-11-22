@@ -8,7 +8,7 @@ import requests
 from RequestHeaders.models import add_request_header
 from .forms import *
 
-from back_server import get_params
+from back_server import  AUTH_DATA
 
 
 def order(request):
@@ -100,10 +100,10 @@ def sendto1c(request):
         res['site'] = dict()
         res['site']['orders'] = orders_list
 
-        server_address = get_params().addr + "/hs/dta/obj"
+        server_address = AUTH_DATA['addr'] + "/hs/dta/obj"
 
         try:
-            data_dict = requests.post(server_address, data=json.dumps(res), auth=(get_params().user, get_params().pwd)).json()
+            data_dict = requests.post(server_address, data=json.dumps(res), auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
         except Exception:
             res['exeption'] = str(sys.exc_info())
             data_dict = {}
