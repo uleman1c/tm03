@@ -20,7 +20,7 @@ def accepts(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
     
-    server_address = get_params().addr + "/hs/dta/obj" + "?request=getCashStatus&manager=" + cu.id1c
+    server_address = get_params().get('addr') + "/hs/dta/obj" + "?request=getCashStatus&manager=" + cu.id1c
 
     cash_status = 0
     try:
