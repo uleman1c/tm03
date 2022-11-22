@@ -39,6 +39,9 @@
       <a href="checkout" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Корзина</a>
       <a href="orders" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Заказы</a>
         {% endif  %}
+        {% if user.outcome_enabled %}
+      <a href="outcome" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Отгрузка</a>
+        {% endif  %}
         {% if user.acceptcash_enabled %}
       <a href="accepts" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px">Получение денег</a>
         {% endif  %}

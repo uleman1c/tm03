@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="{%  static 'bootstrap.min.css' %}">
+    <script src="{%  static 'jquery.js' %}"></script>
+    <script src="{% static 'outcome.js' %}"></script>
+    <title>Отгрузка</title>
+</head>
+<body>
+
+    <style>
+        .themed-grid-col {
+          padding-top: .75rem;
+          padding-bottom: .75rem;
+          background-color: rgba(86, 61, 124, .15);
+          border: 1px solid rgba(86, 61, 124, .2);
+
+        }
+
+        .themed-container {
+          padding: .75rem;
+          margin-bottom: 1.5rem;
+          background-color: rgba(0, 123, 255, .15);
+          border: 1px solid rgba(0, 123, 255, .2);
+        }
+    </style>
+
+    <div class="container py-3" style="max-width: 95%">
+
+        <input type="text" id="requestid" style="display: none;" value="{{ requestid }}">
+        <h3 class="text-center" style="font-size: 2rem;">Отгрузка со склада {{ user.warehouse.name }}</h3>
+
+        <div class="row mb-3">
+            <div class="col-10 themed-grid-col" style="text-align: center">Распоряжение</div>
+            <div class="col-2 themed-grid-col" style="text-align: center">Дата отгрузки</div>
+          </div>
+
+      <div id="orders">
+
+            <h3 id="loading" class="text-center" style="font-size: 2rem;">Загрузка...</h3>
+
+            <h3 id="noneorders" class="text-center" style="font-size: 2rem; display: none;">Нет остатков</h3>
+
+        </div>
+
+        <div class="container py-3 col-6">
+            <a href="/" id="main_menu" class="w-100 btn btn-lg btn-primary" style="font-size: 2rem; ">Главное меню</a>
+        </div>
+
+    </div>
+
+
+</body>
+</html>

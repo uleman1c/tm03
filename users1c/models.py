@@ -23,6 +23,7 @@ class Users1c(models.Model):
     orders_enabled = models.BooleanField(default=False)
     leftovers_enabled = models.BooleanField(default=False)
     warehouse = models.ForeignKey(Warehouses, on_delete=models.CASCADE, blank=True, null=True)
+    outcome_enabled = models.BooleanField(default=False)
 
 
     def save(self, *args, **kwargs):

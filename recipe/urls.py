@@ -25,4 +25,7 @@ urlpatterns = [
     path('leftovers/', views.leftovers, name='leftovers'),
     path('reqexec/', views.reqexec, name='reqexec'),
     path('getleftovers/', views.getleftovers, name='getleftovers'),
+    path('outcome/', views.outcome, name='outcome'),
+    path('getOutcome/', views.getoutcome, name='getoutcome'),
+    path('prnform/', views.prnform, name='prnform'),
             ]
