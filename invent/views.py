@@ -11,6 +11,8 @@ from .forms import *
 from datetime import timezone, datetime, timedelta
 import pytz 
 
+from back_server import get_params
+
 def invents(request):
     if 'userLogged' not in request.session:
         return render(request, 'login.html', locals())
@@ -24,22 +26,6 @@ def invents(request):
         cw = Warehouses.objects.filter(id1c=wid).all().get()
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
-
-    # server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" + "?request=getCashStatus&manager=" + cu.id1c
-    # # server_address = "https://ow.ap-ex.ru/tm_po/hs/exch/req"
-    # # server_address = "http://localhost/tech_man/hs/exch/req"
-    #
-    # cash_status = 0
-    # try:
-    #     data_dict = requests.get(server_address, auth=("exch", "123456")).json()
-    # except Exception:
-    #     data_dict = {'success':True, 'responses': [{'getCashStatus':str(sys.exc_info())}]}
-    #
-    # if data_dict.get('success') == True:
-    #     cash_status = data_dict.get('responses')[0].get('getCashStatus')
-    #
-    # cash_status_str = format(cash_status, '.2f')
-    # form = AcceptCash(request.POST or None)
 
 
     if wid is not None:
@@ -94,12 +80,10 @@ def sendto1c_invent(request):
         res['site'] = dict()
         res['site']['invents'] = orders_list
 
-        server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj"
-        # server_address = "https://ow.ap-ex.ru/tm_po/hs/exch/req"
-        # server_address = "http://localhost/tech_man/hs/exch/req"
+        server_address = get_params().addr + "/hs/dta/obj"
 
         try:
-            data_dict = requests.post(server_address, data=json.dumps(res), auth=("exch", "123456")).json()
+            data_dict = requests.post(server_address, data=json.dumps(res), auth=(get_params().user, get_params().pwd)).json()
         except Exception:
             res['exeption'] = str(sys.exc_info())
             data_dict = {}
@@ -194,12 +178,10 @@ def sendto1c_invent(request):
 #         res['site'] = dict()
 #         res['site']['accepts'] = orders_list
 #
-#         server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj"
-#         # server_address = "https://ow.ap-ex.ru/tm_po/hs/exch/req"
-#         # server_address = "http://localhost/tech_man/hs/exch/req"
-#
+#         server_address = get_params().addr + "/hs/dta/obj"
+
 #         try:
-#             data_dict = requests.post(server_address, data=json.dumps(res), auth=("exch", "123456")).json()
+#             data_dict = requests.post(server_address, data=json.dumps(res), auth=(get_params().user, get_params().pwd)).json()
 #         except Exception:
 #             res['exeption'] = str(sys.exc_info())
 #             data_dict = {}

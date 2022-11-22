@@ -45,9 +45,9 @@ from urllib.parse import unquote
 
 from requests.structures import CaseInsensitiveDict
 
+from back_server import get_params
 
-
-bitrix_address = 'https://bitrix.apx-service.ru/rest/313/dgu8ygk1g6boen2p/'
+bitrix_address = get_params().bitrix_addr
 
 
 def home(request):
@@ -356,7 +356,7 @@ def dmtaskstouser(request):
 
     try:
 
-        data_dict = requests.get(server_address, auth=("exch", "123456"), json=data).json()
+        data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd), json=data).json()
 
         tasks_list = data_dict['responses'][0]['getTaskList']
 
@@ -378,7 +378,7 @@ def dmtaskstouser(request):
 
     try:
 
-        data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+        data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd)).json()
 
         executors = data_dict['responses'][0]['userList']
 
@@ -420,7 +420,7 @@ def dmtasksfromuser(request):
 
     try:
 
-        data_dict = requests.get(server_address, auth=("exch", "123456"), json=data).json()
+        data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd), json=data).json()
 
         tasks_list = data_dict['responses'][0]['getTaskList']
 
@@ -444,7 +444,7 @@ def dmtasksfromuser(request):
 
     try:
 
-        data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+        data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd)).json()
 
         executors = data_dict['responses'][0]['userList']
 
@@ -482,7 +482,7 @@ def dmtask(request):
 
     try:
 
-        data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+        data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd)).json()
 
         task = data_dict['responses'][0]['getTask']
 
@@ -530,7 +530,7 @@ def adddmtask(request):
 
         try:
 
-            data_dict = requests.get(server_address, auth=("exch", "123456"), json=data).json()
+            data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd), json=data).json()
 
             tasks_list = data_dict['responses'][0]['newTask']
 
@@ -560,7 +560,7 @@ def adddmtask(request):
 
         try:
 
-            data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+            data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd)).json()
 
             executors = data_dict['responses'][0]['userList']
 
@@ -575,11 +575,11 @@ def adddmtask(request):
 def ctrinfo(request):
     id1c = request.GET.get('id')
 
-    server_address = "https://ow.ap-ex.ru/tm_po/hs/dta/obj" + "?request=getContractorInfo&Contractor=" + id1c
+    server_address = get_params().addr + "/hs/dta/obj" + "?request=getContractorInfo&Contractor=" + id1c
 
     contractor_info = dict()
     try:
-        data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+        data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd)).json()
     except Exception:
         data_dict = {'success': False, 'responses': [{'getContractorInfo': str(sys.exc_info())}]}
 
@@ -784,7 +784,7 @@ def savedmcomment(request):
 
         try:
 
-            data_dict = requests.get(server_address, auth=("exch", "123456"), json=data).json()
+            data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd), json=data).json()
 
             tasks_list = data_dict['responses'][0]['saveTaskComment']
 
@@ -960,7 +960,7 @@ def executedmtask(request):
 
         try:
 
-            data_dict = requests.get(server_address, auth=("exch", "123456")).json()
+            data_dict = requests.get(server_address, auth=(get_params().user, get_params().pwd)).json()
 
             tasks_list = data_dict['responses'][0]['executeTask']
 
