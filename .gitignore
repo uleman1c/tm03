@@ -8,3 +8,5 @@ web.config
 savesdek/
 .vscode/
 tm03/settings.py
+back_server.py
+.gitignore
