@@ -28,4 +28,5 @@ urlpatterns = [
     path('outcome/', views.outcome, name='outcome'),
     path('getOutcome/', views.getoutcome, name='getoutcome'),
     path('prnform/', views.prnform, name='prnform'),
+    path('attachedfile/', views.attachedfile, name='attachedfile'),
             ]

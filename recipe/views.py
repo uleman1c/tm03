@@ -1,6 +1,7 @@
 import datetime
 import json
 import sys
+import uuid
 from django.shortcuts import render
 from django.http import JsonResponse, FileResponse, HttpResponse
 from contractors.models import Contractors
@@ -154,6 +155,43 @@ def prnform(request):
         res['result'] = False
 
     return HttpResponse(content=data_dict.content, content_type='application/pdf')
+
+
+def attachedfile(request):
+
+# /files/{type}/{name}/{uid}/{filename}
+
+    fid = request.GET.get('id')
+    ext = request.GET.get('ext')
+
+    server_address = AUTH_DATA['addr'] + '/hs/dta/files/' + request.GET.get('type') + '/' + request.GET.get('name') + '/' + fid + '/dfdghfgd'
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
+
+    except Exception as ex:
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+#                    response = FileResponse(file)
+ #                   response['Content-Type'] = 'application/octet-stream'
+  #                  response['Content-Disposition'] = 'attachment;filename='+FileName
+
+   # return HttpResponse(content=data_dict.content, content_type='application/' + ext, filename=fid + '.' + ext)
+
+    filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
+
+    f = open(filename, 'wb')
+    f.write(data_dict.content)
+    f.close()
+
+    return FileResponse(open(filename, 'rb'))
 
 
 
