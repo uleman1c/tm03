@@ -20,7 +20,9 @@ from recipe import views
 urlpatterns = [
     # path('', views.home, name='he'),
     path('recipes/', views.recipes, name='recipes'),
+    path('recipeorders/', views.recipeorders, name='recipeorders'),
     path('add_recipe/', views.add_recipe, name='add_recipe'),
+    path('add_recipeorder/', views.add_recipeorder, name='add_recipeorder'),
     path('sendto1c_recipe/', views.sendto1c_recipe, name='sendto1c_recipe'),
     path('leftovers/', views.leftovers, name='leftovers'),
     path('reqexec/', views.reqexec, name='reqexec'),

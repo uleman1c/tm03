@@ -36,6 +36,6 @@ class Invent(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         if self.id1c == '':
-            self.id1c = uuid.uuid1()
+            self.id1c = uuid.uuid4()
 
         super(Invent, self).save(force_insert, force_update, using, update_fields)

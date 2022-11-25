@@ -29,7 +29,7 @@ class Order(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        self.id1c = uuid.uuid1()
+        self.id1c = uuid.uuid4()
 
         super(Order, self).save(force_insert, force_update, using, update_fields)
 

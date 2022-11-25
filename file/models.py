@@ -33,7 +33,7 @@ class File(models.Model):
              update_fields=None):
              
         if self.idname == '':
-            self.idname = uuid.uuid1()
+            self.idname = uuid.uuid4()
 
         super(File, self).save(force_insert, force_update, using, update_fields)
 
@@ -61,7 +61,7 @@ class FilePart(models.Model):
              update_fields=None):
              
         if self.idname == '':
-            self.idname = uuid.uuid1()
+            self.idname = uuid.uuid4()
 
         super(FilePart, self).save(force_insert, force_update, using, update_fields)
 
@@ -86,7 +86,7 @@ class ExternalLink(models.Model):
              update_fields=None):
              
         if self.idname == '':
-            self.idname = uuid.uuid1()
+            self.idname = uuid.uuid4()
 
         super(ExternalLink, self).save(force_insert, force_update, using, update_fields)
 
@@ -111,7 +111,7 @@ class UploadlLink(models.Model):
              update_fields=None):
              
         if self.idname == '':
-            self.idname = uuid.uuid1()
+            self.idname = uuid.uuid4()
 
         super(UploadlLink, self).save(force_insert, force_update, using, update_fields)
 

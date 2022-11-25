@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.http import JsonResponse, FileResponse, HttpResponse
 from contractors.models import Contractors
 from products.models import Characteristics, Products
-from recipe.models import Recipe, RecipeGoods
+from recipe.models import RecipeOrder, Recipe, RecipeGoods
 
 from users1c.models import Users1c
 
@@ -29,6 +29,21 @@ def recipes(request):
 
 
     return render(request, 'recipes/index.html', locals())
+
+
+def recipeorders(request):
+
+    if 'userLogged' not in request.session:
+        return render(request, 'login.html', locals())
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    elements = RecipeOrder.objects.filter(user=cu).order_by('delivered1c', '-created').all()[:20]
+    elements_to_send = RecipeOrder.objects.filter(user=cu, delivered1c=False).all()
+
+
+
+    return render(request, 'recipes/orders.html', locals())
 
 
 def leftovers(request):
@@ -251,6 +266,64 @@ def add_recipe(request):
     else:
 
         return render(request, 'recipes/record.html', locals())
+
+
+def add_recipeorder(request):
+
+    if 'userLogged' not in request.session:
+        return render(request, 'login.html', locals())
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    if request.method == 'POST':
+
+        cc = Contractors.objects.filter(id1c=request.POST['contractor']).all().get()
+
+        comment = request.POST['comment']
+        color_number = request.POST['colorNumber']
+        end_product = request.POST['endproduct']
+        end_product_text = request.POST['endproducttext']
+        quantity = int(request.POST['endproductquantity'])
+
+        ep = None
+        if end_product:
+            ep = Products.objects.filter(id1c=end_product).all().get()
+
+        ro = Recipe.objects.create(user=cu, contractor=cc, comments=comment, end_product=ep,
+                                      color_number=color_number, end_product_text=end_product_text, quantity=quantity)
+
+        length = int(request.POST['length'])
+
+        curInd = 0
+        while(curInd < length):
+
+            go = Products.objects.filter(id1c=request.POST['goods[' + str(curInd) + '][id1c]']   ).all().get()
+
+            cidc = request.POST['goods[' + str(curInd) + '][cid1c]']
+
+            cho = None
+            if cidc:
+                cho = Characteristics.objects.filter(id1c=cidc).all().get()
+
+            RecipeGoods.objects.create(recipe=ro, product=go, characteristic=cho, quantity=request.POST['goods[' + str(curInd) + '][quantity]'] )
+
+            curInd = curInd + 1
+
+
+
+
+
+
+        res = dict()
+
+        res['recipe'] = ro.id1c
+        res['comment'] = comment
+
+        return JsonResponse(res)
+
+    else:
+
+        return render(request, 'recipes/orderrecord.html', locals())
 
 
 def outcome(request):
