@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.http import JsonResponse, FileResponse, HttpResponse
 from contractors.models import Contractors
 from products.models import Characteristics, Products
-from recipe.models import Recipe, RecipeGoods
+from recipe.models import RecipeOrder, Recipe, RecipeGoods
 
 from users1c.models import Users1c
 
@@ -15,6 +15,7 @@ import requests
 
 from back_server import AUTH_DATA
 
+from django.db import connection
 
 def recipes(request):
 
@@ -29,6 +30,45 @@ def recipes(request):
 
 
     return render(request, 'recipes/index.html', locals())
+
+
+def recipeorders(request):
+
+    if 'userLogged' not in request.session:
+        return render(request, 'login.html', locals())
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    elements = list()
+    
+    ros = RecipeOrder.objects.filter(user=cu).order_by('-created').all()[:20]
+
+    ros = RecipeOrder.objects.raw("SELECT *, '' as contractor_name, '' as end_product_name, '' as recipe_id, False as executed FROM recipe_recipeorder")
+
+    for ro in ros:
+        
+        el = dict()
+
+        for column in ros.columns:
+
+            el[column] = getattr(ro, column)
+
+        el['contractor_name'] = ro.contractor.name
+        
+        if ro.end_product:
+            el['end_product_name'] =  ro.end_product.name
+
+        r = Recipe.objects.filter(order_id=ro.id)
+
+        if r.count() > 0:
+            el['recipe_id'] = r.all().get().id1c
+            el['executed'] = True
+
+        elements.append(el)
+
+
+
+    return render(request, 'recipes/orders.html', locals())
 
 
 def leftovers(request):
@@ -251,6 +291,108 @@ def add_recipe(request):
     else:
 
         return render(request, 'recipes/record.html', locals())
+
+
+def view_recipe(request):
+
+    if 'userLogged' not in request.session:
+        return render(request, 'login.html', locals())
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    cr = Recipe.objects.filter(id1c=request.GET.get('id')).all().get()
+
+    quantity = str(cr.quantity)
+
+    goods = RecipeGoods.objects.filter(recipe=cr).all()
+
+    for product in goods:
+        product.quantity = str(product.quantity)
+
+    return render(request, 'recipes/view_record.html', locals())
+
+
+def add_recipeorder(request):
+
+    if 'userLogged' not in request.session:
+        return render(request, 'login.html', locals())
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    if request.method == 'POST':
+
+        cc = Contractors.objects.filter(id1c=request.POST['contractor']).all().get()
+
+        comment = request.POST['comment']
+        color_number = request.POST['colorNumber']
+        end_product = request.POST['endproduct']
+        end_product_text = request.POST['endproducttext']
+        quantity = int(request.POST['endproductquantity'])
+
+        ep = None
+        if end_product:
+            ep = Products.objects.filter(id1c=end_product).all().get()
+
+        ro = RecipeOrder.objects.create(user=cu, contractor=cc, comments=comment, end_product=ep,
+                                      color_number=color_number, end_product_text=end_product_text, quantity=quantity)
+
+        co = RecipeOrder.objects.filter(id1c=ro.id1c).all()
+
+        res = dict()
+
+        orders_list = list()
+
+        for cco in co:
+            order_info = dict()
+            order_info['id1c'] = cco.id1c
+            order_info['contractor'] = cco.contractor.id1c
+            order_info['user'] = cco.user.id1c
+
+            order_info['warehouse'] = ''
+            if cco.user.warehouse:
+                order_info['warehouse'] = cco.user.warehouse.id1c
+
+            order_info['color_number'] = cco.color_number
+            order_info['comment'] = cco.comments
+
+            order_info['end_product'] = ''
+            if cco.end_product:
+                order_info['end_product'] = cco.end_product.id1c
+                
+
+            order_info['end_product_text'] = cco.end_product_text
+            order_info['quantity'] = str(cco.quantity)
+
+            order_info['created'] = cco.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%Y%m%d%H%M%S')
+
+            orders_list.append(order_info)
+
+        res['site'] = dict()
+        res['site']['recipeorders'] = orders_list
+
+        server_address = AUTH_DATA['addr'] + "/hs/dta/obj"
+        try:
+            data_dict = requests.post(server_address, data=json.dumps(res), auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+        except Exception:
+            res['exeption'] = str(sys.exc_info())
+            data_dict = {}
+
+        if data_dict.get('success') == True:
+            res['success'] = True
+            for cco in co:
+                cco.delivered1c = True
+                cco.save()
+
+        res['req'] = data_dict
+
+        res['recipe'] = ro.id1c
+        res['comment'] = comment
+
+        return JsonResponse(res)
+
+    else:
+
+        return render(request, 'recipes/orderrecord.html', locals())
 
 
 def outcome(request):
