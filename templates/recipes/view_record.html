@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Рецепт</title>
+        {% load static %}
+        <link rel="stylesheet" href="{%  static 'bootstrap.min.css' %}">
+        <link href="{% static 'dropdowns.css' %}" rel="stylesheet">
+        <script src="{% static 'jquery.js' %}"></script>
+        <script src="{% static 'create.js' %}?v=0009"></script>
+
+    </head>
+    <body>
+        <div class="container py-3" style="max-width: 100%">
+                <h1 style="float: left; width: 80%">Рецепт</h1>
+                <a href="/" id="main_menu" class="w-20 btn btn-lg btn-primary" >Главное меню</a>
+                <div style="width: 100%">
+                    <input readonly type="search" id="contractor" class="form-control" autocomplete="false" placeholder="Контрагент..." value="{{ cr.contractor.name }}">
+                    <ul id="contractorsList" class="list-unstyled mb-0"></ul>
+                </div>
+
+                <div style="display: flex;">
+                    <div style="float: left; width: 80%">
+                        <div id="endProduct">
+                            <input readonly type="search" id="endProductFilter" class="form-control"  autocomplete="false" placeholder="Продукция из справочника..." value="{{ cr.end_product.name }}">
+                            <ul id="goodsList" class="list-unstyled mb-0"></ul>
+                        </div>
+                        <div>
+                            <input readonly type="text" id="endProductText" style="float: left; width: 70%" class="form-control" autocomplete="false" placeholder="Продукция..." value="{{ cr.end_product_text }}">
+                            <input readonly type="text" id="colorNumber" style="width: 30%" class="form-control" autocomplete="false" placeholder="Номер цвета..." value="{{ cr.color_number }}">
+                        </div>
+                    </div>
+                    <div style="width: 20%;">
+                        <input readonly type="number" id="endProductQuantity" class="form-control" style="height: 100%; width: 100%; float: left;" autocomplete="false" placeholder="Количество..."  value="{{ quantity }}">
+                    </div>
+                </div>
+
+                <textarea readonly class="py-2 form-control" rows="4" id="comment" placeholder="Комментарий">{{ cr.comments }}</textarea>
+
+                <p style="margin-bottom: 0%;">Товары</p>
+                <div id="goods">
+                    {% for el in goods %}
+                    <div id="gooditem" data-numstr="0">
+                        <div style="float: left; width: 55%">
+                            <input readonly type="search" id="goodsFilter" class="form-control" autocomplete="false" placeholder="Номенклатура..." value="{{ el.product.name }}">
+                       </div>
+                        <div style="float: left; width: 25%">
+                            <input readonly type="search" id="сharacteristicsFilter" class="form-control" autocomplete="false" placeholder="Характеристика..." value="{{ el.characteristic.name }}">
+                            <ul id="сharacteristicsList" class="list-unstyled mb-0"></ul>
+                        </div>
+                        <input readonly type="number" id="goodsQuantity" class="form-control" style="width: 20%; float: left;" autocomplete="false" placeholder="Количество..."  value="{{ el.quantity }}">
+                        <ul id="goodsList" class="list-unstyled mb-0"></ul>
+                    </div>
+                    {% endfor %}
+                </div>
+
+        </div>
+    </body>
+</html>

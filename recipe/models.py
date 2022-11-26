@@ -41,7 +41,7 @@ class RecipeOrder(models.Model):
         if self.id1c == '':
             self.id1c = uuid.uuid4()
 
-        super(Recipe, self).save(force_insert, force_update, using, update_fields)
+        super(RecipeOrder, self).save(force_insert, force_update, using, update_fields)
 
 class Recipe(models.Model):
 

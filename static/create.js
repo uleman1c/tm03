@@ -1,3 +1,68 @@
+function checkoutRecipeOrder(){
+
+    var contractor_id1c = document.querySelector('#contractor').getAttribute('id1c'); 
+    var endproduct_id1c = document.querySelector('#endProductFilter').getAttribute('id1c');
+    var endproducttext = document.querySelector('#endProductText').value;
+    var endproductquantity = document.querySelector('#endProductQuantity').value;
+
+    if (contractor_id1c 
+        && endproductquantity 
+        && (endproduct_id1c || endproducttext)){
+
+        var url = "/add_recipeorder/";
+        var data = {};
+        data.contractor = contractor_id1c;
+        data.comment = document.querySelector('#comment').value;
+        data.endproduct = endproduct_id1c;
+        data.endproducttext = endproducttext;
+        data.colorNumber = document.querySelector('#colorNumber').value;
+        data.endproductquantity = endproductquantity;
+
+        $.ajax({
+             url: url,
+             type: 'POST',
+             data: data,
+             cache: true,
+             success: function (data) {
+                 console.log(data);
+                 location.href = "../recipeorders/";
+             },
+             error: function(){
+                 console.log("error")
+             }
+         })
+
+    } else {
+
+        arWarning = []
+        if(!contractor_id1c) {
+            arWarning.push('заполнить контрагента');
+        }
+
+        if(!endproduct_id1c && !endproducttext) {
+            arWarning.push('выбрать продукцию из справочника или заполнить вручную');
+        }
+
+        if(!endproductquantity) {
+            arWarning.push('заполнить количество');
+        }
+
+        strWarning = "";
+        arWarning.forEach(function(warnItem){
+
+            strWarning = strWarning + (!strWarning ? "" : ", ") + warnItem;
+            
+        });
+
+        wt = document.querySelector('#warning_text');
+        wt.style = 'border-radius: 0.3rem; font-size: calc(1rem + 0.5vh); background-color: red; margin-top: 2%; color: white; text-align: center; display: block';
+        wt.innerHTML = 'Необходимо ' + strWarning;
+
+    }
+
+}
+
+
 function checkoutRecipe(){
 
     var aGoods = document.querySelectorAll('#goods #gooditem');
@@ -50,7 +115,6 @@ function checkoutRecipe(){
     }
 
 }
-
 
 
 function selectGood(numstr, id1c, name){
