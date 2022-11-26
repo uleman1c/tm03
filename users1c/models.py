@@ -24,7 +24,7 @@ class Users1c(models.Model):
     leftovers_enabled = models.BooleanField(default=False)
     warehouse = models.ForeignKey(Warehouses, on_delete=models.CASCADE, blank=True, null=True)
     outcome_enabled = models.BooleanField(default=False)
-    recepi_erders_enabled = models.BooleanField(default=False)
+    recepi_orders_enabled = models.BooleanField(default=False)
 
 
     def save(self, *args, **kwargs):
