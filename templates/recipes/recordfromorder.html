@@ -12,33 +12,30 @@
     </head>
     <body>
         <div class="container py-3" style="max-width: 100%">
-                <h1>Рецепт</h1>
-				<div class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden" style="width: 100%; margin: 0">
-					<form class="p-2 border-bottom" style="padding-bottom: 0">
-						<div style="float: left; width: 100%">
-							<input type="search" id="contractor" class="form-control" onkeyup="keyUpContractorL()" autocomplete="false" placeholder="Контрагент...">
-							<ul id="contractorsList" class="list-unstyled mb-0"></ul>
-						</div>
-					</form>
-				</div>
+                <h1>Рецепт по заявке</h1>
+                <input hidden id="orderid" value="{{ orderid }}">
+                <div style="width: 100%">
+                    <input readonly type="search" id="contractor" class="form-control" id1c="{{ order.contractor.id1c }}"  value="{{ order.contractor.name }}">
+                    <ul id="contractorsList" class="list-unstyled mb-0"></ul>
+                </div>
 
                 <div style="display: flex;">
                     <div style="float: left; width: 80%">
                         <div id="endProduct">
-                            <input type="search" id="endProductFilter" class="form-control" onkeyup="keyUpEndProductFilter()" autocomplete="false" placeholder="Продукция из справочника...">
+                            <input readonly type="search" id="endProductFilter" class="form-control" id1c="{{ order.end_product.id1c }}" value="{{ order.end_product.name }}">
                             <ul id="goodsList" class="list-unstyled mb-0"></ul>
                         </div>
                         <div>
-                            <input type="text" id="endProductText" style="float: left; width: 70%" class="form-control" autocomplete="false" placeholder="Продукция...">
-                            <input type="text" id="colorNumber" style="width: 30%" class="form-control" autocomplete="false" placeholder="Номер цвета...">
+                            <input readonly type="text" id="endProductText" style="float: left; width: 70%" class="form-control" autocomplete="false" value="{{ order.end_product_text }}">
+                            <input readonly type="text" id="colorNumber" style="width: 30%" class="form-control" autocomplete="false" value="{{ order.color_number }}">
                         </div>
                     </div>
                     <div style="width: 20%;">
-                        <input type="number" id="endProductQuantity" class="form-control" style="height: 100%; width: 100%; float: left;" autocomplete="false" placeholder="Количество...">
+                        <input readonly type="number" id="endProductQuantity" class="form-control" style="height: 100%; width: 100%; float: left;" autocomplete="false" value="{{ order.quantity|floatformat }}">
                     </div>
                 </div>
 
-                <textarea class="py-2 form-control" rows="4" id="comment" placeholder="Комментарий"></textarea>
+                <textarea readonly class="py-2 form-control" rows="4" id="comment">{{ order.comments }}</textarea>
 
                 <p style="margin-bottom: 0%;">Товары</p>
                 <div id="goods">
