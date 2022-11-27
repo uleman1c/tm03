@@ -1160,7 +1160,7 @@ def upload_all(data_dict):
                     AcceptCash.objects.create(delivered1c=True, user=cu, contractor=cc, currency=ccu,
                                               sum=el['Реквизиты']['Сумма'], comments=el['Реквизиты']['Комментарий'],
                                               order_number=el['Реквизиты']['НомерЗаказа'], order_date=od,
-                                              id_deleted=el['ПометкаУдаления'],
+                                              is_deleted=el['ПометкаУдаления'],
                                               created=cd, id1c=el['Ссылка'])
                 else:
                     cp = qp.get()

@@ -27,7 +27,7 @@ class RecipeOrder(models.Model):
     id1c = models.CharField(max_length=40, default='')
 
     delivered1c = models.BooleanField(default=False)
-    id_deleted = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return "Заявка на рецепт № %s от %s, %s" % (self.id, self.created, self.contractor.name)
@@ -59,7 +59,7 @@ class Recipe(models.Model):
     id1c = models.CharField(max_length=40, default='')
 
     delivered1c = models.BooleanField(default=False)
-    id_deleted = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return "Рецепт № %s от %s, %s" % (self.id, self.created, self.contractor.name)

@@ -24,7 +24,7 @@ class AcceptCash(models.Model):
     id1c = models.CharField(max_length=40, default='')
 
     delivered1c = models.BooleanField(default=False);
-    id_deleted = models.BooleanField(default=False);
+    is_deleted = models.BooleanField(default=False);
 
     def __str__(self):
         return "Получение денег № %s от %s, %s" % (self.id, self.created, self.contractor.name)

@@ -17,6 +17,12 @@ from back_server import AUTH_DATA
 
 from django.db import connection
 
+from django.db.models import Q
+
+from django.db.models.sql.datastructures import Join
+from django.db.models.fields.related import ForeignObject
+from django.db.models.options import Options
+
 def recipes(request):
 
     if 'userLogged' not in request.session:
@@ -41,28 +47,30 @@ def recipeorders(request):
 
     elements = list()
     
-    ros = RecipeOrder.objects.filter(user=cu).order_by('-created').all()[:20]
+#    jf = ForeignObject(to=Recipe, on_delete=)
 
-    ros = RecipeOrder.objects.raw("SELECT *, '' as contractor_name, '' as end_product_name, '' as recipe_id, False as executed FROM recipe_recipeorder")
+#    ros = RecipeOrder.objects.raw("SELECT *, '' as contractor_name, '' as end_product_name, '' as recipe_id, False as executed FROM recipe_recipeorder LEFT OUTER JOIN recipe_recipe ON (recipe_recipeorder.id = recipe_recipe.order.id) WHERE recipe_recipe.order.id IS NULL")
+
+   # ros = RecipeOrder.objects.filter(Q(recipe__isnull=True) | Q(recipe__isnull=False)).order_by('-created')
+
+    #ros = RecipeOrder.objects.raw("SELECT *, '' as contractor_name, '' as end_product_name, '' as recipe_id, False as executed FROM recipe_recipeorder")
+
+    ros = RecipeOrder.objects.filter(user=cu, is_deleted=False).order_by('-created')
 
     for ro in ros:
         
-        el = dict()
-
-        for column in ros.columns:
-
-            el[column] = getattr(ro, column)
-
-        el['contractor_name'] = ro.contractor.name
-        
-        if ro.end_product:
-            el['end_product_name'] =  ro.end_product.name
+        el = dict(ro.__dict__)
 
         r = Recipe.objects.filter(order_id=ro.id)
 
         if r.count() > 0:
             el['recipe_id'] = r.all().get().id1c
             el['executed'] = True
+
+        el['contractor_name'] = ro.contractor.name
+        
+        if ro.end_product:
+            el['end_product_name'] =  ro.end_product.name
 
         elements.append(el)
 
