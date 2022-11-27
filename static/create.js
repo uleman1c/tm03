@@ -83,7 +83,7 @@ function checkoutRecipe(){
 
     if (document.querySelector('#contractor').value 
         && document.querySelector('#endProductQuantity').value 
-        && arG){
+        && arG.length > 0){
 
         var url = "/add_recipe/";
         var data = {};
@@ -93,6 +93,10 @@ function checkoutRecipe(){
         data.endproducttext = document.querySelector('#endProductText').value;
         data.colorNumber = document.querySelector('#colorNumber').value;
         data.endproductquantity = document.querySelector('#endProductQuantity').value;
+
+        el_orderid = document.querySelector('#orderid');
+        data.orderid = el_orderid ? el_orderid.value : '';
+
         data.length = arG.length;
         data.goods = arG;
 

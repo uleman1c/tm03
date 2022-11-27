@@ -19,16 +19,48 @@
 
         }
 
-        .themed-container {
-          padding: .75rem;
-          margin-bottom: 1.5rem;
-          background-color: rgba(0, 123, 255, .15);
-          border: 1px solid rgba(0, 123, 255, .2);
+        .themed-grid-col-row {
+          padding-top: .3rem;
+          padding-bottom: .3rem;
+          background-color: rgba(249, 236, 197, .5);
+          border: 1px solid rgba(249, 236, 197, 1);
+
         }
+
+
     </style>
 
         <div class="container py-3" style="max-width: 95%">
 
+        {% if orders %}
+            <h1>Заявки на рецепт</h1>
+            <div class="row">
+              <div class="col-2 themed-grid-col" style="text-align: center">Дата</div>
+              <div class="col-10 themed-grid-col" style="text-align: center">Контрагент / Продукция, № цвета / Количество / Комментарий</div>
+            </div>
+
+          {% for el in orders %}
+
+            <div class="row">
+              <div class="col-2 themed-grid-col-row" style="text-align: center">{{ el.created }}</div>
+              <div class="col-9 themed-grid-col-row">{{ el.contractor.name }} / {{ el.end_product.name }} {{ el.end_product_text }}  {{ el.color_number }} / {{ el.quantity }} / {{ el.comments }}</div>
+              <a href="../add_recipe?orderid={{ el.id1c }}" class="col-1 themed-grid-col-row" style="text-align: center">Создать рецепт...</a>
+            </div>
+
+          {% endfor %}
+
+        {% else %}
+            <h3 class="text-center" style="font-size: 2rem;">Нет заказов на рецепт</h3>
+        {% endif %}
+
+
+
+
+
+
+
+
+        <h1>Рецепты</h1>
         <div class="row mb-12" style="margin-bottom: 0.5%">
             <a href="../add_recipe" id="create" class="btn btn-success" style="font-size: 1.5rem; width: 90%">Добавить</a>
         </div>

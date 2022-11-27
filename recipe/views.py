@@ -30,8 +30,12 @@ def recipes(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
+    orders = RecipeOrder.objects.filter(recipe__isnull=True).order_by('created').all()[:20]
+
+
+
     elements = Recipe.objects.filter(user=cu).order_by('delivered1c', '-created').all()[:20]
-    elements_to_send = Recipe.objects.filter(user=cu, delivered1c=False).all()
+    elements_to_send = Recipe.objects.filter(user=cu, delivered1c=False).all()[:20]
 
 
 
@@ -259,13 +263,18 @@ def add_recipe(request):
         end_product = request.POST['endproduct']
         end_product_text = request.POST['endproducttext']
         quantity = int(request.POST['endproductquantity'])
+        orderid = request.POST['orderid']
 
         ep = None
         if end_product:
             ep = Products.objects.filter(id1c=end_product).all().get()
 
+        roo = None
+        if orderid:
+            roo = RecipeOrder.objects.filter(id1c=orderid).all().get()
+
         ro = Recipe.objects.create(user=cu, contractor=cc, comments=comment, end_product=ep,
-                                      color_number=color_number, end_product_text=end_product_text, quantity=quantity)
+                                      color_number=color_number, end_product_text=end_product_text, quantity=quantity, order=roo)
 
         length = int(request.POST['length'])
 
@@ -298,7 +307,16 @@ def add_recipe(request):
 
     else:
 
-        return render(request, 'recipes/record.html', locals())
+        orderid = request.GET.get('orderid')
+        if orderid:
+
+            order = RecipeOrder.objects.filter(id1c=orderid).all().get()
+
+            return render(request, 'recipes/recordfromorder.html', locals())
+
+        else:
+
+            return render(request, 'recipes/record.html', locals())
 
 
 def view_recipe(request):
