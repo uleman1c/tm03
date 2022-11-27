@@ -152,6 +152,48 @@ def sdekreqs(request):
 
     return JsonResponse(res);
 
+def containerstatuses(request):
+
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj?request=getTransportContainersStatus"
+
+    container_statuses = None
+    try:
+
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+
+        container_statuses = data_dict['responses'][0]['TransportContainersStatus']
+
+    except Exception as ex:
+        tasks_list = list()
+        data_dict = str(sys.exc_info())
+
+ #   мОстатков.Добавить(Новый Структура("Файлы, Контейнеры, Период, ТранспортныйКонтейнер, НомерПоДаннымПеревозчика, ВнутреннийНомер, ТоварПоставщик, НомерКонтейнера, ПунктНазначения, СтатусПоставки, "
+ #       + "РасчетнаяНеделяПрибытияНаТаможню, Получатель, СтоимостьФрахта, Валюта, ПроцентОплаты, Перевозчик, ПунктЗагрузки, СтанцияОтправления, "
+ #       + "ОтгрузкаСоСкладаПоставщика, ВыходСоСтанцииИзПорта, ВПортПерегрузаНаГраницу, ОтГраницыРф, ПриходВПунктНазначения, ПриходНаСклад", 
+
+    if container_statuses:
+
+        for container_status in container_statuses:
+            container_status['Период'] = datetime.datetime.strptime(container_status['Период'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y %H:%M:%S')
+            container_status['ЕстьФайлы'] = False
+
+            for container in container_status['Контейнеры']:
+                container['ЕстьФайлы'] = False
+
+            if len(container_status['Файлы']) > 0:
+                container_status['ЕстьФайлы'] = True
+
+                for curFile in container_status['Файлы']:
+                    curFile['ДатаСоздания'] = datetime.datetime.strptime(curFile['ДатаСоздания'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y')
+                    for container in container_status['Контейнеры']:
+                        if container['ИдентификаторКонтейнера'] == curFile['ИдентификаторКонтейнера']:
+                            container['ЕстьФайлы'] = True
+                    
+
+        container_statuses_h = json.dumps(container_statuses)
+
+    return render(request, 'containerstatuses/index.html', locals())
+
 def skladthr(request):
     boxes = '' \
 '       // BOXES\n' \

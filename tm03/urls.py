@@ -52,6 +52,7 @@ urlpatterns = [
     path('skladthr/', views.skladthr, name='skladthr'),
     path('savesdek/', views.savesdek, name='savesdek'),
     path('sdekreqs/', views.sdekreqs, name='sdekreqs'),
+    path('containerstatuses/', views.containerstatuses, name='containerstatuses'),
     path('', include('users1c.urls')),
     path('', include('login.urls')),
     path('', include('contractors.urls')),

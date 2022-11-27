@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en" >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>Состояние контейнеров</title>
+    {% load static %}
+    <script src="{%  static 'containerstatuses/script.js' %}"></script>
+  </head>
+
+  <body>
+
+    <style>
+
+:root {
+    --bs-blue: #0d6efd;
+    --bs-indigo: #6610f2;
+    --bs-purple: #6f42c1;
+    --bs-pink: #d63384;
+    --bs-red: #dc3545;
+    --bs-orange: #fd7e14;
+    --bs-yellow: #ffc107;
+    --bs-green: #198754;
+    --bs-teal: #20c997;
+    --bs-cyan: #0dcaf0;
+    --bs-white: #fff;
+    --bs-gray: #6c757d;
+    --bs-gray-dark: #343a40;
+    --bs-gray-100: #f8f9fa;
+    --bs-gray-200: #e9ecef;
+    --bs-gray-300: #dee2e6;
+    --bs-gray-400: #ced4da;
+    --bs-gray-500: #adb5bd;
+    --bs-gray-600: #6c757d;
+    --bs-gray-700: #495057;
+    --bs-gray-800: #343a40;
+    --bs-gray-900: #212529;
+    --bs-primary: #0d6efd;
+    --bs-secondary: #6c757d;
+    --bs-success: #198754;
+    --bs-info: #0dcaf0;
+    --bs-warning: #ffc107;
+    --bs-danger: #dc3545;
+    --bs-light: #f8f9fa;
+    --bs-dark: #212529;
+    --bs-primary-rgb: 13,110,253;
+    --bs-secondary-rgb: 108,117,125;
+    --bs-success-rgb: 25,135,84;
+    --bs-info-rgb: 13,202,240;
+    --bs-warning-rgb: 255,193,7;
+    --bs-danger-rgb: 220,53,69;
+    --bs-light-rgb: 248,249,250;
+    --bs-dark-rgb: 33,37,41;
+    --bs-white-rgb: 255,255,255;
+    --bs-black-rgb: 0,0,0;
+    --bs-body-color-rgb: 33,37,41;
+    --bs-body-bg-rgb: 255,255,255;
+    --bs-font-sans-serif: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+    --bs-body-font-family: var(--bs-font-sans-serif);
+    --bs-body-font-size: 1rem;
+    --bs-body-font-weight: 400;
+    --bs-body-line-height: 1.5;
+    --bs-body-color: #212529;
+    --bs-body-bg: #fff
+}
+
+body {
+    margin: 0;
+    font-family: var(--bs-body-font-family);
+}
+
+
+
+
+      .themed-grid-col-header {
+        padding-top: .3rem;
+        padding-bottom: .3rem;
+        background-color: rgba(86, 61, 124, .15);
+        border: 1px solid rgba(86, 61, 124, .2);
+
+      }
+
+      .themed-grid-col-row {
+        float: left;
+        padding-top: .3rem;
+        padding-bottom: .3rem;
+        background-color: rgba(249, 236, 197, .5);
+        border: 1px solid rgba(249, 236, 197, 1);
+
+      }
+
+      .themed-grid-row {
+        
+        display: flex; 
+        width: 100%;
+
+      }
+
+      .w1 {
+        width: 1%;
+      }
+
+      .w2 {
+        width: 2%;
+      }
+
+      .w5 {
+        width: 5%;
+      }
+
+      .w8 {
+        width: 8%;
+      }
+
+      .w9 {
+        width: 9%;
+      }
+
+      .w10 {
+        width: 10%;
+      }
+
+      .w12 {
+        width: 12%;
+      }
+
+      .w15 {
+        width: 15%;
+      }
+
+      .w30 {
+        width: 30%;
+      }
+
+      .w48 {
+        width: 48%;
+      }
+
+      .w50 {
+        width: 50%;
+      }
+
+      .w100 {
+        width: 100%;
+      }
+
+      .tacntr {
+        text-align: center;
+      }
+
+      .themed-grid-row:hover {
+        
+        background-color: rgba(36, 66, 165, 0.5);
+
+      }
+
+      .selected {
+        
+        background-color: rgba(0, 60, 255, 1);
+
+      }
+
+      .selected:hover {
+        
+        background-color: rgb(162, 0, 255);
+
+      }
+
+      .curpoint {
+        cursor: pointer;
+      }
+
+      .h01 {
+        font-size: 1rem;
+      }
+  </style>    
+  <script>
+    var container_statuses_h = '{{ container_statuses_h }}';
+  </script>
+    <h1 class="h01">Состояние контейнеров</h1>
+
+    <div id="container_statuses" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden;">
+      <div style="display: flex; width: 100%; ">
+        <div class="themed-grid-col-header w12 tacntr" >Период</div>
+        <div class="themed-grid-col-header w8 tacntr" >№ по данным перевозчика</div>
+        <div class="themed-grid-col-header w10 tacntr" >Внутренний №</div>
+        <div class="themed-grid-col-header w10 tacntr" >Товар / поставщик</div>
+        <div class="themed-grid-col-header w10 tacntr" >Номер контейнера</div>
+        <div class="themed-grid-col-header w10 tacntr" >Пункт назначения</div>
+        <div class="themed-grid-col-header w15 tacntr" >Статус поставки</div>
+        <div class="themed-grid-col-header w5 tacntr" >Расчетная неделя прибытия на таможню</div>
+        <div class="themed-grid-col-header w10 tacntr" >Получатель</div>
+        <div class="themed-grid-col-header w10 tacntr" >Стоимость фрахта</div>
+      </div>
+
+      {% for cs in container_statuses %}
+      <div id="container_row" class="themed-grid-row w100 curpoint" onclick="onTransportContainerClick('{{ cs.ТранспортныйКонтейнер }}')" transportcontainer="{{ cs.ТранспортныйКонтейнер }}">
+        <div class="themed-grid-col-row w2 tacntr" >{% if cs.ЕстьФайлы %}v{% endif %}</div>
+        <div class="themed-grid-col-row w10 tacntr" >{{ cs.Период }}</div>
+        <div class="themed-grid-col-row w8 tacntr" >{{ cs.НомерПоДаннымПеревозчика }}</div>
+        <div class="themed-grid-col-row w10 tacntr" >{{ cs.ВнутреннийНомер }}</div>
+        <div class="themed-grid-col-row w10 tacntr" >{{ cs.ТоварПоставщик }}</div>
+        <div class="themed-grid-col-row w10 tacntr" >{{ cs.НомерКонтейнера }}</div>
+        <div class="themed-grid-col-row w10 tacntr" >{{ cs.ПунктНазначения }}</div>
+        <div class="themed-grid-col-row w15 " >{{ cs.СтатусПоставки }}</div>
+        <div class="themed-grid-col-row w5 tacntr" >{{ cs.РасчетнаяНеделяПрибытияНаТаможню }}</div>
+        <div class="themed-grid-col-row w10 tacntr" >{{ cs.Получатель }}</div>
+        <div class="themed-grid-col-row w10 tacntr" >{{ cs.СтоимостьФрахта }} {{ cs.Валюта }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div id="containers_files" style="display: flex; width: 100%;" >
+      <div id="containers" style="float: left; width: 30%;" >
+        <h1 class="h01">Контейнеры</h1>
+        <div style="max-height: 25vh; overflow-y: scroll; overflow-x: hidden;">
+          <div style="display: flex; width: 100%; ">
+            <div class="themed-grid-col-header w50 tacntr" >Контейнер</div>
+            <div class="themed-grid-col-header w50 tacntr" >Комментарий</div>
+          </div>
+          <div id="containers_table">
+
+          </div>
+        </div>
+    </div>
+
+      <div id="files" style="float: left; width: 70%;">
+        <h1 class="h01">Файлы</h1>
+        <div style="max-height: 25vh; overflow-y: scroll; overflow-x: hidden;">
+          <div style="display: flex; width: 100%; ">
+            <div class="themed-grid-col-header w50 tacntr" >Имя файла</div>
+            <div class="themed-grid-col-header w10 tacntr" >Автор</div>
+            <div class="themed-grid-col-header w10 tacntr" >Дата создания</div>
+            <div class="themed-grid-col-header w30 tacntr" >Описание</div>
+          </div>
+          <div id="files_table" >
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+<!-- ТоварПоставщик, НомерКонтейнера, ПунктНазначения, СтатусПоставки, "
+ #       + "РасчетнаяНеделяПрибытияНаТаможню, Получатель, СтоимостьФрахта, Валюта, ПроцентОплаты, Перевозчик, ПунктЗагрузки, СтанцияОтправления, "
+ #       + "ОтгрузкаСоСкладаПоставщика, ВыходСоСтанцииИзПорта, ВПортПерегрузаНаГраницу, ОтГраницыРф, ПриходВПунктНазначения, ПриходНаСклад
+ -->
+
+   <a href="/" id="main_menu" class="w100" style="display: block; font-size: 1.25rem; margin: auto; padding: 1rem; margin-top: 2%; text-decoration: none; text-align: center; width: 50%; color: #fff; background-color: #0d6efd; border-radius: 0.5rem;">Главное меню</a>
+</body>
+</html>
