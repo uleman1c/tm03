@@ -135,6 +135,10 @@ body {
         width: 30%;
       }
 
+      .w45 {
+        width: 45%;
+      }
+
       .w48 {
         width: 48%;
       }
@@ -198,7 +202,11 @@ body {
 
       {% for cs in container_statuses %}
       <div id="container_row" class="themed-grid-row w100 curpoint" onclick="onTransportContainerClick('{{ cs.ТранспортныйКонтейнер }}')" transportcontainer="{{ cs.ТранспортныйКонтейнер }}">
-        <div class="themed-grid-col-row w2 tacntr" >{% if cs.ЕстьФайлы %}v{% endif %}</div>
+        <div class="themed-grid-col-row w2 tacntr" >
+          {% if cs.ЕстьФайлы %}
+          <img src="{%  static 'attach.svg' %}" alt="" style="width: 50%;">
+          {% endif %}
+        </div>
         <div class="themed-grid-col-row w10 tacntr" >{{ cs.Период }}</div>
         <div class="themed-grid-col-row w8 tacntr" >{{ cs.НомерПоДаннымПеревозчика }}</div>
         <div class="themed-grid-col-row w10 tacntr" >{{ cs.ВнутреннийНомер }}</div>
