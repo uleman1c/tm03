@@ -21,7 +21,7 @@ function onTransportContainerClick(transportcontainer){
             element.Контейнеры.forEach(сelement => {
                 
                 containers_table.innerHTML = containers_table.innerHTML + '<div id="container_row" class="themed-grid-row curpoint" onclick="onContainerClick(\'' + transportcontainer + '\', \'' + сelement.ИдентификаторКонтейнера +'\')" container="' + сelement.ИдентификаторКонтейнера + '">'
-                +'    <div class="themed-grid-col-row w5 tacntr" >' + (сelement.ЕстьФайлы ? '<img src="/static/attach.svg" alt="" style="width: 50%;">' : '') + '</div>'
+                +'    <div class="themed-grid-col-row w5 tacntr" >' + (сelement.ЕстьФайлы ? '<img src="/static/attach.svg" alt="" style="width: 1em;">' : '') + '</div>'
                 +'    <div class="themed-grid-col-row w45 tacntr" >' + сelement.КраткоеНаименованиеГруза + '</div>'
                     +'<div class="themed-grid-col-row w50 tacntr" >' + сelement.Комментарий + '</div>'
                 +'</div>';
@@ -57,7 +57,7 @@ function onContainerClick(transportcontainer, container) {
 
                     files_table.innerHTML = files_table.innerHTML 
                     + '<div id="container_row" class="themed-grid-row  curpoint" onclick="onFileClick(\'' + сelement.ИдентификаторФайла +'\', \'' + сelement.Расширение + '\')" container="' + сelement.ИдентификаторКонтейнера + '">'
-                    +'    <div class="themed-grid-col-row w50" >' + сelement.Имя + '.' + сelement.Расширение + '</div>'
+                    +'    <div class="themed-grid-col-row w50" >' + '<img src="' + сelement.Картинка + '" alt="" style="width: 1em;">' + сelement.Имя + '.' + сelement.Расширение + '</div>'
                     +'    <div class="themed-grid-col-row w10 tacntr" >' + сelement.Автор + '</div>'
                     +'    <div class="themed-grid-col-row w10 tacntr" >' + сelement.ДатаСоздания + '</div>'
                         +'<div class="themed-grid-col-row w30 tacntr" >' + сelement.Описание + '</div>'

@@ -184,7 +184,18 @@ def containerstatuses(request):
                 container_status['ЕстьФайлы'] = True
 
                 for curFile in container_status['Файлы']:
+                    
                     curFile['ДатаСоздания'] = datetime.datetime.strptime(curFile['ДатаСоздания'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y')
+                    
+                    if curFile['Расширение'] == 'pdf':
+                        curFile['Картинка'] = '/static/pdf.png'
+                    elif curFile['Расширение'] == 'jpg':
+                        curFile['Картинка'] = '/static/jpg.png'
+                    elif curFile['Расширение'] == 'xls' or curFile['Расширение'] == 'xlsx':
+                        curFile['Картинка'] = '/static/xls.png'
+                    elif curFile['Расширение'] == 'doc' or curFile['Расширение'] == 'docx':
+                        curFile['Картинка'] = '/static/doc.png'
+
                     for container in container_status['Контейнеры']:
                         if container['ИдентификаторКонтейнера'] == curFile['ИдентификаторКонтейнера']:
                             container['ЕстьФайлы'] = True
