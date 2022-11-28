@@ -76,7 +76,9 @@ function onContainerClick(transportcontainer, container) {
 
 function onFileClick(fileid, ext) {
 
-    location.href = '../attachedfile?type=ref&name=КонтейнерПрисоединенныеФайлы&id=' + fileid + "&ext=" + ext;
+    locationhref = '../attachedfile?type=ref&name=КонтейнерПрисоединенныеФайлы&id=' + fileid + "&ext=" + ext;
+
+    window.open(locationhref);
 
 }
 
