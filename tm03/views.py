@@ -47,6 +47,10 @@ from requests.structures import CaseInsensitiveDict
 
 from back_server import AUTH_DATA
 
+from bs4 import BeautifulSoup
+import requests as req
+
+
 bitrix_address = AUTH_DATA['bitrix_addr']
 
 
@@ -150,7 +154,38 @@ def sdekreqs(request):
         res['success'] = True
 
 
-    return JsonResponse(res);
+    return JsonResponse(res)
+
+def curencecuorses(request):
+
+    res = dict()
+
+    resp = req.get("https://www.cbr.ru/currency_base/daily/")
+    
+    soup = BeautifulSoup(resp.text)    
+    
+    res['date'] = soup.find(attrs={"class": "datepicker-filter_button"}).text
+
+    curT = soup.find('table', attrs={"class": "data"})
+
+    curCuor = list()
+
+    for curTchild in curT.children:
+        if curTchild.name == 'tbody':
+            for curTstr in curTchild.children:
+                if curTstr.name == 'tr':
+                    vl = list()
+                    for curTstrTr in curTstr.children:
+                        if curTstrTr.name == 'td':
+                            vl.append(curTstrTr.text)
+                    if len(vl) > 0:
+                        curCuor.append(vl)
+
+    res['curencecuorses'] = curCuor
+    res['success'] = True
+
+    return JsonResponse(res)
+
 
 def containerstatuses(request):
 
