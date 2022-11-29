@@ -42,6 +42,7 @@
 <main class="form-signin">
   <form method="post">
        {% csrf_token %}
+       <input type="text" id="ret" name="ret" value="{{ ret }}" style="display: none;">
     <!-- <img class="mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
     <h1 class="h3 mb-3 fw-normal">Авторизация</h1>
 

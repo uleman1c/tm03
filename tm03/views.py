@@ -189,6 +189,9 @@ def curencecuorses(request):
 
 def containerstatuses(request):
 
+    if 'userLogged' not in request.session:
+        return redirect('../login/?ret=/containerstatuses/')
+
     server_address = AUTH_DATA['addr'] + "/hs/dta/obj?request=getTransportContainersStatus"
 
     container_statuses = None

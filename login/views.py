@@ -6,14 +6,34 @@ from users1c.models import Users1c
 
 
 def login(request):
-    if 'userLogged' in request.session:
-        return redirect('/') #w = 1 # return redirect(url('profile', username=session['userLogged']))
-    elif request.method == 'POST' and user_allowed(request.POST['username'], request.POST['pwd']):
-        request.session.permanent = request.POST.get('remember') == 'remember-me'
-        request.session['userLogged'] = request.POST['username'].lower().strip()
-        return redirect('/')
+    
+    if request.method == 'GET':
 
-    return render(request, 'login.html', locals())
+        ret = request.GET.get('ret')
+        if not ret:
+            ret = ''
+
+        if 'userLogged' in request.session:
+            return redirect('/') #w = 1 # return redirect(url('profile', username=session['userLogged']))
+    
+        return render(request, 'login.html', locals())
+
+    elif request.method == 'POST':
+        
+        if user_allowed(request.POST['username'], request.POST['pwd']):
+            request.session.permanent = request.POST.get('remember') == 'remember-me'
+            request.session['userLogged'] = request.POST['username'].lower().strip()
+
+            return redirect('..' + request.POST['ret'])
+
+        else:
+                
+            ret = request.POST.get('ret')
+            if not ret:
+                ret = ''
+
+            return render(request, 'login.html', locals())
+
 
 
 def user_allowed(username, pwd):
