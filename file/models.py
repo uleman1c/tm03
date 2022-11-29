@@ -7,6 +7,7 @@ from django.db import models
 from users1c.models import Users1c
 
 
+
 class File(models.Model):
     user = models.ForeignKey(Users1c, on_delete=models.CASCADE)
 
@@ -18,9 +19,9 @@ class File(models.Model):
     size = models.DecimalField(max_digits=15, decimal_places=0, default=0)
 
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
-    is_deleted = models.BooleanField(default=False);
-    is_folder = models.BooleanField(default=False);
-    parent_id = models.CharField(max_length=40, default='');
+    is_deleted = models.BooleanField(default=False)
+    is_folder = models.BooleanField(default=False)
+    parent_id = models.CharField(max_length=40, default='')
 
     def __str__(self):
         return "Файл № %s от %s, %s" % (self.id, self.created, self.name)
@@ -114,4 +115,28 @@ class UploadlLink(models.Model):
             self.idname = uuid.uuid4()
 
         super(UploadlLink, self).save(force_insert, force_update, using, update_fields)
+
+class FileOwner(models.Model):
+
+    file = models.ForeignKey(File, on_delete=models.CASCADE)
+    user = models.ForeignKey(Users1c, on_delete=models.CASCADE)
+
+    idname = models.CharField(max_length=40, default='')
+
+    type = models.CharField(max_length=40, default='')
+    name = models.CharField(max_length=150, default='')
+
+    comments = models.TextField(blank=True, null=True, default=None)
+
+    created = models.DateTimeField(auto_now_add=True, auto_now=False)
+    is_deleted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "Владелец файла № %s %s.%s" % (self.id, self.type, self.name)
+
+    class Meta:
+        verbose_name = 'Владелец файла'
+        verbose_name_plural = 'Владельцы файлов'
+
+
 
