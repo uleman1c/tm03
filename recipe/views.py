@@ -477,7 +477,10 @@ def sendto1c_recipe(request):
 
             order_info['color_number'] = cco.color_number
             order_info['comment'] = cco.comments
-            order_info['order'] = cco.order.id1c
+
+            order_info['order'] = ''
+            if cco.order:
+                order_info['order'] = cco.order.id1c
 
             order_info['end_product'] = ''
             if cco.end_product:
