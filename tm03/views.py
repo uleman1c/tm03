@@ -2,6 +2,7 @@ import hashlib
 import json
 import urllib
 from datetime import datetime
+import uuid
 
 import pytz
 import os
@@ -285,6 +286,32 @@ def containerstatuses(request):
             res['files'] = files
 
             return JsonResponse(res)
+
+
+        fatt = request.GET.get('fatt')
+        if fatt:
+            cfo = File.objects.filter(idname=fatt).all().get()
+            ext = request.GET.get('ext')
+
+            filespath = 'I:\\Attachments\\'
+
+            curName = fatt + ".tmp"
+        
+            filename = filespath + curName
+
+   #         destination = open(filespath + curName, 'ab+')
+   #         destination.write(request.body)
+   #         destination.close()
+
+   #         filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
+
+#            f = open(filename, 'wb')
+#            f.write(data_dict.content)
+#            f.close()
+
+            # fr = FileResponse(open(filename, 'rb'), filename=cfo.name)
+
+            return FileResponse(open(filename, 'rb'), filename=cfo.name)
 
 
         server_address = AUTH_DATA['addr'] + "/hs/dta/obj?request=getTransportContainersStatus"

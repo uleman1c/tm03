@@ -138,7 +138,7 @@ function onTransportContainerClick(transportcontainer){
                 if(сelement.ИдентификаторКонтейнера == transportcontainer){
 
                     files_table.innerHTML = files_table.innerHTML 
-                    + '<div id="container_row" class="themed-grid-row  curpoint" onclick="onFileClick(\'' + сelement.ИдентификаторФайла +'\', \'' + сelement.Расширение + '\')" container="' + сelement.ИдентификаторКонтейнера + '">'
+                    + '<div id="container_row" class="themed-grid-row  curpoint" onclick="onFileClick(\'' + сelement.ИдентификаторФайла +'\', \'' + сelement.Расширение + '\', ' + сelement.in_t + ')" container="' + сelement.ИдентификаторКонтейнера + '">'
                     +'    <div class="themed-grid-col-row w50" >' + (сelement.Картинка ? '<img src="' + сelement.Картинка + '" alt="" style="width: 1em;">' : '' ) + сelement.Имя + '.' + сelement.Расширение + '</div>'
                     +'    <div class="themed-grid-col-row w10 tacntr" >' + сelement.Автор + '</div>'
                     +'    <div class="themed-grid-col-row w10 tacntr" >' + сelement.ДатаСоздания + '</div>'
@@ -196,7 +196,7 @@ function onContainerClick(transportcontainer, container) {
                 if(сelement.ИдентификаторКонтейнера == container){
 
                     files_table.innerHTML = files_table.innerHTML 
-                    + '<div id="container_row" class="themed-grid-row  curpoint" onclick="onFileClick(\'' + сelement.ИдентификаторФайла +'\', \'' + сelement.Расширение + '\')" container="' + сelement.ИдентификаторКонтейнера + '">'
+                    + '<div id="container_row" class="themed-grid-row  curpoint" onclick="onFileClick(\'' + сelement.ИдентификаторФайла +'\', \'' + сelement.Расширение + '\', ' + сelement.in_t + ')" container="' + сelement.ИдентификаторКонтейнера + '">'
                     +'    <div class="themed-grid-col-row w50" >' + '<img src="' + сelement.Картинка + '" alt="" style="width: 1em;">' + сelement.Имя + '.' + сelement.Расширение + '</div>'
                     +'    <div class="themed-grid-col-row w10 tacntr" >' + сelement.Автор + '</div>'
                     +'    <div class="themed-grid-col-row w10 tacntr" >' + сelement.ДатаСоздания + '</div>'
@@ -214,9 +214,16 @@ function onContainerClick(transportcontainer, container) {
 
 }
 
-function onFileClick(fileid, ext) {
+function onFileClick(fileid, ext, in_t) {
 
-    locationhref = '../attachedfile?type=ref&name=КонтейнерПрисоединенныеФайлы&id=' + fileid + "&ext=" + ext;
+    if(in_t){
+
+        locationhref = '?fatt=' + fileid + "&ext=" + ext;
+
+    } else {
+
+        locationhref = '../attachedfile?type=ref&name=КонтейнерПрисоединенныеФайлы&id=' + fileid + "&ext=" + ext;
+    }
 
     window.open(locationhref);
 
