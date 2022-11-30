@@ -123,6 +123,8 @@ function onTransportContainerClick(transportcontainer){
 
             document.querySelector('#add_file').style = 'display: block';
 
+            document.querySelector('#zip_file').style = 'display: none';
+
             element.Контейнеры.forEach(сelement => {
                 
                 containers_table.innerHTML = containers_table.innerHTML + '<div id="container_row" class="themed-grid-row curpoint" onclick="onContainerClick(\'' + transportcontainer + '\', \'' + сelement.ИдентификаторКонтейнера +'\')" container="' + сelement.ИдентификаторКонтейнера + '">'
