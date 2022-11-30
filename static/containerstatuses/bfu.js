@@ -249,12 +249,12 @@ function big_file_upload_files(f){
 
 function onSelectFile(e){
 
-    type1c = e.srcElement.getAttribute('type1c')
-    name1c = e.srcElement.getAttribute('name1c')
-    id1c = e.srcElement.getAttribute('id1c')
-    is_transcontainer = e.srcElement.getAttribute('is_transcontainer') == 'true'
-    container = e.srcElement.getAttribute('container')
-    transcontainer = e.srcElement.getAttribute('transcontainer')
+    type1c = e.srcElement.getAttribute('type1c');
+    name1c = e.srcElement.getAttribute('name1c');
+    id1c = e.srcElement.getAttribute('id1c');
+    is_transcontainer = e.srcElement.getAttribute('is_transcontainer') == 'true';
+    container = e.srcElement.getAttribute('container');
+    transcontainer = e.srcElement.getAttribute('transcontainer');
     
     big_file_upload_files(e.srcElement.files);
 
