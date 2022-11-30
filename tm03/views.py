@@ -2,7 +2,9 @@ import hashlib
 import json
 import urllib
 from datetime import datetime
+import uuid
 
+import pytz
 import os
 
 import requests
@@ -15,6 +17,7 @@ from RequestHeaders.models import add_request_header
 from accept_cash.models import AcceptCash
 from contractors.models import Contractors
 from currency.models import Currency
+from file.models import File, FileOwner
 from products.models import Products
 from products.models import Characteristics
 from products.models import Warehouses
@@ -192,56 +195,236 @@ def containerstatuses(request):
     if 'userLogged' not in request.session:
         return redirect('../login/?ret=/containerstatuses/')
 
-    server_address = AUTH_DATA['addr'] + "/hs/dta/obj?request=getTransportContainersStatus"
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    container_statuses = None
-    try:
+    if request.method == 'GET':
 
-        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+        ftc = request.GET.get('ftc')
+        if ftc:
+            cf = FileOwner.objects.filter(type='doc', name='ТранспортныйКонтейнер', idname=ftc, is_deleted=False)
 
-        container_statuses = data_dict['responses'][0]['TransportContainersStatus']
+            res = dict()
+            files = list()
 
-    except Exception as ex:
-        tasks_list = list()
-        data_dict = str(sys.exc_info())
+            for ccf in cf:
 
- #   мОстатков.Добавить(Новый Структура("Файлы, Контейнеры, Период, ТранспортныйКонтейнер, НомерПоДаннымПеревозчика, ВнутреннийНомер, ТоварПоставщик, НомерКонтейнера, ПунктНазначения, СтатусПоставки, "
- #       + "РасчетнаяНеделяПрибытияНаТаможню, Получатель, СтоимостьФрахта, Валюта, ПроцентОплаты, Перевозчик, ПунктЗагрузки, СтанцияОтправления, "
- #       + "ОтгрузкаСоСкладаПоставщика, ВыходСоСтанцииИзПорта, ВПортПерегрузаНаГраницу, ОтГраницыРф, ПриходВПунктНазначения, ПриходНаСклад", 
+                spl = ccf.file.name.split('.')
 
-    if container_statuses:
+                ext = ''
+                name = ccf.file.name
+                if len(spl) > 1:
 
-        for container_status in container_statuses:
-            container_status['Период'] = datetime.datetime.strptime(container_status['Период'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y %H:%M:%S')
-            container_status['ЕстьФайлы'] = False
+                    ext = spl[len(spl) - 1]
 
-            for container in container_status['Контейнеры']:
-                container['ЕстьФайлы'] = False
+                    spl.remove(ext)
 
-            if len(container_status['Файлы']) > 0:
-                container_status['ЕстьФайлы'] = True
+                    name = '.'.join(spl)
 
-                for curFile in container_status['Файлы']:
+                files.append({'id': ccf.file.idname, 'name': name, 'ext': ext, 'user': ccf.user.name, 
+                'created': ccf.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+                'comments': ccf.comments })
+
+            res['files'] = files
+
+            return JsonResponse(res)
+
+        fc = request.GET.get('fc')
+        if fc:
+            cf = FileOwner.objects.filter(type='doc', name='Контейнер', idname=fc, is_deleted=False)
+
+            res = dict()
+            files = list()
+
+            for ccf in cf:
+
+                spl = ccf.file.name.split('.')
+
+                ext = ''
+                name = ccf.file.name
+                if len(spl) > 1:
+
+                    ext = spl[len(spl) - 1]
+
+                    spl.remove(ext)
+
+                    name = '.'.join(spl)
+
+                files.append({'id': ccf.file.idname, 'name': name, 'ext': ext, 'user': ccf.user.name, 
+                'created': ccf.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+                'comments': ccf.comments })
+
+            res['files'] = files
+
+            return JsonResponse(res)
+
+        ff = request.GET.get('f')
+        if ff:
+            ccf = File.objects.filter(idname=ff).all().get()
+            cf = FileOwner.objects.filter(file=ccf, is_deleted=False)
+
+            res = dict()
+            files = list()
+
+            for ccf in cf:
+
+                spl = ccf.file.name.split('.')
+
+                ext = ''
+                name = ccf.file.name
+                if len(spl) > 1:
+
+                    ext = spl[len(spl) - 1]
+
+                    spl.remove(ext)
+
+                    name = '.'.join(spl)
+
+                files.append({'id': ccf.file.idname, 'name': name, 'ext': ext, 'user': ccf.user.name, 
+                'created': ccf.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+                'comments': ccf.comments })
+
+            res['files'] = files
+
+            return JsonResponse(res)
+
+
+        fatt = request.GET.get('fatt')
+        if fatt:
+            cfo = File.objects.filter(idname=fatt).all().get()
+            ext = request.GET.get('ext')
+
+            filespath = 'I:\\Attachments\\'
+
+            curName = fatt + ".tmp"
+        
+            filename = filespath + curName
+
+   #         destination = open(filespath + curName, 'ab+')
+   #         destination.write(request.body)
+   #         destination.close()
+
+   #         filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
+
+#            f = open(filename, 'wb')
+#            f.write(data_dict.content)
+#            f.close()
+
+            # fr = FileResponse(open(filename, 'rb'), filename=cfo.name)
+
+            return FileResponse(open(filename, 'rb'), filename=cfo.name)
+
+
+        server_address = AUTH_DATA['addr'] + "/hs/dta/obj?request=getTransportContainersStatus"
+
+        container_statuses = None
+        try:
+
+            data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+
+            container_statuses = data_dict['responses'][0]['TransportContainersStatus']
+
+        except Exception as ex:
+            tasks_list = list()
+            data_dict = str(sys.exc_info())
+
+    #   мОстатков.Добавить(Новый Структура("Файлы, Контейнеры, Период, ТранспортныйКонтейнер, НомерПоДаннымПеревозчика, ВнутреннийНомер, ТоварПоставщик, НомерКонтейнера, ПунктНазначения, СтатусПоставки, "
+    #       + "РасчетнаяНеделяПрибытияНаТаможню, Получатель, СтоимостьФрахта, Валюта, ПроцентОплаты, Перевозчик, ПунктЗагрузки, СтанцияОтправления, "
+    #       + "ОтгрузкаСоСкладаПоставщика, ВыходСоСтанцииИзПорта, ВПортПерегрузаНаГраницу, ОтГраницыРф, ПриходВПунктНазначения, ПриходНаСклад", 
+
+        if container_statuses:
+
+            for container_status in container_statuses:
+                container_status['Период'] = datetime.datetime.strptime(container_status['Период'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y %H:%M:%S')
+                container_status['ЕстьФайлы'] = False
+
+                for container in container_status['Контейнеры']:
+                    container['ЕстьФайлы'] = False
+
+                if len(container_status['Файлы']) > 0:
+                    container_status['ЕстьФайлы'] = True
+
+                    for curFile in container_status['Файлы']:
+                        
+                        curFile['ДатаСоздания'] = datetime.datetime.strptime(curFile['ДатаСоздания'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y')
+                        
+                        if curFile['Расширение'] == 'pdf':
+                            curFile['Картинка'] = '/static/pdf.png'
+                        elif curFile['Расширение'] == 'jpg':
+                            curFile['Картинка'] = '/static/jpg.png'
+                        elif curFile['Расширение'] == 'xls' or curFile['Расширение'] == 'xlsx':
+                            curFile['Картинка'] = '/static/xls.png'
+                        elif curFile['Расширение'] == 'doc' or curFile['Расширение'] == 'docx':
+                            curFile['Картинка'] = '/static/doc.png'
+
+                        for container in container_status['Контейнеры']:
+                            if container['ИдентификаторКонтейнера'] == curFile['ИдентификаторКонтейнера']:
+                                container['ЕстьФайлы'] = True
+                        
+
+            container_statuses_h = json.dumps(container_statuses)
+
+        return render(request, 'containerstatuses/index.html', locals())
+
+    elif request.method == 'POST':
+
+        filespath = 'I:\\Attachments\\'
+        
+        type1c = request.headers.get('type1c')
+        name1c = urllib.parse.unquote(request.headers.get('name1c'))
+        id1c = request.headers.get('id1c')        
+
+        curUid = request.headers.get('id')
+        curparent_id = ''
+        part = request.headers.get('part')
+
+        if not curparent_id:
+            curparent_id = ''
+
+        if File.objects.filter(idname=curUid).count() == 0:
+
+            filename = urllib.parse.unquote(request.headers.get('filename'))
+            co = File.objects.create(user=cu, idname=curUid, name=filename, parent_id=curparent_id)
+
+            cfo = FileOwner.objects.create(user=cu, file=co, type=type1c, name=name1c, idname=id1c)
+
+        else:
+            co = File.objects.filter(idname=curUid).all().get()
+
+#        part = request.POST.get('part')
+        if int(part) >= 0:
+            # cfp = FilePart.objects.create(file=co, number=part)
+            curName = str(co.idname) + ".tmp"
+        
+            destination = open(filespath + curName, 'ab+')
+            destination.write(request.body)
+            destination.close()
+                
+        
+            # stat = os.stat(filespath + curName)
+        
+            co.size = co.size + int(request.headers.get('size'))
+            co.save()
                     
-                    curFile['ДатаСоздания'] = datetime.datetime.strptime(curFile['ДатаСоздания'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y')
-                    
-                    if curFile['Расширение'] == 'pdf':
-                        curFile['Картинка'] = '/static/pdf.png'
-                    elif curFile['Расширение'] == 'jpg':
-                        curFile['Картинка'] = '/static/jpg.png'
-                    elif curFile['Расширение'] == 'xls' or curFile['Расширение'] == 'xlsx':
-                        curFile['Картинка'] = '/static/xls.png'
-                    elif curFile['Расширение'] == 'doc' or curFile['Расширение'] == 'docx':
-                        curFile['Картинка'] = '/static/doc.png'
+            # if part:
+                # cfp.size = stat.st_size
+                # cfp.save()
+                        
+        else:
+            size = request.headers.get('size')
+            
+            if co.size != int(size):
+                co.size = 0
+                co.save()
 
-                    for container in container_status['Контейнеры']:
-                        if container['ИдентификаторКонтейнера'] == curFile['ИдентификаторКонтейнера']:
-                            container['ЕстьФайлы'] = True
-                    
+        res = dict()
+        res['success'] = True
 
-        container_statuses_h = json.dumps(container_statuses)
+        return JsonResponse(res)
 
-    return render(request, 'containerstatuses/index.html', locals())
+
+
+
+
 
 def skladthr(request):
     boxes = '' \

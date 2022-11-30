@@ -197,7 +197,7 @@ def files(request):
 
 
 
-            lfiles = File.objects.filter(user=cu, is_folder=False, name__icontains=search_file, is_deleted=False).order_by('-created').all()[:20]
+            lfiles = File.objects.filter(user=cu, is_folder=False, name__icontains=search_file, is_deleted=False, fileowner__isnull=True).order_by('-created').all()[:20]
 
         else:
 
@@ -219,7 +219,7 @@ def files(request):
 
                 affFolders.insert(0, firstFolder[0])
 
-            lfiles = File.objects.filter(user=cu,  parent_id=parent_id, is_folder=False, is_deleted=False).order_by('-created').all()[:20]
+            lfiles = File.objects.filter(user=cu,  parent_id=parent_id, is_folder=False, is_deleted=False, fileowner__isnull=True).order_by('-created').all()[:20]
 
         allfiles = list(lfiles)
 
