@@ -53,6 +53,7 @@ from back_server import AUTH_DATA
 from bs4 import BeautifulSoup
 import requests as req
 
+import zipfile
 
 bitrix_address = AUTH_DATA['bitrix_addr']
 
@@ -312,6 +313,132 @@ def containerstatuses(request):
             # fr = FileResponse(open(filename, 'rb'), filename=cfo.name)
 
             return FileResponse(open(filename, 'rb'), filename=cfo.name)
+
+        ziptc = request.GET.get('ziptc')
+        if ziptc:
+            
+            filespath = 'I:\\Attachments\\'
+
+            zipname = filespath + ziptc + ".zip"
+            archive = zipfile.ZipFile(zipname, mode="w", allowZip64=False, compression=zipfile.ZIP_DEFLATED, strict_timestamps=False)
+
+            server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=ТранспортныйКонтейнер&id=' + zipc
+
+            res = dict()
+
+            res['result'] = True
+
+            try:
+
+                data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+
+            except Exception as ex:
+                tasks_list = list()
+                res['message'] = str(sys.exc_info())
+                res['result'] = False
+
+            for attf in data_dict['responses'][0]['AttachedFiles']:
+
+                server_address = AUTH_DATA['addr'] + '/hs/dta/files/ref/КонтейнерПрисоединенныеФайлы/' + attf['Идентификатор'] + '/dfdghfgd'
+
+                res = dict()
+
+                res['result'] = True
+
+                try:
+
+                    data_file = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
+
+                except Exception as ex:
+                    tasks_list = list()
+                    res['message'] = str(sys.exc_info())
+                    res['result'] = False
+
+                ext = attf['Расширение']
+                filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
+
+                f = open(filename, 'wb')
+                f.write(data_file.content)
+                f.close()
+
+                archive.write(filename, arcname=attf['Имя'] + '.' + ext)
+
+
+
+
+
+
+            cf = FileOwner.objects.filter(type='doc', name='ТранспортныйКонтейнер', idname=ziptc, is_deleted=False)
+
+            for ccf in cf:
+                archive.write(filespath + ccf.file.idname + '.tmp', arcname=ccf.file.name)
+
+            archive.close()
+
+            return FileResponse(open(zipname, 'rb'))
+
+
+        zipc = request.GET.get('zipc')
+        if zipc:
+            
+            filespath = 'I:\\Attachments\\'
+
+            zipname = filespath + zipc + ".zip"
+            archive = zipfile.ZipFile(zipname, mode="w", allowZip64=False, compression=zipfile.ZIP_DEFLATED, strict_timestamps=False)
+
+            server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=Контейнер&id=' + zipc
+
+            res = dict()
+
+            res['result'] = True
+
+            try:
+
+                data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+
+            except Exception as ex:
+                tasks_list = list()
+                res['message'] = str(sys.exc_info())
+                res['result'] = False
+
+            for attf in data_dict['responses'][0]['AttachedFiles']:
+
+                server_address = AUTH_DATA['addr'] + '/hs/dta/files/ref/КонтейнерПрисоединенныеФайлы/' + attf['Идентификатор'] + '/dfdghfgd'
+
+                res = dict()
+
+                res['result'] = True
+
+                try:
+
+                    data_file = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
+
+                except Exception as ex:
+                    tasks_list = list()
+                    res['message'] = str(sys.exc_info())
+                    res['result'] = False
+
+                ext = attf['Расширение']
+                filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
+
+                f = open(filename, 'wb')
+                f.write(data_file.content)
+                f.close()
+
+                archive.write(filename, arcname=attf['Имя'] + '.' + ext)
+
+
+            cf = FileOwner.objects.filter(type='doc', name='Контейнер', idname=ziptc, is_deleted=False)
+
+            for ccf in cf:
+                archive.write(filespath + ccf.file.idname + '.tmp', arcname=ccf.file.name)
+
+            archive.close()
+
+            return FileResponse(open(zipname, 'rb'))
+
+
+
 
 
         server_address = AUTH_DATA['addr'] + "/hs/dta/obj?request=getTransportContainersStatus"

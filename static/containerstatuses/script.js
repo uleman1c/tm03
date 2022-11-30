@@ -137,6 +137,8 @@ function onTransportContainerClick(transportcontainer){
                 
                 if(сelement.ИдентификаторКонтейнера == transportcontainer){
 
+                    document.querySelector('#zip_file').style = 'display: block';
+
                     files_table.innerHTML = files_table.innerHTML 
                     + '<div id="container_row" class="themed-grid-row  curpoint" onclick="onFileClick(\'' + сelement.ИдентификаторФайла +'\', \'' + сelement.Расширение + '\', ' + сelement.in_t + ')" container="' + сelement.ИдентификаторКонтейнера + '">'
                     +'    <div class="themed-grid-col-row w50" >' + (сelement.Картинка ? '<img src="' + сelement.Картинка + '" alt="" style="width: 1em;">' : '' ) + сelement.Имя + '.' + сelement.Расширение + '</div>'
@@ -168,6 +170,8 @@ function onContainerClick(transportcontainer, container) {
     files_table = document.querySelector('#files_table');
     files_table.innerHTML = '';
 
+    document.querySelector('#zip_file').style = 'display: none';
+
     ctj.forEach(element => {
         
         if(element.ТранспортныйКонтейнер == transportcontainer){
@@ -194,6 +198,8 @@ function onContainerClick(transportcontainer, container) {
             element.Файлы.forEach(сelement => {
                 
                 if(сelement.ИдентификаторКонтейнера == container){
+
+                    document.querySelector('#zip_file').style = 'display: block';
 
                     files_table.innerHTML = files_table.innerHTML 
                     + '<div id="container_row" class="themed-grid-row  curpoint" onclick="onFileClick(\'' + сelement.ИдентификаторФайла +'\', \'' + сelement.Расширение + '\', ' + сelement.in_t + ')" container="' + сelement.ИдентификаторКонтейнера + '">'
@@ -229,3 +235,23 @@ function onFileClick(fileid, ext, in_t) {
 
 }
 
+function zipFile() {
+
+    inputFile = document.querySelector("#inputFile");
+
+    container = inputFile.getAttribute('container');
+    transcontainer = inputFile.getAttribute('transcontainer');
+
+    if(container == ''){
+
+        locationhref = '?ziptc=' + transcontainer;
+
+    } else {
+
+        locationhref = '?zipc=' + container;
+
+    }
+
+    window.open(locationhref);
+
+}
