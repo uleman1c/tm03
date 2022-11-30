@@ -319,7 +319,7 @@ def containerstatuses(request):
             
             filespath = 'I:\\Attachments\\'
 
-            zipname = filespath + ziptc + ".zip"
+            zipname = filespath + str(uuid.uuid4()) + ".zip"
             archive = zipfile.ZipFile(zipname, mode="w", allowZip64=False, compression=zipfile.ZIP_DEFLATED, strict_timestamps=False)
 
             server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=ТранспортныйКонтейнер&id=' + zipc
@@ -383,7 +383,7 @@ def containerstatuses(request):
             
             filespath = 'I:\\Attachments\\'
 
-            zipname = filespath + zipc + ".zip"
+            zipname = filespath + str(uuid.uuid4()) + ".zip"
             archive = zipfile.ZipFile(zipname, mode="w", allowZip64=False, compression=zipfile.ZIP_DEFLATED, strict_timestamps=False)
 
             server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=Контейнер&id=' + zipc
