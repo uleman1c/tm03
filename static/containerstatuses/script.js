@@ -232,7 +232,7 @@ function fileRow(ИдентификаторКонтейнера, Идентиф�
     
     return      '<div id="container_row" class="themed-grid-row " >'
             +'      <div class="themed-grid-col-row w50" >' 
-            +'         <a href="../fileversions?name=' + objname + '&id=' + ИдентификаторКонтейнера + '&cid=' + ИдентификаторФайла + '&in_t=' + (in_t ? '1' : '0') + '" class="flex curpoint" style="display: contents;">'
+            +'         <a href="../fileversions?name=' + objname + '&id=' + ИдентификаторКонтейнера + '&cid=' + ИдентификаторФайла + '&in_t=' + (in_t ? '1' : '0') + '&cname=' + document.querySelector('#inputFile').getAttribute('container_text') + '" class="flex curpoint" style="display: contents;">'
             +'             <img src="/static/exchange.png" alt="" style="width: 2em; margin-top: .3em; margin-left: 2%; margin-right: 2%;" >'
             +'         </a>'
             +'        <div class="curpoint" style="display: contents;" onclick="onFileClick(\'' + (ИдентификаторВерсии ? ИдентификаторВерсии : ИдентификаторФайла) +'\', \'' + Расширение + '\', ' + (ИдентификаторВерсии ? true : in_t) + ')" container="' + ИдентификаторКонтейнера + '">'

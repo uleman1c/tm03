@@ -106,6 +106,12 @@ function sendNext() {
 
         if (startingByte == 0) {
 
+            if(numFile > 0){
+                
+                sendMessageToContainerFilesInfoBot(files[numFile-1].name);
+
+            }
+
             uuid = newUid();
 
         }
@@ -119,6 +125,8 @@ function sendNext() {
 
 
     } else {
+
+        sendMessageToContainerFilesInfoBot(files[numFile-1].name);
 
         location.reload();
 
@@ -189,3 +197,34 @@ function onFileClick(fileid, in_t, ext) {
 
 }
 
+function sendMessageToContainerFilesInfoBot(container_file_name) {
+    
+    container_text = document.querySelector('#inputFile').getAttribute('container_text')
+        + ", файл " + document.querySelector('#name_ext').getAttribute('name_ext')
+        + ": присоединена версия " + container_file_name;
+
+    var req = new XMLHttpRequest();
+
+    var url = "?smtcfib=" + container_text;
+    req.open("GET", url, true);
+    req.onreadystatechange = function () { // (3)
+
+        if (this.readyState != 4) return;
+
+        // button.innerHTML = 'Готово!';
+
+        if (this.status != 200) {
+
+            // alert(this.status + ': ' + this.statusText);
+
+        } else {
+
+
+        }
+
+    }
+
+    req.send();
+
+
+}

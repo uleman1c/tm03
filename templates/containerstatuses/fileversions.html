@@ -17,9 +17,9 @@
         <div id="add_file" class="flex curpoint" onclick="document.querySelector('.inputFile').click();">
           <img src="/static/plus.svg" alt="" style="width: 2em; margin-top: .3em;" >
           <h1 class="h01" id="procent"></h1>
-          <input id="inputFile" class="inputFile" onchange="onSelectFile(event)" type="file" style="display: none;" ownername="{{ ccfp.ownername }}" ownerid="{{ ccfp.ownerid }}" fileid="{{ ccfp.Идентификатор }}">
+          <input id="inputFile" class="inputFile" onchange="onSelectFile(event)" type="file" style="display: none;" container_text="{{ container_name }}" ownername="{{ ccfp.ownername }}" ownerid="{{ ccfp.ownerid }}" fileid="{{ ccfp.Идентификатор }}">
         </div>
-        <h1 class="h01">Версии файла {{ name_ext }}</h1>
+        <h1 class="h01" id="name_ext" name_ext="{{ name_ext }}">Версии файла {{ name_ext }}</h1>
       </div>
       <div id="container_statuses" >
         <div style="display: flex; width: 100%; ">

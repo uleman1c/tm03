@@ -657,9 +657,15 @@ def fileversions(request):
 
     if request.method == 'GET':
 
+        container_name = request.GET.get('cname')
+
         fatt = request.GET.get('fatt')
         if fatt:
             return file_attachment(fatt, request.GET.get('ext'))
+
+        smtcfib = request.GET.get('smtcfib')
+        if smtcfib:
+            send_msg_to_container_files_info_bot(smtcfib)
 
         ownerid = request.GET.get('id')
         ownername = request.GET.get('name')
@@ -694,9 +700,9 @@ def fileversions(request):
             ccf = File.objects.filter(idname=cid).all().get()
         
             ext = ''
-            name = ccf.file.name
+            name = ccf.name
 
-            spl = ccf.file.name.split('.')
+            spl = ccf.name.split('.')
 
             if len(spl) > 1:
 
