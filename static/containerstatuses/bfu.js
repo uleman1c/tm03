@@ -5,6 +5,8 @@ var id1c = ''
 var transcontainer = ''
 var container = ''
 
+var idexch = ''
+
 var is_transcontainer = false
 
 var files = '';
@@ -259,3 +261,4 @@ function onSelectFile(e){
     big_file_upload_files(e.srcElement.files);
 
 }
+

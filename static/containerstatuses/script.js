@@ -6,6 +6,19 @@ document.addEventListener("DOMContentLoaded", function(){
 
     ctj.forEach(element => {
         
+        element.Файлы.forEach(felement => {
+            
+            var responseText = requestGet("?lfv=" + felement.ИдентификаторФайла);
+        
+            versions = JSON.parse(responseText)['version'];
+            
+            if(versions.length){
+                felement.Версия = versions[0].version;
+                felement.ИдентификаторВерсии = versions[0].id;
+            }
+
+        });
+
         var responseText = requestGet("?ftc=" + element.ТранспортныйКонтейнер);
     
         JSON.parse(responseText)['files'].forEach(felement => {
@@ -17,9 +30,9 @@ document.addEventListener("DOMContentLoaded", function(){
 
             element.Файлы.push({'ИдентификаторКонтейнера': element.ТранспортныйКонтейнер, 'ИдентификаторФайла': felement.id, 'Автор': felement.user,
             'ДатаСоздания': felement.created, 'Имя': felement.name, 'Описание': comments, 'Расширение':felement.ext, 'in_t':true,
-            'Картинка': picByExt(felement.ext)});
+            'Картинка': picByExt(felement.ext), 'Версия': felement.version});
 
-            document.querySelector('#pic_' + element.ТранспортныйКонтейнер).innerHTML = '<img src="/static/attach.svg" alt="" style="width: 1em;">';
+            document.querySelector('#pic_' + element.ТранспортныйКонтейнер).innerHTML = '<img src="/static/attach.svg" alt="" style="width: 1em; ">';
         });
 
         element.Контейнеры.forEach(celement => {
@@ -37,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
                 element.Файлы.push({'ИдентификаторКонтейнера': celement.ИдентификаторКонтейнера, 'ИдентификаторФайла': felement.id, 'Автор': felement.user,
                 'ДатаСоздания': felement.created, 'Имя': felement.name, 'Описание': comments, 'Расширение':felement.ext, 'in_t':true,
-                'Картинка': picByExt(felement.ext)});
+                'Картинка': picByExt(felement.ext), 'Версия': felement.version});
 
                 //document.querySelector('#pic_' + celement.ИдентификаторКонтейнера).innerHTML = '<img src="/static/attach.svg" alt="" style="width: 1em;">';
             });
@@ -142,13 +155,8 @@ function onTransportContainerClick(transportcontainer){
                     document.querySelector('#zip_file').style = 'display: block';
 
                     files_table.innerHTML = files_table.innerHTML 
-                    + '<div id="container_row" class="themed-grid-row  curpoint" onclick="onFileClick(\'' + сelement.ИдентификаторФайла +'\', \'' + сelement.Расширение + '\', ' + сelement.in_t + ')" container="' + сelement.ИдентификаторКонтейнера + '">'
-                    +'    <div class="themed-grid-col-row w50" >' + (сelement.Картинка ? '<img src="' + сelement.Картинка + '" alt="" style="width: 1em;">' : '' ) + сelement.Имя + '.' + сelement.Расширение + '</div>'
-                    +'    <div class="themed-grid-col-row w10 tacntr" >' + сelement.Автор + '</div>'
-                    +'    <div class="themed-grid-col-row w10 tacntr" >' + сelement.ДатаСоздания + '</div>'
-                        +'<div class="themed-grid-col-row w30 tacntr" >' + сelement.Описание + '</div>'
-                    +'</div>';
-
+                    + fileRow(сelement.ИдентификаторКонтейнера, сelement.ИдентификаторФайла, сelement.Имя, сelement.Расширение,
+                        сelement.Картинка, сelement.Автор, сelement.ДатаСоздания, сelement.Описание, celement.in_t, 'ТранспортныйКонтейнер', сelement.Версия); 
                 }
 
             });
@@ -203,14 +211,10 @@ function onContainerClick(transportcontainer, container) {
 
                     document.querySelector('#zip_file').style = 'display: block';
 
-                    files_table.innerHTML = files_table.innerHTML 
-                    + '<div id="container_row" class="themed-grid-row  curpoint" onclick="onFileClick(\'' + сelement.ИдентификаторФайла +'\', \'' + сelement.Расширение + '\', ' + сelement.in_t + ')" container="' + сelement.ИдентификаторКонтейнера + '">'
-                    +'    <div class="themed-grid-col-row w50" >' + '<img src="' + сelement.Картинка + '" alt="" style="width: 1em;">' + сelement.Имя + '.' + сelement.Расширение + '</div>'
-                    +'    <div class="themed-grid-col-row w10 tacntr" >' + сelement.Автор + '</div>'
-                    +'    <div class="themed-grid-col-row w10 tacntr" >' + сelement.ДатаСоздания + '</div>'
-                        +'<div class="themed-grid-col-row w30 tacntr" >' + сelement.Описание + '</div>'
-                    +'</div>';
-
+                    files_table.innerHTML = files_table.innerHTML
+                        + fileRow(сelement.ИдентификаторКонтейнера, сelement.ИдентификаторФайла, сelement.Имя, сelement.Расширение,
+                            сelement.Картинка, сelement.Автор, сelement.ДатаСоздания, сelement.Описание, сelement.in_t, 'Контейнер', 
+                            сelement.Версия, сelement.ИдентификаторВерсии); 
                 }
 
             });
@@ -219,6 +223,24 @@ function onContainerClick(transportcontainer, container) {
 
     });
 
+
+}
+
+function fileRow(ИдентификаторКонтейнера, ИдентификаторФайла, Имя, Расширение, Картинка, Автор, ДатаСоздания, Описание, in_t, objname, version, ИдентификаторВерсии) {
+    
+    return      '<div id="container_row" class="themed-grid-row " >'
+            +'      <div class="themed-grid-col-row w50" >' 
+            +'         <a href="../fileversions?name=' + objname + '&id=' + ИдентификаторКонтейнера + '&cid=' + ИдентификаторФайла + '&in_t=' + (in_t ? '1' : '0') + '" class="flex curpoint" style="display: contents;">'
+            +'             <img src="/static/exchange.png" alt="" style="width: 2em; margin-top: .3em; margin-left: 2%; margin-right: 2%;" >'
+            +'         </a>'
+            +'        <div class="curpoint" style="display: contents;" onclick="onFileClick(\'' + (ИдентификаторВерсии ? ИдентификаторВерсии : ИдентификаторФайла) +'\', \'' + Расширение + '\', ' + (ИдентификаторВерсии ? true : in_t) + ')" container="' + ИдентификаторКонтейнера + '">'
+            +'         <img src="' + Картинка + '" alt="" style="width: 1em; margin-right: 2%;">' + Имя + '.' + Расширение + (version ? ' ' + version : '')
+            +'        </div>'
+            +'      </div>'
+            +'      <div class="themed-grid-col-row w10 tacntr" >' + Автор + '</div>'
+            +'      <div class="themed-grid-col-row w10 tacntr" >' + ДатаСоздания + '</div>'
+            +'      <div class="themed-grid-col-row w30 tacntr" >' + Описание + '</div>'
+            +'   </div>';
 
 }
 
@@ -257,3 +279,21 @@ function zipFile() {
     window.open(locationhref);
 
 }
+
+function addFile() {
+    
+    document.querySelector('#exchange_id').value = '';
+
+    document.querySelector('#inputFile').click();
+
+}
+
+function exchangeFile(id1c){
+
+    document.querySelector('#exchange_id').value = id1c;
+
+    document.querySelector('#inputFile').click();
+
+}
+
+

@@ -17,7 +17,7 @@ from RequestHeaders.models import add_request_header
 from accept_cash.models import AcceptCash
 from contractors.models import Contractors
 from currency.models import Currency
-from file.models import File, FileOwner
+from file.models import File, FileOwner, FileVersion
 from products.models import Products
 from products.models import Characteristics
 from products.models import Warehouses
@@ -191,6 +191,297 @@ def curencecuorses(request):
     return JsonResponse(res)
 
 
+def transport_container_files(ftc):
+
+    cf = FileOwner.objects.filter(type='doc', name='ТранспортныйКонтейнер', idname=ftc, is_deleted=False)
+
+    res = dict()
+    files = list()
+
+    for ccf in cf:
+
+        last_version_file = ccf.file
+
+        last_version = None
+        query_last_version = FileVersion.objects.filter(file_id=last_version_file.idname).order_by('-created')[:1]
+        
+        if query_last_version.count() > 0:
+        
+            last_version = query_last_version.all().get()
+
+            last_version_file = File.objects.filter(idname=last_version.version_id).all().get()
+
+
+        name = last_version_file.name
+        spl = name.split('.')
+
+        ext = ''
+        if len(spl) > 1:
+
+            ext = spl[len(spl) - 1]
+
+            spl.remove(ext)
+
+            name = '.'.join(spl)
+
+        version_text = ''
+        if last_version: 
+            version_text = '(версия ' + str(last_version.number) + ')' 
+
+        files.append({'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
+        'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+        'comments': last_version_file.comments, 'version': version_text})
+
+    res['files'] = files
+
+    return JsonResponse(res)
+
+def last_file_version(lfv):
+
+    res = dict()
+    files = list()
+
+    last_version = None
+    query_last_version = FileVersion.objects.filter(file_id=lfv).order_by('-created')[:1]
+    
+    if query_last_version.count() > 0:
+    
+        last_version = query_last_version.all().get()
+
+        last_version_file = File.objects.filter(idname=last_version.version_id).all().get()
+
+
+        name = last_version_file.name
+        spl = name.split('.')
+
+        ext = ''
+        if len(spl) > 1:
+
+            ext = spl[len(spl) - 1]
+
+            spl.remove(ext)
+
+            name = '.'.join(spl)
+
+        version_text = ''
+        if last_version: 
+            version_text = '(версия ' + str(last_version.number) + ')' 
+
+        files.append({'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
+        'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+        'comments': last_version_file.comments, 'version': version_text})
+
+    res['version'] = files
+
+    return JsonResponse(res)
+
+def container_files(fc):
+
+    cf = FileOwner.objects.filter(type='doc', name='Контейнер', idname=fc, is_deleted=False)
+
+    res = dict()
+    files = list()
+
+    for ccf in cf:
+
+        last_version_file = ccf.file
+
+        last_version = None
+        query_last_version = FileVersion.objects.filter(file_id=last_version_file.idname).order_by('-created')[:1]
+        
+        if query_last_version.count() > 0:
+        
+            last_version = query_last_version.all().get()
+
+            last_version_file = File.objects.filter(idname=last_version.version_id).all().get()
+
+        spl = ccf.file.name.split('.')
+
+        name = last_version_file.name
+        ext = ''
+
+        if len(spl) > 1:
+
+            ext = spl[len(spl) - 1]
+
+            spl.remove(ext)
+
+            name = '.'.join(spl)
+
+        version_text = ''
+        if last_version: 
+            version_text = '(версия ' + str(last_version.number) + ')' 
+
+        files.append({'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
+        'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+        'comments': last_version_file.comments, 'version': version_text})
+
+    res['files'] = files
+
+    return JsonResponse(res)
+
+def file_by_id(ff):
+
+    ccf = File.objects.filter(idname=ff).all().get()
+    cf = FileOwner.objects.filter(file=ccf, is_deleted=False)
+
+    res = dict()
+    files = list()
+
+    for ccf in cf:
+
+        spl = ccf.file.name.split('.')
+
+        ext = ''
+        name = ccf.file.name
+        if len(spl) > 1:
+
+            ext = spl[len(spl) - 1]
+
+            spl.remove(ext)
+
+            name = '.'.join(spl)
+
+        files.append({'id': ccf.file.idname, 'name': name, 'ext': ext, 'user': ccf.user.name, 
+            'created': ccf.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+            'comments': ccf.comments })
+
+    res['files'] = files
+
+    return JsonResponse(res)
+
+def file_attachment(fatt, ext):
+
+    cfo = File.objects.filter(idname=fatt).all().get()
+
+    filespath = 'I:\\Attachments\\'
+
+    curName = fatt + ".tmp"
+
+    filename = filespath + curName
+
+    return FileResponse(open(filename, 'rb'), filename=cfo.name)
+
+
+def zip_transport_container_files(ziptc):
+
+    filespath = 'I:\\Attachments\\'
+
+    zipname = filespath + str(uuid.uuid4()) + ".zip"
+    archive = zipfile.ZipFile(zipname, mode="w", allowZip64=False, compression=zipfile.ZIP_DEFLATED, strict_timestamps=False)
+
+    server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=ТранспортныйКонтейнер&id=' + ziptc
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+
+    except Exception as ex:
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+    for attf in data_dict['responses'][0]['AttachedFiles']:
+
+        server_address = AUTH_DATA['addr'] + '/hs/dta/files/ref/КонтейнерПрисоединенныеФайлы/' + attf['Идентификатор'] + '/dfdghfgd'
+
+        res = dict()
+
+        res['result'] = True
+
+        try:
+
+            data_file = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
+
+        except Exception as ex:
+            tasks_list = list()
+            res['message'] = str(sys.exc_info())
+            res['result'] = False
+
+        ext = attf['Расширение']
+        filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
+
+        f = open(filename, 'wb')
+        f.write(data_file.content)
+        f.close()
+
+        archive.write(filename, arcname=attf['Имя'] + '.' + ext)
+
+    cf = FileOwner.objects.filter(type='doc', name='ТранспортныйКонтейнер', idname=ziptc, is_deleted=False)
+
+    for ccf in cf:
+        archive.write(filespath + ccf.file.idname + '.tmp', arcname=ccf.file.name)
+
+    archive.close()
+
+    return FileResponse(open(zipname, 'rb'))
+
+
+def zip_container_files(zipc):
+
+    filespath = 'I:\\Attachments\\'
+
+    zipname = filespath + str(uuid.uuid4()) + ".zip"
+    archive = zipfile.ZipFile(zipname, mode="w", allowZip64=False, compression=zipfile.ZIP_DEFLATED, strict_timestamps=False)
+
+    server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=Контейнер&id=' + zipc
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+
+    except Exception as ex:
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+    for attf in data_dict['responses'][0]['AttachedFiles']:
+
+        server_address = AUTH_DATA['addr'] + '/hs/dta/files/ref/КонтейнерПрисоединенныеФайлы/' + attf['Идентификатор'] + '/dfdghfgd'
+
+        res = dict()
+
+        res['result'] = True
+
+        try:
+
+            data_file = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
+
+        except Exception as ex:
+            tasks_list = list()
+            res['message'] = str(sys.exc_info())
+            res['result'] = False
+
+        ext = attf['Расширение']
+        filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
+
+        f = open(filename, 'wb')
+        f.write(data_file.content)
+        f.close()
+
+        archive.write(filename, arcname=attf['Имя'] + '.' + ext)
+
+
+    cf = FileOwner.objects.filter(type='doc', name='Контейнер', idname=zipc, is_deleted=False)
+
+    for ccf in cf:
+        archive.write(filespath + ccf.file.idname + '.tmp', arcname=ccf.file.name)
+
+    archive.close()
+
+    return FileResponse(open(zipname, 'rb'))
+
+
+
+
 def containerstatuses(request):
 
     if 'userLogged' not in request.session:
@@ -202,242 +493,32 @@ def containerstatuses(request):
 
         ftc = request.GET.get('ftc')
         if ftc:
-            cf = FileOwner.objects.filter(type='doc', name='ТранспортныйКонтейнер', idname=ftc, is_deleted=False)
+            return transport_container_files(ftc)
 
-            res = dict()
-            files = list()
-
-            for ccf in cf:
-
-                spl = ccf.file.name.split('.')
-
-                ext = ''
-                name = ccf.file.name
-                if len(spl) > 1:
-
-                    ext = spl[len(spl) - 1]
-
-                    spl.remove(ext)
-
-                    name = '.'.join(spl)
-
-                files.append({'id': ccf.file.idname, 'name': name, 'ext': ext, 'user': ccf.user.name, 
-                'created': ccf.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
-                'comments': ccf.comments })
-
-            res['files'] = files
-
-            return JsonResponse(res)
+        lfv = request.GET.get('lfv')
+        if lfv:
+            return last_file_version(lfv)
 
         fc = request.GET.get('fc')
         if fc:
-            cf = FileOwner.objects.filter(type='doc', name='Контейнер', idname=fc, is_deleted=False)
-
-            res = dict()
-            files = list()
-
-            for ccf in cf:
-
-                spl = ccf.file.name.split('.')
-
-                ext = ''
-                name = ccf.file.name
-                if len(spl) > 1:
-
-                    ext = spl[len(spl) - 1]
-
-                    spl.remove(ext)
-
-                    name = '.'.join(spl)
-
-                files.append({'id': ccf.file.idname, 'name': name, 'ext': ext, 'user': ccf.user.name, 
-                'created': ccf.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
-                'comments': ccf.comments })
-
-            res['files'] = files
-
-            return JsonResponse(res)
+            return container_files(fc)
 
         ff = request.GET.get('f')
         if ff:
-            ccf = File.objects.filter(idname=ff).all().get()
-            cf = FileOwner.objects.filter(file=ccf, is_deleted=False)
-
-            res = dict()
-            files = list()
-
-            for ccf in cf:
-
-                spl = ccf.file.name.split('.')
-
-                ext = ''
-                name = ccf.file.name
-                if len(spl) > 1:
-
-                    ext = spl[len(spl) - 1]
-
-                    spl.remove(ext)
-
-                    name = '.'.join(spl)
-
-                files.append({'id': ccf.file.idname, 'name': name, 'ext': ext, 'user': ccf.user.name, 
-                'created': ccf.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
-                'comments': ccf.comments })
-
-            res['files'] = files
-
-            return JsonResponse(res)
-
+            return file_by_id(ff)
 
         fatt = request.GET.get('fatt')
         if fatt:
-            cfo = File.objects.filter(idname=fatt).all().get()
-            ext = request.GET.get('ext')
-
-            filespath = 'I:\\Attachments\\'
-
-            curName = fatt + ".tmp"
-        
-            filename = filespath + curName
-
-   #         destination = open(filespath + curName, 'ab+')
-   #         destination.write(request.body)
-   #         destination.close()
-
-   #         filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
-
-#            f = open(filename, 'wb')
-#            f.write(data_dict.content)
-#            f.close()
-
-            # fr = FileResponse(open(filename, 'rb'), filename=cfo.name)
-
-            return FileResponse(open(filename, 'rb'), filename=cfo.name)
+            return file_attachment(fatt, request.GET.get('ext'))
 
         ziptc = request.GET.get('ziptc')
         if ziptc:
-            
-            filespath = 'I:\\Attachments\\'
-
-            zipname = filespath + str(uuid.uuid4()) + ".zip"
-            archive = zipfile.ZipFile(zipname, mode="w", allowZip64=False, compression=zipfile.ZIP_DEFLATED, strict_timestamps=False)
-
-            server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=ТранспортныйКонтейнер&id=' + zipc
-
-            res = dict()
-
-            res['result'] = True
-
-            try:
-
-                data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
-
-            except Exception as ex:
-                tasks_list = list()
-                res['message'] = str(sys.exc_info())
-                res['result'] = False
-
-            for attf in data_dict['responses'][0]['AttachedFiles']:
-
-                server_address = AUTH_DATA['addr'] + '/hs/dta/files/ref/КонтейнерПрисоединенныеФайлы/' + attf['Идентификатор'] + '/dfdghfgd'
-
-                res = dict()
-
-                res['result'] = True
-
-                try:
-
-                    data_file = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
-
-                except Exception as ex:
-                    tasks_list = list()
-                    res['message'] = str(sys.exc_info())
-                    res['result'] = False
-
-                ext = attf['Расширение']
-                filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
-
-                f = open(filename, 'wb')
-                f.write(data_file.content)
-                f.close()
-
-                archive.write(filename, arcname=attf['Имя'] + '.' + ext)
-
-
-
-
-
-
-            cf = FileOwner.objects.filter(type='doc', name='ТранспортныйКонтейнер', idname=ziptc, is_deleted=False)
-
-            for ccf in cf:
-                archive.write(filespath + ccf.file.idname + '.tmp', arcname=ccf.file.name)
-
-            archive.close()
-
-            return FileResponse(open(zipname, 'rb'))
-
+            return zip_transport_container_files(ziptc)
 
         zipc = request.GET.get('zipc')
         if zipc:
+            return zip_container_files(zipc)
             
-            filespath = 'I:\\Attachments\\'
-
-            zipname = filespath + str(uuid.uuid4()) + ".zip"
-            archive = zipfile.ZipFile(zipname, mode="w", allowZip64=False, compression=zipfile.ZIP_DEFLATED, strict_timestamps=False)
-
-            server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=Контейнер&id=' + zipc
-
-            res = dict()
-
-            res['result'] = True
-
-            try:
-
-                data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
-
-            except Exception as ex:
-                tasks_list = list()
-                res['message'] = str(sys.exc_info())
-                res['result'] = False
-
-            for attf in data_dict['responses'][0]['AttachedFiles']:
-
-                server_address = AUTH_DATA['addr'] + '/hs/dta/files/ref/КонтейнерПрисоединенныеФайлы/' + attf['Идентификатор'] + '/dfdghfgd'
-
-                res = dict()
-
-                res['result'] = True
-
-                try:
-
-                    data_file = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
-
-                except Exception as ex:
-                    tasks_list = list()
-                    res['message'] = str(sys.exc_info())
-                    res['result'] = False
-
-                ext = attf['Расширение']
-                filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
-
-                f = open(filename, 'wb')
-                f.write(data_file.content)
-                f.close()
-
-                archive.write(filename, arcname=attf['Имя'] + '.' + ext)
-
-
-            cf = FileOwner.objects.filter(type='doc', name='Контейнер', idname=ziptc, is_deleted=False)
-
-            for ccf in cf:
-                archive.write(filespath + ccf.file.idname + '.tmp', arcname=ccf.file.name)
-
-            archive.close()
-
-            return FileResponse(open(zipname, 'rb'))
-
-
 
 
 
@@ -549,6 +630,187 @@ def containerstatuses(request):
         return JsonResponse(res)
 
 
+def fileversions(request):
+
+    if 'userLogged' not in request.session:
+        return redirect('../login/?ret=/fileversions/')
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    if request.method == 'GET':
+
+        fatt = request.GET.get('fatt')
+        if fatt:
+            return file_attachment(fatt, request.GET.get('ext'))
+
+        ownerid = request.GET.get('id')
+        ownername = request.GET.get('name')
+        cid = request.GET.get('cid')
+
+        in_t = request.GET.get('in_t') == '1'
+        if not in_t:
+
+            server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=' + ownername + '&id=' + ownerid
+
+            res = dict()
+
+            res['result'] = True
+
+            try:
+
+                data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+
+            except Exception as ex:
+                tasks_list = list()
+                res['message'] = str(sys.exc_info())
+                res['result'] = False
+
+            ccfp = None
+            for attf in data_dict['responses'][0]['AttachedFiles']:
+
+                if attf['Идентификатор'] == cid:
+                    ccfp = attf
+
+        else:
+
+            ccf = File.objects.filter(idname=cid).all().get()
+        
+            ext = ''
+            name = ccf.file.name
+
+            spl = ccf.file.name.split('.')
+
+            if len(spl) > 1:
+
+                ext = spl[len(spl) - 1]
+
+                spl.remove(ext)
+
+                name = '.'.join(spl)
+
+            ccfp = {'Идентификатор': cid, 'Имя': name, 'Расширение': ext, 'ДатаСоздания': ccf.created.strftime('%Y%m%d%H%M%S'), 'Автор': ccf.user.name}
+
+        ccfp['ownerid'] = ownerid
+        ccfp['ownername'] = ownername
+
+        name_ext = ccfp['Имя'] + '.' + ccfp['Расширение']
+
+        fv = FileVersion.objects.filter(file_id=ccfp['Идентификатор'], is_deleted=False).order_by('created')
+
+        res = dict()
+        versions = list()
+
+        versions.append({'created': datetime.datetime.strptime(ccfp['ДатаСоздания'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y %H:%M:%S'), 'number': 0,
+            'user': ccfp['Автор'], 'name': ccfp['Имя'] + '.' + ccfp['Расширение'], 'ext': ccfp['Расширение'], 'id': ccfp['Идентификатор'], 'in_t':in_t})
+
+        
+
+        for cfv in fv:
+
+            cur_version_file = File.objects.filter(idname=cfv.version_id).all().get()
+            
+            versions.append({'created': cfv.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y %H:%M:%S'), 'number': cfv.number,
+                'user': cfv.user.name, 'name': cur_version_file.name, 'id': cfv.version_id, 'in_t':True})
+
+
+        if False:
+
+            fid = request.GET.get('id')
+            ext = request.GET.get('ext')
+
+            server_address = AUTH_DATA['addr'] + '/hs/dta/files/' + request.GET.get('type') + '/' + request.GET.get('name') + '/' + fid + '/dfdghfgd'
+
+            res = dict()
+
+            res['result'] = True
+
+            try:
+
+                data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
+
+            except Exception as ex:
+                tasks_list = list()
+                res['message'] = str(sys.exc_info())
+                res['result'] = False
+
+        #                    response = FileResponse(file)
+        #                   response['Content-Type'] = 'application/octet-stream'
+        #                  response['Content-Disposition'] = 'attachment;filename='+FileName
+
+        # return HttpResponse(content=data_dict.content, content_type='application/' + ext, filename=fid + '.' + ext)
+
+            filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
+
+            f = open(filename, 'wb')
+            f.write(data_dict.content)
+            f.close()
+
+
+
+
+
+        return render(request, 'containerstatuses/fileversions.html', locals())
+
+    elif request.method == 'POST':
+
+        filespath = 'I:\\Attachments\\'
+        
+        ownerid = request.headers.get('ownerid')
+        ownername = urllib.parse.unquote(request.headers.get('ownername'))
+        fileid = request.headers.get('fileid')        
+
+        curUid = request.headers.get('id')
+        curparent_id = ''
+        part = request.headers.get('part')
+
+        if not curparent_id:
+            curparent_id = ''
+
+        if File.objects.filter(idname=curUid).count() == 0:
+
+            filename = urllib.parse.unquote(request.headers.get('filename'))
+            co = File.objects.create(user=cu, idname=curUid, name=filename, parent_id=curparent_id)
+
+            versionnumber = 0
+            query_last_version_number = FileVersion.objects.filter(file_id=fileid).order_by('-number')[:1]
+            if query_last_version_number.count() > 0:
+                versionnumber = query_last_version_number.all().get().number
+
+            cversion = FileVersion.objects.create(user=cu, file_id=fileid, version_id=curUid, number=versionnumber + 1)
+
+        else:
+            co = File.objects.filter(idname=curUid).all().get()
+
+#        part = request.POST.get('part')
+        if int(part) >= 0:
+            # cfp = FilePart.objects.create(file=co, number=part)
+            curName = str(co.idname) + ".tmp"
+        
+            destination = open(filespath + curName, 'ab+')
+            destination.write(request.body)
+            destination.close()
+                
+        
+            # stat = os.stat(filespath + curName)
+        
+            co.size = co.size + int(request.headers.get('size'))
+            co.save()
+                    
+            # if part:
+                # cfp.size = stat.st_size
+                # cfp.save()
+                        
+        else:
+            size = request.headers.get('size')
+            
+            if co.size != int(size):
+                co.size = 0
+                co.save()
+
+        res = dict()
+        res['success'] = True
+
+        return JsonResponse(res)
 
 
 
