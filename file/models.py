@@ -139,4 +139,25 @@ class FileOwner(models.Model):
         verbose_name_plural = 'Владельцы файлов'
 
 
+class FileVersion(models.Model):
+
+    version_id = models.CharField(max_length=40, default='')
+
+    number = models.DecimalField(max_digits=5, decimal_places=0, default=0)
+
+    file_id = models.CharField(max_length=40, default='')
+
+    user = models.ForeignKey(Users1c, on_delete=models.CASCADE)
+
+    comments = models.TextField(blank=True, null=True, default=None)
+
+    created = models.DateTimeField(auto_now_add=True, auto_now=False)
+    is_deleted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "Версия файла № %s %s.%s" % (self.id, self.type, self.name)
+
+    class Meta:
+        verbose_name = 'Версия файла'
+        verbose_name_plural = 'Версии файлов'
 

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>Версии файла</title>
+    {% load static %}
+    <link href="{% static 'containerstatuses/style.css' %}" rel="stylesheet">
+    <script src="{%  static 'containerstatuses/bfuversion.js' %}?v=002"></script>
+  </head>
+
+  <body>
+
+    <div style="width: 70%; margin: auto;">
+      <div style="display: flex; flex-direction: row; flex-wrap: nowrap;">
+        <div id="add_file" class="flex curpoint" onclick="document.querySelector('.inputFile').click();">
+          <img src="/static/plus.svg" alt="" style="width: 2em; margin-top: .3em;" >
+          <h1 class="h01" id="procent"></h1>
+          <input id="inputFile" class="inputFile" onchange="onSelectFile(event)" type="file" style="display: none;" ownername="{{ ccfp.ownername }}" ownerid="{{ ccfp.ownerid }}" fileid="{{ ccfp.Идентификатор }}">
+        </div>
+        <h1 class="h01">Версии файла {{ name_ext }}</h1>
+      </div>
+      <div id="container_statuses" >
+        <div style="display: flex; width: 100%; ">
+          <div class="themed-grid-col-header w30 tacntr" >Дата</div>
+          <div class="themed-grid-col-header w5 tacntr" >№</div>
+          <div class="themed-grid-col-header w15 tacntr" >Автор</div>
+          <div class="themed-grid-col-header w50 tacntr" >Наименование</div>
+        </div>
+
+        {% for cs in versions %}
+        <div id="container_row" class="themed-grid-row w100 curpoint" onclick="onFileClick('{{ cs.id }}', '{{ cs.in_t }}', '{{ cs.ext }}')">
+          <div class="themed-grid-col-row w30 tacntr" >{{ cs.created }}</div>
+          <div class="themed-grid-col-row w5 tacntr" >{{ cs.number }}</div>
+          <div class="themed-grid-col-row w15 tacntr" >{{ cs.user }}</div>
+          <div class="themed-grid-col-row w50 tacntr" >{{ cs.name }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+
+   <a href="/" id="main_menu" class="w100" style="display: block; font-size: 1.25rem; margin: auto; padding: 1rem; margin-top: 2%; text-decoration: none; text-align: center; width: 50%; color: #fff; background-color: #0d6efd; border-radius: 0.5rem;">Главное меню</a>
+</body>
+</html>

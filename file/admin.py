@@ -2,7 +2,7 @@ from django.contrib import admin
 
 import file
 from RequestHeaders.models import *
-from file.models import File, FileOwner, FilePart, ExternalLink, UploadlLink
+from file.models import File, FileOwner, FilePart, ExternalLink, FileVersion, UploadlLink
 
 
 class FileAdmin(admin.ModelAdmin):
@@ -50,9 +50,19 @@ class FileOwnerAdmin(admin.ModelAdmin):
         model = FileOwner
 
 
+class FileVersionAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in FileVersion._meta.fields]
+
+    search_fields = [field.name for field in FileVersion._meta.fields]
+
+    class Meta:
+        model = FileVersion
+
+
 admin.site.register(File, FileAdmin)
 admin.site.register(FilePart, FilePartAdmin)
 admin.site.register(ExternalLink, ExternalLinkAdmin)
 admin.site.register(UploadlLink, UploadlLinkAdmin)
 admin.site.register(FileOwner, FileOwnerAdmin)
+admin.site.register(FileVersion, FileVersionAdmin)
 

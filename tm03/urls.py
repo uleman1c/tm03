@@ -53,6 +53,7 @@ urlpatterns = [
     path('savesdek/', views.savesdek, name='savesdek'),
     path('sdekreqs/', views.sdekreqs, name='sdekreqs'),
     path('containerstatuses/', views.containerstatuses, name='containerstatuses'),
+    path('fileversions/', views.fileversions, name='fileversions'),
     path('curencecuorses/', views.curencecuorses, name='curencecuorses'),
     path('', include('users1c.urls')),
     path('', include('login.urls')),

@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <title>Состояние контейнеров</title>
     {% load static %}
-    <script src="{%  static 'containerstatuses/script.js' %}?v=001"></script>
+    <script src="{%  static 'containerstatuses/script.js' %}?v=002"></script>
     <script src="{%  static 'containerstatuses/bfu.js' %}?v=001"></script>
   </head>
 
@@ -242,13 +242,14 @@ body {
 
       <div id="files" style="float: left; width: 70%;">
         <div class="flex">
-          <div id="add_file" class="flex" style="display: none;" onclick="document.querySelector('.inputFile').click();">
+          <div id="add_file" class="flex curpoint" style="display: none;" onclick="document.querySelector('.inputFile').click();">
             <img src="/static/plus.svg" alt="" style="width: 2em; margin-top: .3em;" >
             <h1 class="h01" id="procent"></h1>
             <input id="inputFile" multiple class="inputFile" onchange="onSelectFile(event)" type="file" style="display: none;">
+            <input id="exchange_id" type="text" value="" style="display: none;">
           </div>
           <h1 class="h01" id="file_header">Файлы</h1>
-          <div id="zip_file" class="flex" style="display: none;" onclick="zipFile();">
+          <div id="zip_file" class="flex curpoint" style="display: none;" onclick="zipFile();">
             <img src="/static/zip.png" alt="" style="width: 2em; margin-top: .3em;" >
           </div>
         </div>
