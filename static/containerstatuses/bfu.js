@@ -189,6 +189,9 @@ function sendNext() {
         if (startingByte == 0) {
 
             if(numFile > 0){
+                
+                sendMessageToContainerFilesInfoBot(files[numFile - 1].name);
+                
                 addFileToTable(uuid);
             }
 
@@ -209,6 +212,8 @@ function sendNext() {
         addFileToTable(uuid);
 
         document.querySelector(idEl).innerHTML = '';
+
+        sendMessageToContainerFilesInfoBot(files[numFile - 1].name);
 
         //location.reload();
 

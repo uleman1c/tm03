@@ -133,6 +133,7 @@ function onTransportContainerClick(transportcontainer){
             inputFile.setAttribute('is_transcontainer', true);
             inputFile.setAttribute('transcontainer', transportcontainer);
             inputFile.setAttribute('container', '');
+            inputFile.setAttribute('container_text', 'Транспортный контейнер ' + element.ВнутреннийНомер);
 
             document.querySelector('#add_file').style = 'display: block';
 
@@ -156,7 +157,7 @@ function onTransportContainerClick(transportcontainer){
 
                     files_table.innerHTML = files_table.innerHTML 
                     + fileRow(сelement.ИдентификаторКонтейнера, сelement.ИдентификаторФайла, сelement.Имя, сelement.Расширение,
-                        сelement.Картинка, сelement.Автор, сelement.ДатаСоздания, сelement.Описание, celement.in_t, 'ТранспортныйКонтейнер', сelement.Версия); 
+                        сelement.Картинка, сelement.Автор, сelement.ДатаСоздания, сelement.Описание, сelement.in_t, 'ТранспортныйКонтейнер', сelement.Версия); 
                 }
 
             });
@@ -200,6 +201,7 @@ function onContainerClick(transportcontainer, container) {
                     inputFile.setAttribute('is_transcontainer', false);
                     inputFile.setAttribute('transcontainer', transportcontainer);
                     inputFile.setAttribute('container', container);
+                    inputFile.setAttribute('container_text', 'контейнер ' + сelement.КраткоеНаименованиеГруза + ', ' + сelement.Комментарий);
         
 
                 }
@@ -296,4 +298,33 @@ function exchangeFile(id1c){
 
 }
 
+function sendMessageToContainerFilesInfoBot(container_file_name) {
+    
+    container_text = document.querySelector('#inputFile').getAttribute('container_text')
+        + ": присоединен файл " + container_file_name;
 
+    var req = new XMLHttpRequest();
+
+    var url = "?smtcfib=" + container_text;
+    req.open("GET", url, true);
+    req.onreadystatechange = function () { // (3)
+
+        if (this.readyState != 4) return;
+
+        // button.innerHTML = 'Готово!';
+
+        if (this.status != 200) {
+
+            // alert(this.status + ': ' + this.statusText);
+
+        } else {
+
+
+        }
+
+    }
+
+    req.send();
+
+
+}

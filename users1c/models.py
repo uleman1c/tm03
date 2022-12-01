@@ -27,6 +27,7 @@ class Users1c(models.Model):
     recipe_orders_enabled = models.BooleanField(default=False)
     container_statuses_enabled = models.BooleanField(default=False)
 
+    telegram_id = models.BigIntegerField(default=0)
 
     def save(self, *args, **kwargs):
         self.name = self.name.lower()
@@ -34,3 +35,8 @@ class Users1c(models.Model):
 
     def __str__(self):
         return self.name
+
+class ContainerFilesInfoBotUser(models.Model):
+    
+    user = models.ForeignKey(Users1c, on_delete=models.CASCADE)
+

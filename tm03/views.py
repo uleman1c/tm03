@@ -24,7 +24,7 @@ from products.models import Warehouses
 from products.models import WarehouseCells
 from tsd_log.models import TsdLog
 from users1c import models
-from users1c.models import Users1c
+from users1c.models import ContainerFilesInfoBotUser, Users1c
 
 import datetime
 import json
@@ -480,6 +480,21 @@ def zip_container_files(zipc):
     return FileResponse(open(zipname, 'rb'))
 
 
+import requests
+ 
+def send_msg_to_container_files_info_bot(text):
+
+    token = AUTH_DATA['container_files_info_bot_token']
+
+    objs = ContainerFilesInfoBotUser.objects.filter()
+
+    for curobj in objs:
+
+        chat_id = curobj.user.telegram_id
+        url_req = "https://api.telegram.org/bot" + token + "/sendMessage" + "?chat_id=" + str(chat_id) + "&text=" + text
+        results = requests.get(url_req)
+
+#    print(results.json())
 
 
 def containerstatuses(request):
@@ -519,6 +534,9 @@ def containerstatuses(request):
         if zipc:
             return zip_container_files(zipc)
             
+        smtcfib = request.GET.get('smtcfib')
+        if smtcfib:
+            send_msg_to_container_files_info_bot(smtcfib)
 
 
 

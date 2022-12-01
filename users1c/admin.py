@@ -9,5 +9,14 @@ class Users1cAdmin(admin.ModelAdmin):
     class Meta:
         model = Users1c
 
+class ContainerFilesInfoBotUserAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in ContainerFilesInfoBotUser._meta.fields]
+    search_fields = [field.name for field in ContainerFilesInfoBotUser._meta.fields]
+
+    class Meta:
+        model = Users1c
+
 
 admin.site.register(Users1c, Users1cAdmin)
+admin.site.register(ContainerFilesInfoBotUser, ContainerFilesInfoBotUserAdmin)
+
