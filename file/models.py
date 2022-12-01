@@ -155,7 +155,7 @@ class FileVersion(models.Model):
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return "Версия файла № %s %s.%s" % (self.id, self.type, self.name)
+        return "Версия файла № %s %s.%s" % (self.number, self.file_id, self.version_id)
 
     class Meta:
         verbose_name = 'Версия файла'

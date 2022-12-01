@@ -226,7 +226,7 @@ def transport_container_files(ftc):
 
         version_text = ''
         if last_version: 
-            version_text = '(версия ' + str(last_version.number) + ')' 
+            version_text = '(версия ' + str(last_version.number + 1) + ')' 
 
         files.append({'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
         'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
@@ -265,7 +265,7 @@ def last_file_version(lfv):
 
         version_text = ''
         if last_version: 
-            version_text = '(версия ' + str(last_version.number) + ')' 
+            version_text = '(версия ' + str(last_version.number + 1) + ')' 
 
         files.append({'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
         'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
@@ -310,7 +310,7 @@ def container_files(fc):
 
         version_text = ''
         if last_version: 
-            version_text = '(версия ' + str(last_version.number) + ')' 
+            version_text = '(версия ' + str(last_version.number + 1) + ')' 
 
         files.append({'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
         'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
