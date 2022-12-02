@@ -235,7 +235,7 @@ function fileRow(ИдентификаторКонтейнера, Идентиф�
             +'         <a href="../fileversions?name=' + objname + '&id=' + ИдентификаторКонтейнера + '&cid=' + ИдентификаторФайла + '&in_t=' + (in_t ? '1' : '0') + '&cname=' + document.querySelector('#inputFile').getAttribute('container_text') + '" class="flex curpoint" style="display: contents;">'
             +'             <img src="/static/exchange.png" alt="" style="width: 2em; margin-top: .3em; margin-left: 2%; margin-right: 2%;" >'
             +'         </a>'
-            +'        <div class="curpoint" style="display: contents;" onclick="onFileClick(\'' + (ИдентификаторВерсии ? ИдентификаторВерсии : ИдентификаторФайла) +'\', \'' + Расширение + '\', ' + (ИдентификаторВерсии ? true : in_t) + ')" container="' + ИдентификаторКонтейнера + '">'
+            +'        <div class="curpoint" style="display: contents;" onclick="onFileClick(\'' + (ИдентификаторВерсии ? ИдентификаторВерсии : ИдентификаторФайла) +'\', \'' + Расширение + '\', ' + (ИдентификаторВерсии ? true : in_t) + ',\'' + Имя + '.' + Расширение + '\')" container="' + ИдентификаторКонтейнера + '">'
             +'         <img src="' + Картинка + '" alt="" style="width: 1em; margin-right: 2%;">' + Имя + '.' + Расширение + (version ? ' ' + version : '')
             +'        </div>'
             +'      </div>'
@@ -246,7 +246,7 @@ function fileRow(ИдентификаторКонтейнера, Идентиф�
 
 }
 
-function onFileClick(fileid, ext, in_t) {
+function onFileClick(fileid, ext, in_t, full_name) {
 
     if(in_t){
 
@@ -254,7 +254,7 @@ function onFileClick(fileid, ext, in_t) {
 
     } else {
 
-        locationhref = '../attachedfile?type=ref&name=КонтейнерПрисоединенныеФайлы&id=' + fileid + "&ext=" + ext;
+        locationhref = '../attachedfile?type=ref&name=КонтейнерПрисоединенныеФайлы&id=' + fileid + "&ext=" + ext + "&full_name=" + full_name;
     }
 
     window.open(locationhref);

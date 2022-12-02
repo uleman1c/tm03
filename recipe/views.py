@@ -237,13 +237,18 @@ def attachedfile(request):
 
    # return HttpResponse(content=data_dict.content, content_type='application/' + ext, filename=fid + '.' + ext)
 
+
     filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
 
     f = open(filename, 'wb')
     f.write(data_dict.content)
     f.close()
 
-    return FileResponse(open(filename, 'rb'))
+    full_name = request.GET.get('full_name')
+    if not full_name:
+        full_name = str(uuid.uuid4()) + "." + ext
+
+    return FileResponse(open(filename, 'rb'), filename=full_name)
 
 
 
