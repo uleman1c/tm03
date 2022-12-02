@@ -4,60 +4,106 @@ document.addEventListener("DOMContentLoaded", function(){
 
     ctj = JSON.parse(container_statuses_h.replaceAll('&quot;', '"'));
 
+    arFiles = [];
+    arTcs = [];
+    arCs = [];
+
     ctj.forEach(element => {
         
         element.Файлы.forEach(felement => {
             
-            var responseText = requestGet("?lfv=" + felement.ИдентификаторФайла);
-        
-            versions = JSON.parse(responseText)['version'];
-            
-            if(versions.length){
-                felement.Версия = versions[0].version;
-                felement.ИдентификаторВерсии = versions[0].id;
-            }
+            arFiles.push(felement.ИдентификаторФайла);
 
         });
 
-        var responseText = requestGet("?ftc=" + element.ТранспортныйКонтейнер);
-    
-        JSON.parse(responseText)['files'].forEach(felement => {
-
-            comments = '';
-            if(felement.comments){
-                comments = felement.comments;
-            }
-
-            element.Файлы.push({'ИдентификаторКонтейнера': element.ТранспортныйКонтейнер, 'ИдентификаторФайла': felement.id, 'Автор': felement.user,
-            'ДатаСоздания': felement.created, 'Имя': felement.name, 'Описание': comments, 'Расширение':felement.ext, 'in_t':true,
-            'Картинка': picByExt(felement.ext), 'Версия': felement.version});
-
-            document.querySelector('#pic_' + element.ТранспортныйКонтейнер).innerHTML = '<img src="/static/attach.svg" alt="" style="width: 1em; ">';
-        });
+        arTcs.push(element.ТранспортныйКонтейнер);
 
         element.Контейнеры.forEach(celement => {
             
-            var responseText = requestGet("?fc=" + celement.ИдентификаторКонтейнера);
-        
-            JSON.parse(responseText)['files'].forEach(felement => {
+            arCs.push(element.ИдентификаторКонтейнера);
 
-                celement.ЕстьФайлы = true;
+        });
+
+    });
+
+
+    var responseText = requestPost("?lfv=1", arFiles);
+
+    JSON.parse(responseText)['version'].forEach(velement => {
+
+        ctj.forEach(element => {
+        
+            element.Файлы.forEach(felement => {
+
+                if(felement.ИдентификаторФайла == velement.file_id){
+
+                    felement.Версия = velement.version;
+                    felement.ИдентификаторВерсии = velement.id;
+
+                }
+
+            });
+
+        });
+
+    });
+
+    var responseText = requestPost("?ftc=1", arTcs);
+    
+    JSON.parse(responseText)['files'].forEach(felement => {
+
+        ctj.forEach(element => {
+        
+            if(element.ТранспортныйКонтейнер == felement.tc_id){
 
                 comments = '';
                 if(felement.comments){
                     comments = felement.comments;
                 }
 
-                element.Файлы.push({'ИдентификаторКонтейнера': celement.ИдентификаторКонтейнера, 'ИдентификаторФайла': felement.id, 'Автор': felement.user,
+                element.Файлы.push({'ИдентификаторКонтейнера': element.ТранспортныйКонтейнер, 'ИдентификаторФайла': felement.id, 'Автор': felement.user,
                 'ДатаСоздания': felement.created, 'Имя': felement.name, 'Описание': comments, 'Расширение':felement.ext, 'in_t':true,
-                'Картинка': picByExt(felement.ext), 'Версия': felement.version});
+                'Картинка': picByExt(felement.ext), 'ИдентификаторВерсии': felement.version_id, 'Версия': felement.version});
 
-                //document.querySelector('#pic_' + celement.ИдентификаторКонтейнера).innerHTML = '<img src="/static/attach.svg" alt="" style="width: 1em;">';
-            });
+                document.querySelector('#pic_' + element.ТранспортныйКонтейнер).innerHTML = '<img src="/static/attach.svg" alt="" style="width: 1em; ">';
 
+            }
         });
 
     });
+
+
+
+    var responseText = requestPost("?fc=1", arCs);
+        
+    JSON.parse(responseText)['files'].forEach(felement => {
+
+        ctj.forEach(element => {
+
+            element.Контейнеры.forEach(celement => {
+                
+                if(celement.ИдентификаторКонтейнера == felement.c_id){
+
+                    celement.ЕстьФайлы = true;
+
+                    comments = '';
+                    if(felement.comments){
+                        comments = felement.comments;
+                    }
+
+                    element.Файлы.push({'ИдентификаторКонтейнера': celement.ИдентификаторКонтейнера, 'ИдентификаторФайла': felement.id, 'Автор': felement.user,
+                    'ДатаСоздания': felement.created, 'Имя': felement.name, 'Описание': comments, 'Расширение':felement.ext, 'in_t':true,
+                    'Картинка': picByExt(felement.ext), 'Версия': felement.version});
+
+                    //document.querySelector('#pic_' + celement.ИдентификаторКонтейнера).innerHTML = '<img src="/static/attach.svg" alt="" style="width: 1em;">';
+
+                }
+            });
+        });
+    });
+
+
+
 
 });
 
@@ -101,6 +147,33 @@ function requestGet(url) {
     };
 
     req.send();
+
+    return req.responseText;
+}
+
+function requestPost(url, data) {
+    
+    var req = new XMLHttpRequest();
+
+    req.open("POST", url, false);
+
+    req.onreadystatechange = function () {
+
+        if (this.readyState != 4)
+            return;
+
+        // button.innerHTML = 'Готово!';
+        if (this.status != 200) {
+            //setTimeout(onError, 1000);
+            // alert(this.status + ': ' + this.statusText);
+        } else {
+            //onLoad();
+        }
+
+    };
+
+    req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    req.send(JSON.stringify(data));
 
     return req.responseText;
 }

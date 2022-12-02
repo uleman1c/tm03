@@ -241,6 +241,53 @@ def transport_container_files(ftc):
 
     return JsonResponse(res)
 
+def transport_container_files_array(list_ids):
+
+    res = dict()
+    files = list()
+
+    for list_id in list_ids:
+
+        cf = FileOwner.objects.filter(type='doc', name='ТранспортныйКонтейнер', idname=list_id, is_deleted=False)
+
+        for ccf in cf:
+
+            last_version_file = ccf.file
+
+            last_version = None
+            query_last_version = FileVersion.objects.filter(file_id=last_version_file.idname).order_by('-created')[:1]
+            
+            if query_last_version.count() > 0:
+            
+                last_version = query_last_version.all().get()
+
+                last_version_file = File.objects.filter(idname=last_version.version_id).all().get()
+
+
+            name = last_version_file.name
+            spl = name.split('.')
+
+            ext = ''
+            if len(spl) > 1:
+
+                ext = spl[len(spl) - 1]
+
+                spl.remove(ext)
+
+                name = '.'.join(spl)
+
+            version_text = ''
+            if last_version: 
+                version_text = '(версия ' + str(last_version.number + 1) + ')' 
+
+            files.append({'tc_id': list_id, 'id': ccf.file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
+            'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+            'comments': last_version_file.comments, 'version_id': last_version_file.idname, 'version': version_text})
+
+    res['files'] = files
+
+    return JsonResponse(res)
+
 def last_file_version(lfv):
 
     res = dict()
@@ -275,6 +322,47 @@ def last_file_version(lfv):
         files.append({'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
         'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
         'comments': last_version_file.comments, 'version': version_text})
+
+    res['version'] = files
+
+    return JsonResponse(res)
+
+def last_file_versions(list_ids):
+
+    res = dict()
+    files = list()
+
+    for list_id in list_ids:
+
+        last_version = None
+        query_last_version = FileVersion.objects.filter(file_id=list_id).order_by('-created')[:1]
+        
+        if query_last_version.count() > 0:
+        
+            last_version = query_last_version.all().get()
+
+            last_version_file = File.objects.filter(idname=last_version.version_id).all().get()
+
+
+            name = last_version_file.name
+            spl = name.split('.')
+
+            ext = ''
+            if len(spl) > 1:
+
+                ext = spl[len(spl) - 1]
+
+                spl.remove(ext)
+
+                name = '.'.join(spl)
+
+            version_text = ''
+            if last_version: 
+                version_text = '(версия ' + str(last_version.number + 1) + ')' 
+
+            files.append({'file_id': list_id, 'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
+            'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+            'comments': last_version_file.comments, 'version': version_text})
 
     res['version'] = files
 
@@ -320,6 +408,53 @@ def container_files(fc):
         files.append({'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
         'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
         'comments': last_version_file.comments, 'version': version_text})
+
+    res['files'] = files
+
+    return JsonResponse(res)
+
+def container_files_array(list_ids):
+
+    res = dict()
+    files = list()
+
+    for list_id in list_ids:
+
+        cf = FileOwner.objects.filter(type='doc', name='Контейнер', idname=list_id, is_deleted=False)
+
+        for ccf in cf:
+
+            last_version_file = ccf.file
+
+            last_version = None
+            query_last_version = FileVersion.objects.filter(file_id=last_version_file.idname).order_by('-created')[:1]
+            
+            if query_last_version.count() > 0:
+            
+                last_version = query_last_version.all().get()
+
+                last_version_file = File.objects.filter(idname=last_version.version_id).all().get()
+
+            spl = ccf.file.name.split('.')
+
+            name = last_version_file.name
+            ext = ''
+
+            if len(spl) > 1:
+
+                ext = spl[len(spl) - 1]
+
+                spl.remove(ext)
+
+                name = '.'.join(spl)
+
+            version_text = ''
+            if last_version: 
+                version_text = '(версия ' + str(last_version.number + 1) + ')' 
+
+            files.append({'c_id': list_id, 'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
+            'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+            'comments': last_version_file.comments, 'version': version_text})
 
     res['files'] = files
 
@@ -600,6 +735,18 @@ def containerstatuses(request):
         return render(request, 'containerstatuses/index.html', locals())
 
     elif request.method == 'POST':
+
+        lfv = request.GET.get('lfv')
+        if lfv:
+            return last_file_versions(json.loads(request.body.decode('utf-8')))
+
+        ftc = request.GET.get('ftc')
+        if ftc:
+            return transport_container_files_array(json.loads(request.body.decode('utf-8')))
+
+        fc = request.GET.get('fc')
+        if fc:
+            return container_files_array(json.loads(request.body.decode('utf-8')))
 
         filespath = 'I:\\Attachments\\'
         
