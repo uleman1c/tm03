@@ -164,7 +164,12 @@ def curencecuorses(request):
 
     res = dict()
 
-    resp = req.get("https://www.cbr.ru/currency_base/daily/")
+    req_date_str = ''
+    req_date = request.GET.get('date')
+    if req_date:
+        req_date_str = '?UniDbQuery.Posted=True&UniDbQuery.To=' + req_date
+
+    resp = req.get("https://www.cbr.ru/currency_base/daily/" + req_date_str)
     
     soup = BeautifulSoup(resp.text)    
     
