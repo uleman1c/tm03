@@ -350,7 +350,7 @@ def file_by_id(ff):
 
     return JsonResponse(res)
 
-def file_attachment(fatt, ext):
+def file_attachment(fatt, ext, full_name):
 
     cfo = File.objects.filter(idname=fatt).all().get()
 
@@ -360,7 +360,10 @@ def file_attachment(fatt, ext):
 
     filename = filespath + curName
 
-    return FileResponse(open(filename, 'rb'), filename=cfo.name)
+    if not full_name:
+        full_name = cfo.name
+
+    return FileResponse(open(filename, 'rb'), filename=full_name)
 
 
 def zip_transport_container_files(ziptc):
@@ -524,7 +527,7 @@ def containerstatuses(request):
 
         fatt = request.GET.get('fatt')
         if fatt:
-            return file_attachment(fatt, request.GET.get('ext'))
+            return file_attachment(fatt, request.GET.get('ext'), request.GET.get('full_name'))
 
         ziptc = request.GET.get('ziptc')
         if ziptc:
@@ -661,7 +664,7 @@ def fileversions(request):
 
         fatt = request.GET.get('fatt')
         if fatt:
-            return file_attachment(fatt, request.GET.get('ext'))
+            return file_attachment(fatt, request.GET.get('ext'), request.GET.get('full_name'))
 
         smtcfib = request.GET.get('smtcfib')
         if smtcfib:

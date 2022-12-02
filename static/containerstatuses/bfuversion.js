@@ -182,13 +182,15 @@ function onSelectFile(e){
 
 function onFileClick(fileid, in_t, ext) {
 
+    full_name = document.querySelector('#name_ext').getAttribute('name_ext');
+
     if(in_t == 'True'){
 
-        locationhref = '?fatt=' + fileid ;
+        locationhref = '?fatt=' + fileid + '&ext=' + ext + '&full_name=' + full_name;
 
     } else {
 
-        locationhref = '../attachedfile?type=ref&name=' + document.querySelector('#inputFile').getAttribute('ownername') + 'ПрисоединенныеФайлы&id=' + fileid + '&ext=' + ext;
+        locationhref = '../attachedfile?type=ref&name=' + document.querySelector('#inputFile').getAttribute('ownername') + 'ПрисоединенныеФайлы&id=' + fileid + '&ext=' + ext + '&full_name=' + full_name;
     }
 
     window.open(locationhref);
