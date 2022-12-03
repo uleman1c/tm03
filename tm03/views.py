@@ -992,7 +992,42 @@ def fileversions(request):
         return JsonResponse(res)
 
 
+def tchystory(request):
 
+    if 'userLogged' not in request.session:
+        return redirect('../login/?ret=/fileversions/')
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+
+    if request.method == 'GET':
+
+        server_address = AUTH_DATA['addr'] + "/hs/dta/obj?request=getTransportContainerStatusHystory&id=" + request.GET.get('id')
+
+        container_status_hystory = None
+        hystory = list()
+        tc = dict()
+        try:
+
+            data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+
+            container_status_hystory = data_dict['responses'][0]['TransportContainerStatusHystory']
+
+            hystory = container_status_hystory['История']
+            tc = container_status_hystory['ТранспортныйКонтейнер']
+
+        except Exception as ex:
+            tasks_list = list()
+            data_dict = str(sys.exc_info())
+
+        if not container_status_hystory == None:
+
+            for curhyst in hystory:
+                curhyst['Период'] = datetime.datetime.strptime(curhyst['Период'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y %H:%M:%S')
+                
+            tc['Дата'] = datetime.datetime.strptime(tc['Дата'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y %H:%M:%S')
+
+
+    return render(request, 'containerstatuses/hystory.html', locals())
 
 def skladthr(request):
     boxes = '' \

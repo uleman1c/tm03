@@ -185,11 +185,26 @@ body {
       .flex {
         display: flex;
       }
+
+      .hidden {
+
+        display: none;
+
+      }
+
   </style>    
   <script>
     var container_statuses_h = '{{ container_statuses_h }}';
   </script>
-    <h1 class="h01">Состояние контейнеров</h1>
+    <div class="flex">
+      <h1 class="h01">Состояние контейнеров</h1>
+      <div id="history_tc" class="flex curpoint hidden" onclick="onClickHistoryTc();">
+        <img src="{%  static 'containerstatuses/history.png' %}" alt="" style="width: 2.5em; margin-left: 1em;">
+      </div>
+      <div id="edit_tc" class="flex curpoint hidden" onclick="onClickEditTc();">
+        <img src="{%  static 'containerstatuses/edit.png' %}" alt="" style="width: 2.5em; margin-left: 1em;">
+      </div>
+    </div>
 
     <div id="container_statuses" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden;">
       <div style="display: flex; width: 100%; ">

@@ -186,6 +186,9 @@ function onTransportContainerClick(transportcontainer){
 
     document.querySelector('#container_statuses [transportcontainer="' + transportcontainer + '"]').classList.add('selected')
 
+    document.querySelector('#history_tc').classList.remove('hidden');
+    // document.querySelector('#edit_tc').classList.remove('hidden');
+
     containers_table = document.querySelector('#containers_table');
     containers_table.innerHTML = '';
 
@@ -401,3 +404,10 @@ function sendMessageToContainerFilesInfoBot(container_file_name) {
 
 
 }
+
+function onClickHistoryTc(){
+
+    location = "../tchystory?id=" + document.querySelector('#container_statuses .selected').getAttribute('transportcontainer');
+
+}
+
