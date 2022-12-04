@@ -1,12 +1,12 @@
 var ctj = '';
 
+arFiles = [];
+arTcs = [];
+arCs = [];
+
 document.addEventListener("DOMContentLoaded", function(){
 
     ctj = JSON.parse(container_statuses_h.replaceAll('&quot;', '"'));
-
-    arFiles = [];
-    arTcs = [];
-    arCs = [];
 
     ctj.forEach(element => {
         
@@ -27,7 +27,11 @@ document.addEventListener("DOMContentLoaded", function(){
     });
 
 
-    var responseText = requestPost("?lfv=1", arFiles);
+    requestPost("?lfv=1", arFiles, Lfv);
+
+});
+
+function Lfv(responseText) {
 
     JSON.parse(responseText)['version'].forEach(velement => {
 
@@ -48,8 +52,12 @@ document.addEventListener("DOMContentLoaded", function(){
 
     });
 
-    var responseText = requestPost("?ftc=1", arTcs);
-    
+    requestPost("?ftc=1", arTcs, Ftc);
+
+}
+
+function Ftc(responseText){
+
     JSON.parse(responseText)['files'].forEach(felement => {
 
         ctj.forEach(element => {
@@ -72,10 +80,13 @@ document.addEventListener("DOMContentLoaded", function(){
 
     });
 
+    requestPost("?fc=1", arCs, Fc);
+
+}
 
 
-    var responseText = requestPost("?fc=1", arCs);
-        
+function Fc(responseText){
+
     JSON.parse(responseText)['files'].forEach(felement => {
 
         ctj.forEach(element => {
@@ -102,10 +113,8 @@ document.addEventListener("DOMContentLoaded", function(){
         });
     });
 
+}
 
-
-
-});
 
 function picByExt(ext){
 
@@ -151,11 +160,11 @@ function requestGet(url) {
     return req.responseText;
 }
 
-function requestPost(url, data) {
+function requestPost(url, data, resultCallBack) {
     
     var req = new XMLHttpRequest();
 
-    req.open("POST", url, false);
+    req.open("POST", url, true);
 
     req.onreadystatechange = function () {
 
@@ -167,6 +176,8 @@ function requestPost(url, data) {
             //setTimeout(onError, 1000);
             // alert(this.status + ': ' + this.statusText);
         } else {
+            
+            resultCallBack(req.responseText);
             //onLoad();
         }
 
@@ -175,7 +186,7 @@ function requestPost(url, data) {
     req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     req.send(JSON.stringify(data));
 
-    return req.responseText;
+    //return req.responseText;
 }
 
 function onTransportContainerClick(transportcontainer){
@@ -485,10 +496,12 @@ function saveStatus(){
         'freight_currency': popupet.querySelector('#tc_edit_freight_currency').value,
     }
 
-    response_text = requestPost('?saveStatus=1', data);
+    requestPost('?saveStatus=1', data, function(response_text){
 
-    if(JSON.parse(response_text).result){
-        location.reload();
-    }
+        if(JSON.parse(response_text).result){
+            location.reload();
+        }
+    });
+
 
 }
