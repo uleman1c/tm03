@@ -26,6 +26,7 @@ class Users1c(models.Model):
     outcome_enabled = models.BooleanField(default=False)
     recipe_orders_enabled = models.BooleanField(default=False)
     container_statuses_enabled = models.BooleanField(default=False)
+    container_statuses_edit_enabled = models.BooleanField(default=False)
 
     telegram_id = models.BigIntegerField(default=0)
 

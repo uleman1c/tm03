@@ -460,6 +460,34 @@ def container_files_array(list_ids):
 
     return JsonResponse(res)
 
+def save_status_to_erp(status_dict):
+
+    server_address = AUTH_DATA['addr'] + '/hs/dta/obj'
+
+    req_list = list()
+    req_list.append({'request': 'setTransportContainerStatus', 'parameters': status_dict})
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']), json=req_list).json()
+
+    except Exception as ex:
+
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+
+
+    res['files'] = data_dict
+
+    return JsonResponse(res)
+
+
 def file_by_id(ff):
 
     ccf = File.objects.filter(idname=ff).all().get()
@@ -489,6 +517,7 @@ def file_by_id(ff):
     res['files'] = files
 
     return JsonResponse(res)
+
 
 def file_attachment(fatt, ext, full_name):
 
@@ -623,8 +652,6 @@ def zip_container_files(zipc):
     return FileResponse(open(zipname, 'rb'))
 
 
-import requests
- 
 def send_msg_to_container_files_info_bot(text):
 
     token = AUTH_DATA['container_files_info_bot_token']
@@ -636,8 +663,6 @@ def send_msg_to_container_files_info_bot(text):
         chat_id = curobj.user.telegram_id
         url_req = "https://api.telegram.org/bot" + token + "/sendMessage" + "?chat_id=" + str(chat_id) + "&text=" + text
         results = requests.get(url_req)
-
-#    print(results.json())
 
 
 def containerstatuses(request):
@@ -730,6 +755,8 @@ def containerstatuses(request):
                                 container['ЕстьФайлы'] = True
                         
 
+            currencies = Currency.objects.all()
+
             container_statuses_h = json.dumps(container_statuses)
 
         return render(request, 'containerstatuses/index.html', locals())
@@ -747,6 +774,10 @@ def containerstatuses(request):
         fc = request.GET.get('fc')
         if fc:
             return container_files_array(json.loads(request.body.decode('utf-8')))
+
+        save_status = request.GET.get('saveStatus')
+        if save_status:
+            return save_status_to_erp(json.loads(request.body.decode('utf-8')))
 
         filespath = 'I:\\Attachments\\'
         

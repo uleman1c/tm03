@@ -6,193 +6,14 @@
     <meta name="description" content="">
     <title>Состояние контейнеров</title>
     {% load static %}
-    <script src="{%  static 'containerstatuses/script.js' %}?v=002"></script>
+    {% load static %}
+    <link href="{% static 'containerstatuses/style.css' %}" rel="stylesheet">
+    <script src="{%  static 'containerstatuses/script.js' %}?v=005"></script>
     <script src="{%  static 'containerstatuses/bfu.js' %}?v=001"></script>
   </head>
 
   <body>
 
-    <style>
-
-:root {
-    --bs-blue: #0d6efd;
-    --bs-indigo: #6610f2;
-    --bs-purple: #6f42c1;
-    --bs-pink: #d63384;
-    --bs-red: #dc3545;
-    --bs-orange: #fd7e14;
-    --bs-yellow: #ffc107;
-    --bs-green: #198754;
-    --bs-teal: #20c997;
-    --bs-cyan: #0dcaf0;
-    --bs-white: #fff;
-    --bs-gray: #6c757d;
-    --bs-gray-dark: #343a40;
-    --bs-gray-100: #f8f9fa;
-    --bs-gray-200: #e9ecef;
-    --bs-gray-300: #dee2e6;
-    --bs-gray-400: #ced4da;
-    --bs-gray-500: #adb5bd;
-    --bs-gray-600: #6c757d;
-    --bs-gray-700: #495057;
-    --bs-gray-800: #343a40;
-    --bs-gray-900: #212529;
-    --bs-primary: #0d6efd;
-    --bs-secondary: #6c757d;
-    --bs-success: #198754;
-    --bs-info: #0dcaf0;
-    --bs-warning: #ffc107;
-    --bs-danger: #dc3545;
-    --bs-light: #f8f9fa;
-    --bs-dark: #212529;
-    --bs-primary-rgb: 13,110,253;
-    --bs-secondary-rgb: 108,117,125;
-    --bs-success-rgb: 25,135,84;
-    --bs-info-rgb: 13,202,240;
-    --bs-warning-rgb: 255,193,7;
-    --bs-danger-rgb: 220,53,69;
-    --bs-light-rgb: 248,249,250;
-    --bs-dark-rgb: 33,37,41;
-    --bs-white-rgb: 255,255,255;
-    --bs-black-rgb: 0,0,0;
-    --bs-body-color-rgb: 33,37,41;
-    --bs-body-bg-rgb: 255,255,255;
-    --bs-font-sans-serif: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-    --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-    --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
-    --bs-body-font-family: var(--bs-font-sans-serif);
-    --bs-body-font-size: 1rem;
-    --bs-body-font-weight: 400;
-    --bs-body-line-height: 1.5;
-    --bs-body-color: #212529;
-    --bs-body-bg: #fff
-}
-
-body {
-    margin: 0;
-    font-family: var(--bs-body-font-family);
-}
-
-
-
-
-      .themed-grid-col-header {
-        padding-top: .3rem;
-        padding-bottom: .3rem;
-        background-color: rgba(86, 61, 124, .15);
-        border: 1px solid rgba(86, 61, 124, .2);
-
-      }
-
-      .themed-grid-col-row {
-        float: left;
-        padding-top: .3rem;
-        padding-bottom: .3rem;
-        background-color: rgba(249, 236, 197, .5);
-        border: 1px solid rgba(249, 236, 197, 1);
-
-      }
-
-      .themed-grid-row {
-        
-        display: flex; 
-        width: 100%;
-
-      }
-
-      .w1 {
-        width: 1%;
-      }
-
-      .w2 {
-        width: 2%;
-      }
-
-      .w5 {
-        width: 5%;
-      }
-
-      .w8 {
-        width: 8%;
-      }
-
-      .w9 {
-        width: 9%;
-      }
-
-      .w10 {
-        width: 10%;
-      }
-
-      .w12 {
-        width: 12%;
-      }
-
-      .w15 {
-        width: 15%;
-      }
-
-      .w30 {
-        width: 30%;
-      }
-
-      .w45 {
-        width: 45%;
-      }
-
-      .w48 {
-        width: 48%;
-      }
-
-      .w50 {
-        width: 50%;
-      }
-
-      .w100 {
-        width: 100%;
-      }
-
-      .tacntr {
-        text-align: center;
-      }
-
-      .themed-grid-row:hover {
-        
-        background-color: rgba(36, 66, 165, 0.5);
-
-      }
-
-      .selected {
-        
-        background-color: rgba(0, 60, 255, 1);
-
-      }
-
-      .selected:hover {
-        
-        background-color: rgb(162, 0, 255);
-
-      }
-
-      .curpoint {
-        cursor: pointer;
-      }
-
-      .h01 {
-        font-size: 1rem;
-      }
-      
-      .flex {
-        display: flex;
-      }
-
-      .hidden {
-
-        display: none;
-
-      }
-
-  </style>    
   <script>
     var container_statuses_h = '{{ container_statuses_h }}';
   </script>
@@ -201,9 +22,14 @@ body {
       <div id="history_tc" class="flex curpoint hidden" onclick="onClickHistoryTc();">
         <img src="{%  static 'containerstatuses/history.png' %}" alt="" style="width: 2.5em; margin-left: 1em;">
       </div>
+      {% if cu.container_statuses_edit_enabled %}
       <div id="edit_tc" class="flex curpoint hidden" onclick="onClickEditTc();">
         <img src="{%  static 'containerstatuses/edit.png' %}" alt="" style="width: 2.5em; margin-left: 1em;">
       </div>
+      {% else %}
+      <div id="edit_tc" class="flex curpoint hidden">
+      </div>
+      {% endif %}
     </div>
 
     <div id="container_statuses" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden;">
@@ -227,16 +53,16 @@ body {
           <img src="{%  static 'attach.svg' %}" alt="" style="width: 1em;">
           {% endif %}
         </div>
-        <div class="themed-grid-col-row w10 tacntr" >{{ cs.Период }}</div>
-        <div class="themed-grid-col-row w8 tacntr" >{{ cs.НомерПоДаннымПеревозчика }}</div>
-        <div class="themed-grid-col-row w10 tacntr" >{{ cs.ВнутреннийНомер }}</div>
-        <div class="themed-grid-col-row w10 tacntr" >{{ cs.ТоварПоставщик }}</div>
-        <div class="themed-grid-col-row w10 tacntr" >{{ cs.НомерКонтейнера }}</div>
-        <div class="themed-grid-col-row w10 tacntr" >{{ cs.ПунктНазначения }}</div>
-        <div class="themed-grid-col-row w15 " >{{ cs.СтатусПоставки }}</div>
-        <div class="themed-grid-col-row w5 tacntr" >{{ cs.РасчетнаяНеделяПрибытияНаТаможню }}</div>
-        <div class="themed-grid-col-row w10 tacntr" >{{ cs.Получатель }}</div>
-        <div class="themed-grid-col-row w10 tacntr" >{{ cs.СтоимостьФрахта }} {{ cs.Валюта }}</div>
+        <div id="tc_period" class="themed-grid-col-row w10 tacntr" >{{ cs.Период }}</div>
+        <div id="tc_deliverer_number" class="themed-grid-col-row w8 tacntr" >{{ cs.НомерПоДаннымПеревозчика }}</div>
+        <div id="tc_internal_number" class="themed-grid-col-row w10 tacntr" >{{ cs.ВнутреннийНомер }}</div>
+        <div id="tc_product_supplier" class="themed-grid-col-row w10 tacntr" >{{ cs.ТоварПоставщик }}</div>
+        <div id="tc_container_number" class="themed-grid-col-row w10 tacntr" >{{ cs.НомерКонтейнера }}</div>
+        <div id="tc_destination" class="themed-grid-col-row w10 tacntr" >{{ cs.ПунктНазначения }}</div>
+        <div id="tc_status" class="themed-grid-col-row w15 " >{{ cs.СтатусПоставки }}</div>
+        <div id="tc_planned_arrival_week" class="themed-grid-col-row w5 tacntr" >{{ cs.РасчетнаяНеделяПрибытияНаТаможню }}</div>
+        <div id="tc_recipient" class="themed-grid-col-row w10 tacntr" >{{ cs.Получатель }}</div>
+        <div id="tc_freight_cost" class="themed-grid-col-row w10 tacntr" >{{ cs.СтоимостьФрахта }} {{ cs.Валюта }}</div>
       </div>
       {% endfor %}
     </div>
@@ -289,6 +115,68 @@ body {
  #       + "ОтгрузкаСоСкладаПоставщика, ВыходСоСтанцииИзПорта, ВПортПерегрузаНаГраницу, ОтГраницыРф, ПриходВПунктНазначения, ПриходНаСклад
  -->
 
-   <a href="/" id="main_menu" class="w100" style="display: block; font-size: 1.25rem; margin: auto; padding: 1rem; margin-top: 2%; text-decoration: none; text-align: center; width: 50%; color: #fff; background-color: #0d6efd; border-radius: 0.5rem;">Главное меню</a>
-</body>
+    <a href="/" id="main_menu" class="w100 warning-btn" style="display: block; margin: auto; margin-top: 2%; width: 50%; ">Главное меню</a>
+
+    <div class="b-popup hidden" id="popupet" >
+      <div class="b-popup-content">
+        <div class="row">
+          <h1 id="tc_edit_header" style="width: fit-content;">Статус: </h1>
+          <h1 style="width: fit-content;"id="editidname"></h1>
+        </div>
+        <div class="fs20">
+          <div>
+            <label for="">Период</label>
+            <input readonly class="fs20 mb1" type="datetime" id="tc_edit_period">
+          </div>
+          <div>
+            <label for="">№ по данным перевозчика</label>
+            <input type="text" class="fs20 mb1" id="tc_edit_deliverer_number" value="">
+          </div>
+          <div>
+            <label for="">Товар / поставщик</label>
+            <input type="text" class="fs20 w70 mb1" id="tc_edit_product_supplier" value="">
+          </div>
+          <div>
+            <label for="">Номер контейнера</label>
+            <input type="text" class="fs20 mb1" id="tc_edit_container_number" value="">
+          </div>
+          <div>
+            <label for="">Пункт назначения</label>
+            <input type="text" class="fs20 w70 mb1" id="tc_edit_destination" value="">
+          </div>
+          <div>
+            <label for="">Статус поставки</label>
+            <input type="text" class="fs20 w70 mb1" id="tc_edit_status" value="">
+          </div>
+          <div>
+            <label for="">Расчетная неделя прибытия на таможню</label>
+            <input type="number" class="fs20 mb1" id="tc_edit_planned_arrival_week" value="">
+          </div>
+          <div>
+            <label for="">Получатель</label>
+            <input type="text" class="fs20 mb1" id="tc_edit_recipient" value="">
+          </div>
+          <div>
+            <label for="">Стоимость фрахта</label>
+            <input type="number" class="fs20 w20 mb1" id="tc_edit_freight_cost" value="">
+            <label for="">Валюта фрахта</label>
+
+            <input type="search" class="fs20 w20" id="tc_edit_freight_currency" list="currencies" class="form-control" autocomplete="false" placeholder="Валюта...">
+            <datalist class="mx-0 shadow" style="width: 220px;" id="currencies">
+                {% for elc in currencies %}
+                <option value="{{ elc.name }}" data-code="{{ elc.code }}"></option>
+                {% endfor %}
+            </datalist>
+          </div>
+        </div>
+        <div class="row pb-3 ps-3 pe-3" style="padding-bottom: 1%; width: 97%; position: absolute; top: 100%; transform: translate(0, -100%); display: flex; justify-content: space-between">
+          <button class="w-25 success-btn" onclick="saveStatus()">Сохранить</button>
+          <button class="w-25 warning-btn" onclick="document.querySelector('#popupet').classList.add('hidden')">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  
+
+
+  </body>
 </html>

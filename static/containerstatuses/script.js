@@ -187,7 +187,7 @@ function onTransportContainerClick(transportcontainer){
     document.querySelector('#container_statuses [transportcontainer="' + transportcontainer + '"]').classList.add('selected')
 
     document.querySelector('#history_tc').classList.remove('hidden');
-    // document.querySelector('#edit_tc').classList.remove('hidden');
+    document.querySelector('#edit_tc').classList.remove('hidden');
 
     containers_table = document.querySelector('#containers_table');
     containers_table.innerHTML = '';
@@ -411,3 +411,84 @@ function onClickHistoryTc(){
 
 }
 
+function onClickEditTc(){
+
+    popupet = document.querySelector('#popupet');
+
+    curTc = document.querySelector('#container_statuses .selected');
+
+    popupet.querySelector('#tc_edit_header').innerHTML = 'Статус транспортного контейнера ' + curTc.querySelector('#tc_internal_number').innerHTML;
+    popupet.querySelector('#tc_edit_deliverer_number').value = curTc.querySelector('#tc_deliverer_number').innerHTML;
+    popupet.querySelector('#tc_edit_product_supplier').value = curTc.querySelector('#tc_product_supplier').innerHTML;
+    popupet.querySelector('#tc_edit_container_number').value = curTc.querySelector('#tc_container_number').innerHTML;
+    popupet.querySelector('#tc_edit_destination').value = curTc.querySelector('#tc_destination').innerHTML;
+    popupet.querySelector('#tc_edit_status').value = curTc.querySelector('#tc_status').innerHTML;
+    popupet.querySelector('#tc_edit_planned_arrival_week').value = curTc.querySelector('#tc_planned_arrival_week').innerHTML;
+    popupet.querySelector('#tc_edit_recipient').value = curTc.querySelector('#tc_recipient').innerHTML;
+
+    strFreight = curTc.querySelector('#tc_freight_cost').innerHTML.replaceAll('&nbsp;', '').replaceAll(',', '.').split(' ');
+
+    popupet.querySelector('#tc_edit_freight_cost').value = strFreight[0];
+    popupet.querySelector('#tc_edit_freight_currency').value = strFreight[1];
+
+    popupet.classList.remove('hidden');
+
+    setPeriod();
+
+}
+
+function setPeriod(){
+
+    popupet = document.querySelector('#popupet');
+
+    if(!popupet.classList.contains('hidden')){
+
+        dateIn = new Date();
+
+        var year = dateIn.getFullYear();
+        var month = dateIn.getMonth() + 1; // getMonth() is zero-based
+        var day = dateIn.getDate();
+        var hour = dateIn.getHours();
+        var minute = dateIn.getMinutes();
+        var second = dateIn.getSeconds();
+
+        strMonth = (month < 10 ? '0' : '') + String(month)
+        strDay = (day < 10 ? '0' : '') + String(day)
+        strHour = (hour < 10 ? '0' : '') + String(hour)
+        strMinute = (minute < 10 ? '0' : '') + String(minute)
+        strSecond = (second < 10 ? '0' : '') + String(second)
+        
+        popupet.querySelector('#tc_edit_period').value =  strDay + '.' + strMonth + '.' + String(year) + ' ' + strHour + ':' + strMinute + ':' + strSecond;
+    
+        setTimeout(setPeriod, 1000);
+
+    }
+
+}
+
+function saveStatus(){
+
+    popupet = document.querySelector('#popupet');
+
+    curTc = document.querySelector('#container_statuses .selected');
+
+    data = {'id': curTc.getAttribute('transportcontainer'),
+        'period': popupet.querySelector('#tc_edit_period').value,
+        'deliverer_number': popupet.querySelector('#tc_edit_deliverer_number').value,
+        'product_supplier': popupet.querySelector('#tc_edit_product_supplier').value,
+        'container_number': popupet.querySelector('#tc_edit_container_number').value,
+        'destination': popupet.querySelector('#tc_edit_destination').value,
+        'status': popupet.querySelector('#tc_edit_status').value,
+        'planned_arrival_week': popupet.querySelector('#tc_edit_planned_arrival_week').value,
+        'recipient': popupet.querySelector('#tc_edit_recipient').value,
+        'freight_cost': popupet.querySelector('#tc_edit_freight_cost').value,
+        'freight_currency': popupet.querySelector('#tc_edit_freight_currency').value,
+    }
+
+    response_text = requestPost('?saveStatus=1', data);
+
+    if(JSON.parse(response_text).result){
+        location.reload();
+    }
+
+}
