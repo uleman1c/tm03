@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
         element.Контейнеры.forEach(celement => {
             
-            arCs.push(element.ИдентификаторКонтейнера);
+            arCs.push(celement.ИдентификаторКонтейнера);
 
         });
 
