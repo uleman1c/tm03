@@ -121,7 +121,7 @@ function picByExt(ext){
     if(ext == 'pdf'){
         return '/static/pdf.png'
     }
-    if(ext == 'jpg'){
+    if(ext == 'jpg' || ext == 'jpeg'){
         return '/static/jpg.png'
     }
     if(ext == 'xls' || ext == 'xlsx'){
