@@ -113,19 +113,21 @@ function Fc(responseText){
         });
     });
 
-    if (sessionStorage.getItem("transportcontainer")) {
+    transportcontainer = sessionStorage.getItem("transportcontainer");
 
-        transportcontainer = sessionStorage.getItem("transportcontainer");
+    if (transportcontainer 
+        && document.querySelector('#container_statuses [transportcontainer="' + transportcontainer + '"]')) {
 
-        if(document.querySelector('#container_statuses [transportcontainer="' + transportcontainer + '"]')){
+        onTransportContainerClick(transportcontainer);
 
-            onTransportContainerClick(transportcontainer);
+        container = sessionStorage.getItem("container")
 
-            if (sessionStorage.getItem("container")) {
+        if (sessionStorage.getItem("container")
+            && document.querySelector('#containers_table [container="' + container + '"]')) {
 
-                onContainerClick(transportcontainer, sessionStorage.getItem("container"));
-            }    
-        }
+            onContainerClick(transportcontainer, sessionStorage.getItem("container"));
+        }    
+
     }    
 
 
