@@ -117,13 +117,15 @@ function Fc(responseText){
 
         transportcontainer = sessionStorage.getItem("transportcontainer");
 
-        onTransportContainerClick(transportcontainer);
+        if(document.querySelector('#container_statuses [transportcontainer="' + transportcontainer + '"]')){
 
-        if (sessionStorage.getItem("container")) {
+            onTransportContainerClick(transportcontainer);
 
-            onContainerClick(transportcontainer, sessionStorage.getItem("container"));
-        }    
+            if (sessionStorage.getItem("container")) {
 
+                onContainerClick(transportcontainer, sessionStorage.getItem("container"));
+            }    
+        }
     }    
 
 
