@@ -360,7 +360,7 @@ function onFileClick(fileid, ext, in_t, full_name) {
 
     if(in_t){
 
-        locationhref = '?fatt=' + fileid + "&ext=" + ext + "&full_name=" + full_name;
+        locationhref = '?fatt=' + fileid + "&ext=" + ext + "&full_name=" + encodeURIComponent(full_name);
 
     } else {
 

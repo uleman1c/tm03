@@ -847,7 +847,7 @@ def fileversions(request):
 
         fatt = request.GET.get('fatt')
         if fatt:
-            return file_attachment(fatt, request.GET.get('ext'), request.GET.get('full_name'))
+            return file_attachment(fatt, request.GET.get('ext'), urllib.parse.unquote(request.GET.get('full_name')))
 
         smtcfib = request.GET.get('smtcfib')
         if smtcfib:
