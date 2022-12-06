@@ -113,6 +113,20 @@ function Fc(responseText){
         });
     });
 
+    if (sessionStorage.getItem("transportcontainer")) {
+
+        transportcontainer = sessionStorage.getItem("transportcontainer");
+
+        onTransportContainerClick(transportcontainer);
+
+        if (sessionStorage.getItem("container")) {
+
+            onContainerClick(transportcontainer, sessionStorage.getItem("container"));
+        }    
+
+    }    
+
+
 }
 
 
@@ -191,6 +205,8 @@ function requestPost(url, data, resultCallBack) {
 
 function onTransportContainerClick(transportcontainer){
 
+    sessionStorage.setItem("transportcontainer", transportcontainer);    
+
     selected = document.querySelector('#container_statuses .selected');
     if(selected)
         selected.classList.remove('selected');
@@ -258,6 +274,9 @@ function onTransportContainerClick(transportcontainer){
 }
 
 function onContainerClick(transportcontainer, container) {
+
+    sessionStorage.setItem("transportcontainer", transportcontainer);    
+    sessionStorage.setItem("container", container);    
 
     selected = document.querySelector('#containers_table .selected');
     if(selected)
