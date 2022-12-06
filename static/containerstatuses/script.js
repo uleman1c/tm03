@@ -428,7 +428,9 @@ function onClickEditTc(){
 
     curTc = document.querySelector('#container_statuses .selected');
 
-    popupet.querySelector('#tc_edit_header').innerHTML = 'Статус транспортного контейнера ' + curTc.querySelector('#tc_internal_number').innerHTML;
+    popupet.querySelector('#tc_edit_header').innerHTML = 'Статус транспортного контейнера';
+    popupet.querySelector('#transportcontainer').value = curTc.getAttribute('transportcontainer');
+    popupet.querySelector('#tc_edit_internal_number').value = curTc.querySelector('#tc_internal_number').innerHTML;
     popupet.querySelector('#tc_edit_deliverer_number').value = curTc.querySelector('#tc_deliverer_number').innerHTML;
     popupet.querySelector('#tc_edit_product_supplier').value = curTc.querySelector('#tc_product_supplier').innerHTML;
     popupet.querySelector('#tc_edit_container_number').value = curTc.querySelector('#tc_container_number').innerHTML;
@@ -481,10 +483,9 @@ function saveStatus(){
 
     popupet = document.querySelector('#popupet');
 
-    curTc = document.querySelector('#container_statuses .selected');
-
-    data = {'id': curTc.getAttribute('transportcontainer'),
+    data = {'id': popupet.querySelector('#transportcontainer').value,
         'period': popupet.querySelector('#tc_edit_period').value,
+        'internal_number': popupet.querySelector('#tc_edit_internal_number').value,
         'deliverer_number': popupet.querySelector('#tc_edit_deliverer_number').value,
         'product_supplier': popupet.querySelector('#tc_edit_product_supplier').value,
         'container_number': popupet.querySelector('#tc_edit_container_number').value,
@@ -502,6 +503,33 @@ function saveStatus(){
             location.reload();
         }
     });
+
+
+}
+
+
+function onClickAddTc() {
+    
+    popupet = document.querySelector('#popupet');
+
+    popupet.querySelector('#tc_edit_header').innerHTML = 'Статус транспортного контейнера ';
+    popupet.querySelector('#transportcontainer').value = '';
+    popupet.querySelector('#tc_edit_internal_number').value = '';
+    popupet.querySelector('#tc_edit_deliverer_number').value = '';
+    popupet.querySelector('#tc_edit_product_supplier').value = '';
+    popupet.querySelector('#tc_edit_container_number').value = '';
+    popupet.querySelector('#tc_edit_destination').value = '';
+    popupet.querySelector('#tc_edit_status').value = '';
+    popupet.querySelector('#tc_edit_planned_arrival_week').value = '';
+    popupet.querySelector('#tc_edit_recipient').value = '';
+
+    popupet.querySelector('#tc_edit_freight_cost').value = '';
+    popupet.querySelector('#tc_edit_freight_currency').value = '';
+
+    popupet.classList.remove('hidden');
+
+    setPeriod();
+
 
 
 }

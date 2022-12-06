@@ -18,18 +18,26 @@
     var container_statuses_h = '{{ container_statuses_h }}';
   </script>
     <div class="flex">
-      <h1 class="h01">Состояние контейнеров</h1>
-      <div id="history_tc" class="flex curpoint hidden" onclick="onClickHistoryTc();">
-        <img src="{%  static 'containerstatuses/history.png' %}" alt="" style="width: 2.5em; margin-left: 1em;">
+      {% if cu.container_statuses_edit_enabled %}
+      <div id="add_tc" class="flex curpoint" onclick="onClickAddTc();">
+        <img src="{%  static 'containerstatuses/plus.svg' %}" alt="" style="width: 2.5em;">
       </div>
+      {% else %}
+        <div id="add_tc" class="flex curpoint hidden">
+        </div>
+      {% endif %}
+      <h1 class="h01">Состояние контейнеров</h1>
       {% if cu.container_statuses_edit_enabled %}
       <div id="edit_tc" class="flex curpoint hidden" onclick="onClickEditTc();">
         <img src="{%  static 'containerstatuses/edit.png' %}" alt="" style="width: 2.5em; margin-left: 1em;">
       </div>
       {% else %}
-      <div id="edit_tc" class="flex curpoint hidden">
-      </div>
+        <div id="edit_tc" class="flex curpoint hidden">
+        </div>
       {% endif %}
+      <div id="history_tc" class="flex curpoint hidden" onclick="onClickHistoryTc();">
+        <img src="{%  static 'containerstatuses/history.png' %}" alt="" style="width: 2.5em; margin-left: 1em;">
+      </div>
     </div>
 
     <div id="container_statuses" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden;">
@@ -109,12 +117,6 @@
       </div>
     </div>
 
-
-<!-- ТоварПоставщик, НомерКонтейнера, ПунктНазначения, СтатусПоставки, "
- #       + "РасчетнаяНеделяПрибытияНаТаможню, Получатель, СтоимостьФрахта, Валюта, ПроцентОплаты, Перевозчик, ПунктЗагрузки, СтанцияОтправления, "
- #       + "ОтгрузкаСоСкладаПоставщика, ВыходСоСтанцииИзПорта, ВПортПерегрузаНаГраницу, ОтГраницыРф, ПриходВПунктНазначения, ПриходНаСклад
- -->
-
     <a href="/" id="main_menu" class="w100 warning-btn" style="display: block; margin: auto; margin-top: 2%; width: 50%; ">Главное меню</a>
 
     <div class="b-popup hidden" id="popupet" >
@@ -122,8 +124,13 @@
         <div class="row">
           <h1 id="tc_edit_header" style="width: fit-content;">Статус: </h1>
           <h1 style="width: fit-content;"id="editidname"></h1>
+          <input class="hidden" id="transportcontainer">
         </div>
         <div class="fs20">
+          <div>
+            <label for="">Внутренний номер</label>
+            <input class="fs20 mb1" type="text" id="tc_edit_internal_number">
+          </div>
           <div>
             <label for="">Период</label>
             <input readonly class="fs20 mb1" type="datetime" id="tc_edit_period">
