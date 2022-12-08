@@ -243,6 +243,7 @@ function onTransportContainerClick(transportcontainer){
             inputFile.setAttribute('container_text', 'Транспортный контейнер ' + element.ВнутреннийНомер);
 
             document.querySelector('#add_file').style = 'display: block';
+            //document.querySelector('#add_container').style = 'display: block';
 
             document.querySelector('#zip_file').style = 'display: none';
 
