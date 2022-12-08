@@ -1,0 +1,20 @@
+.dropdownscrolllist {
+
+    position: absolute; 
+    background-color: white; 
+    box-shadow: 0 1.5rem 1rem rgb(0 0 0 / 15%); 
+    overflow-y: scroll; 
+    height: fit-content; 
+    max-height: 50%;
+    z-index: 100;
+
+}
+
+.curpoint {
+    cursor: pointer;
+  }
+
+.hidden {
+    display: none;
+}
+  

@@ -4,6 +4,7 @@ from .models import *
 
 class ProductsAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Products._meta.fields]
+    search_fields = ['article', 'name', 'fullname', 'sfullname', 'id1c']
 
     class Meta:
         model = Products

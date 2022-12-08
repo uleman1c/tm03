@@ -6,13 +6,19 @@
         {% load static %}
         <link rel="stylesheet" href="{%  static 'bootstrap.min.css' %}">
         <link href="{% static 'dropdowns.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{%  static 'recipes/style.css' %}">
         <script src="{% static 'jquery.js' %}"></script>
         <script src="{% static 'create.js' %}?v=0010"></script>
+        <script src="{% static 'recipes/leftovers.js' %}?v=0002"></script>
 
     </head>
     <body>
+        <input type="text" id="requestid" style="display: none;" value="{{ requestid }}">
         <div class="container py-3" style="max-width: 100%">
+            <div style="display: flex;">
                 <h1>Рецепт по заявке</h1>
+                <a href="/" id="main_menu" class="btn btn-lg btn-primary" style="transform: translate(-107%, 0px); position: absolute;left: 100%; width: max-content;">Главное меню</a>
+            </div>
                 <input hidden id="orderid" value="{{ orderid }}">
                 <div style="width: 100%">
                     <input readonly type="search" id="contractor" class="form-control" id1c="{{ order.contractor.id1c }}"  value="{{ order.contractor.name }}">
@@ -37,32 +43,38 @@
 
                 <textarea readonly class="py-2 form-control" rows="4" id="comment">{{ order.comments }}</textarea>
 
-                <p style="margin-bottom: 0%;">Товары</p>
+                <div id="products_menu" style="display: flex;">
+                    <div id="add_tc" class="flex curpoint" onclick="addGoodItem();">
+                        <img src="{%  static 'containerstatuses/plus.svg' %}" alt="" style="width: 2em;">
+                    </div>
+                    <h1 style="font-size: 24px;">Товары</h1>
+                    <a href="#" onclick="reloadLeftovers();" id="reload" class="btn btn-success hidden" style="left: 75%;position: absolute;">Обновить остатки</a>
+                    <a href="#" onclick="" id="loading" class="btn btn-primary" style="left: 75%;position: absolute;">Загружаем остатки</a>
+                </div>
+
+
                 <div id="goods">
                     <div id="gooditem" data-numstr="0">
                         <div style="float: left; width: 50%">
-                            <input type="search" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilterWOB(0)" autocomplete="false" placeholder="Номенклатура...">
+                            <input type="search" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilterWOB(0)" autocomplete="false" placeholder="Номенклатура..." id1c="00000000-0000-0000-0000-000000000000">
+                            <ul id="goodsList" class="list-unstyled mb-0 dropdownscrolllist"></ul>
                        </div>
                         <div style="float: left; width: 25%">
-                            <input type="search" id="сharacteristicsFilter" class="form-control" onkeyup="keyUpCharactreristicWOB(0)" autocomplete="false" placeholder="Характеристика...">
-                            <ul id="сharacteristicsList" class="list-unstyled mb-0"></ul>
+                            <input type="search" id="сharacteristicsFilter" class="form-control" onkeyup="keyUpCharactreristicWOB(0)" autocomplete="false" placeholder="Характеристика..." id1c="00000000-0000-0000-0000-000000000000">
+                            <ul id="сharacteristicsList" class="list-unstyled mb-0 dropdownscrolllist"></ul>
                         </div>
-                        <input type="number" id="goodsQuantity" class="form-control" style="width: 20%; float: left;" autocomplete="false" placeholder="Количество...">
-                        <ul id="goodsList" class="list-unstyled mb-0"></ul>
+                        <input type="number" id="goodsQuantity" class="form-control" style="width: 15%; float: left;" autocomplete="false" placeholder="Количество...">
+                        <input readonly type="number" id="goodsLeftover" class="form-control" style="width: 5%; float: left;" autocomplete="false" placeholder="0">
                        <a href="#" onclick="delGoodItem(0)" id="checkout_order" class="btn btn-danger" style="width: 5%;">-</a>
                     </div>
                 </div>
 
-                <a href="#" onclick="addGoodItem()" id="addgooditem" class="btn btn-success" style="width: 100%; margin-top: 2%;">Добавить строку...</a>
+                <div>
 
-                <a href="#" onclick="checkoutRecipe()" id="checkout_order" class="btn btn-success" style="width: 100%; margin-top: 5%;">Записать</a>
-
-
-            <div class="container py-3 col-6">
-                <a href="/" id="main_menu" class="w-100 btn btn-lg btn-primary" >Главное меню</a>
-            </div>
-
-
+                    <a href="#" onclick="checkoutRecipe()" id="checkout_order" class="btn btn-success" style="left: 25%;position: absolute;margin-top: 5%;width: 50%;">Записать</a>
+                    </div>
+    
+    
         </div>
     </body>
 </html>
