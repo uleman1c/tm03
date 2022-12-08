@@ -251,6 +251,29 @@ def attachedfile(request):
     return FileResponse(open(filename, 'rb'), filename=full_name)
 
 
+def startGetLeftovers(warehouseid):
+
+    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" 
+
+    data = []
+    data.append({'request': 'getLeftoversFromUpr', 'parameters': {'warehouse': warehouseid}})
+
+    res = dict()
+
+    res['result'] = True
+
+    try:
+
+        data_dict = requests.post(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']),  data=json.dumps(data)).json()
+        res['requestid'] = data_dict['requestid']
+
+    except Exception as ex:
+        tasks_list = list()
+        res['message'] = str(sys.exc_info())
+        res['result'] = False
+
+    return res
+
 
 def add_recipe(request):
 
@@ -260,6 +283,10 @@ def add_recipe(request):
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
     if request.method == 'POST':
+
+        sgl = request.GET.get('sgl')
+        if sgl:
+            return JsonResponse(startGetLeftovers(cu.warehouse.id1c))
 
         cc = Contractors.objects.filter(id1c=request.POST['contractor']).all().get()
 
@@ -311,6 +338,12 @@ def add_recipe(request):
         return JsonResponse(res)
 
     else:
+
+        request_sgl = startGetLeftovers(cu.warehouse.id1c)
+
+        if request_sgl['result']:
+
+            requestid = request_sgl['requestid']
 
         orderid = request.GET.get('orderid')
         if orderid:

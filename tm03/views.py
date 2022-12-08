@@ -1922,19 +1922,23 @@ def upload_all(data_dict):
 
             if el['Вид'] == 'Номенклатура':
 
+                fullname = el['Реквизиты']['НаименованиеПолное']
+                if fullname == '':
+                    fullname = el['Наименование']
+
                 qp = Products.objects.filter(id1c__exact=el['Ссылка']).all()
                 if len(qp) == 0:
                     Products.objects.create(article=el['Реквизиты']['Артикул'], name=el['Наименование'],
-                                            fullname=el['Реквизиты']['НаименованиеПолное'],
-                                            sfullname=el['Реквизиты']['НаименованиеПолное'].lower(),
+                                            fullname=fullname,
+                                            sfullname=fullname.lower(),
                                             is_group=el['ЭтоГруппа'], is_deleted=el['ПометкаУдаления'],
                                             id1c=el['Ссылка'])
                 else:
                     cp = qp.get()
                     cp.article = el['Реквизиты']['Артикул']
                     cp.name = el['Наименование']
-                    cp.fullname = el['Реквизиты']['НаименованиеПолное']
-                    cp.sfullname = el['Реквизиты']['НаименованиеПолное'].lower()
+                    cp.fullname = fullname
+                    cp.sfullname = fullname.lower()
                     cp.is_group = el['ЭтоГруппа']
                     cp.is_deleted = el['ПометкаУдаления']
                     cp.save()

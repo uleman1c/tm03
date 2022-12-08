@@ -135,7 +135,10 @@ function selectGood(numstr, id1c, name){
     var gf = document.querySelector('#gooditem[data-numstr="' + numstr + '"] #сharacteristicsFilter');
 
     gf.value = '';
-    gf.setAttribute('id1c', '');
+    gf.setAttribute('id1c', '00000000-0000-0000-0000-000000000000');
+
+
+    showLeftovers();
 
 }
 
@@ -257,7 +260,7 @@ function selectCharactreristic(numstr, id1c, name){
     gf.value = name;
     gf.setAttribute('id1c', id1c);
 
-
+    showLeftovers();
 
 }
 
@@ -316,16 +319,23 @@ function addGoodItem(e) {
     $("#goods").append(
         '<div id="gooditem" data-numstr="' + numstr + '">'
         +'<div style="float: left; width: 50%">'
-            +'<input type="search" style="font-size:  normal" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilterWOB(' + numstr + ')" autocomplete="false" placeholder="Номенклатура...">'
+            +'<input type="search" style="font-size:  normal" id="goodsFilter" class="form-control" onkeyup="keyUpGoodsFilterWOB(' + numstr + ')" autocomplete="false" placeholder="Номенклатура..." id1c="00000000-0000-0000-0000-000000000000">'
+        +'<ul id="goodsList" class="list-unstyled mb-0 dropdownscrolllist"></ul>'
         +'</div>'
         +'<div style="float: left; width: 25%">'
-            +'<input type="search" id="сharacteristicsFilter" class="form-control" onkeyup="keyUpCharactreristicWOB(' + numstr + ')" autocomplete="false" placeholder="Характеристика...">'
-            +'<ul id="сharacteristicsList" class="list-unstyled mb-0"></ul>'
+            +'<input type="search" id="сharacteristicsFilter" class="form-control" onkeyup="keyUpCharactreristicWOB(' + numstr + ')" autocomplete="false" placeholder="Характеристика..." id1c="00000000-0000-0000-0000-000000000000">'
+            +'<ul id="сharacteristicsList" class="list-unstyled mb-0 dropdownscrolllist"></ul>'
         +'</div>'
-        +'<input type="number" id="goodsQuantity" class="form-control" style="width: 20%; float: left;" autocomplete="false" placeholder="Количество...">'
-        +'<ul id="goodsList" class="list-unstyled mb-0"></ul>'
+        +'<input type="number" id="goodsQuantity" class="form-control" style="width: 15%; float: left;" autocomplete="false" placeholder="Количество...">'
+        +'<input readonly type="number" id="goodsLeftover" class="form-control" style="width: 5%; float: left;" autocomplete="false" placeholder="0">'
         +'<a href="#" onclick="delGoodItem(' + numstr + ')" id="checkout_order" class="btn btn-danger" style="width: 5%;">-</a>'
     +'</div>');
+
+
+
+
+
+
 
     numstr = numstr + 1;
 
