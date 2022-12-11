@@ -15,6 +15,7 @@ from django.shortcuts import redirect, render
 
 from RequestHeaders.models import add_request_header
 from accept_cash.models import AcceptCash
+from access_key.models import AccessKey
 from contractors.models import Contractors
 from currency.models import Currency
 from file.models import File, FileOwner, FileVersion
@@ -664,6 +665,26 @@ def send_msg_to_container_files_info_bot(text):
         url_req = "https://api.telegram.org/bot" + token + "/sendMessage" + "?chat_id=" + str(chat_id) + "&text=" + text
         results = requests.get(url_req)
 
+def upfa(request):
+
+    access_key = request.GET.get('ak')
+    
+    if not access_key:
+
+        return render(request, '404.html')
+
+    qs = AccessKey.objects.filter(id1c=access_key)
+
+    if qs.count() == 0:
+
+        return render(request, '404.html')
+
+    cu = Users1c.objects.filter(name='upload').all().get()
+
+    res = uploadAttachment(request, cu)
+
+    return JsonResponse(res)
+
 
 def containerstatuses(request):
 
@@ -779,59 +800,66 @@ def containerstatuses(request):
         if save_status:
             return save_status_to_erp(json.loads(request.body.decode('utf-8')))
 
-        filespath = 'I:\\Attachments\\'
+        res = uploadAttachment(request, cu)
+
+        return JsonResponse(res)
+
+
+def uploadAttachment(request, cu):
+
+    filespath = 'I:\\Attachments\\'
         
-        type1c = request.headers.get('type1c')
-        name1c = urllib.parse.unquote(request.headers.get('name1c'))
-        id1c = request.headers.get('id1c')        
+    type1c = request.headers.get('type1c')
+    name1c = urllib.parse.unquote(request.headers.get('name1c'))
+    id1c = request.headers.get('id1c')        
 
-        curUid = request.headers.get('id')
+    curUid = request.headers.get('id')
+    curparent_id = ''
+    part = request.headers.get('part')
+
+    if not curparent_id:
         curparent_id = ''
-        part = request.headers.get('part')
 
-        if not curparent_id:
-            curparent_id = ''
+    if File.objects.filter(idname=curUid).count() == 0:
+        
+        filename = urllib.parse.unquote(request.headers.get('filename'))
+        
+        co = File.objects.create(user=cu, idname=curUid, name=filename, parent_id=curparent_id)
 
-        if File.objects.filter(idname=curUid).count() == 0:
+        cfo = FileOwner.objects.create(user=cu, file=co, type=type1c, name=name1c, idname=id1c)
 
-            filename = urllib.parse.unquote(request.headers.get('filename'))
-            co = File.objects.create(user=cu, idname=curUid, name=filename, parent_id=curparent_id)
-
-            cfo = FileOwner.objects.create(user=cu, file=co, type=type1c, name=name1c, idname=id1c)
-
-        else:
-            co = File.objects.filter(idname=curUid).all().get()
+    else:
+        co = File.objects.filter(idname=curUid).all().get()
 
 #        part = request.POST.get('part')
-        if int(part) >= 0:
+    if int(part) >= 0:
             # cfp = FilePart.objects.create(file=co, number=part)
-            curName = str(co.idname) + ".tmp"
+        curName = str(co.idname) + ".tmp"
         
-            destination = open(filespath + curName, 'ab+')
-            destination.write(request.body)
-            destination.close()
+        destination = open(filespath + curName, 'ab+')
+        destination.write(request.body)
+        destination.close()
                 
         
             # stat = os.stat(filespath + curName)
         
-            co.size = co.size + int(request.headers.get('size'))
-            co.save()
+        co.size = co.size + int(request.headers.get('size'))
+        co.save()
                     
             # if part:
                 # cfp.size = stat.st_size
                 # cfp.save()
                         
-        else:
-            size = request.headers.get('size')
+    else:
+        size = request.headers.get('size')
             
-            if co.size != int(size):
-                co.size = 0
-                co.save()
+        if co.size != int(size):
+            co.size = 0
+            co.save()
 
-        res = dict()
-        res['success'] = True
-
-        return JsonResponse(res)
+    res = dict()
+    res['success'] = True
+    return res
 
 
 def fileversions(request):
