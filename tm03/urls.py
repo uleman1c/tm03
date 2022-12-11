@@ -57,6 +57,8 @@ urlpatterns = [
     path('tchystory/', views.tchystory, name='tchystory'),
     path('curencecuorses/', views.curencecuorses, name='curencecuorses'),
     path('upfa/', views.upfa, name='upfa'),
+    path('gfa/', views.gfa, name='gfa'),
+    path('gf/', views.gf, name='gfa'),
     path('', include('users1c.urls')),
     path('', include('login.urls')),
     path('', include('contractors.urls')),

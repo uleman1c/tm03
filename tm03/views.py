@@ -197,9 +197,35 @@ def curencecuorses(request):
     return JsonResponse(res)
 
 
+# get file attachments
+def gfa(request):
+
+    access_key = request.GET.get('ak')
+    
+    if not access_key:
+
+        return render(request, '404.html')
+
+    qs = AccessKey.objects.filter(id1c=access_key)
+
+    if qs.count() == 0:
+
+        return render(request, '404.html')
+
+    cu = Users1c.objects.filter(name='upload').all().get()
+
+    return owner_files(request.GET.get('type1c'), request.GET.get('name1c'), request.GET.get('id1c'))
+
+
+
 def transport_container_files(ftc):
 
-    cf = FileOwner.objects.filter(type='doc', name='ТранспортныйКонтейнер', idname=ftc, is_deleted=False)
+    return owner_files('doc', 'ТранспортныйКонтейнер', ftc)
+
+
+def owner_files(type1c, name1c, id1c):
+
+    cf = FileOwner.objects.filter(type=type1c, name=name1c, idname=id1c, is_deleted=False)
 
     res = dict()
     files = list()
@@ -236,6 +262,7 @@ def transport_container_files(ftc):
 
         files.append({'id': last_version_file.idname, 'name': name, 'ext': ext, 'user': last_version_file.user.name, 
         'created': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y'),
+        'createdu': last_version_file.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%Y%m%d%H%M%S'),
         'comments': last_version_file.comments, 'version': version_text})
 
     res['files'] = files
@@ -665,6 +692,7 @@ def send_msg_to_container_files_info_bot(text):
         url_req = "https://api.telegram.org/bot" + token + "/sendMessage" + "?chat_id=" + str(chat_id) + "&text=" + text
         results = requests.get(url_req)
 
+# upload file attachment
 def upfa(request):
 
     access_key = request.GET.get('ak')
@@ -684,6 +712,25 @@ def upfa(request):
     res = uploadAttachment(request, cu)
 
     return JsonResponse(res)
+
+# get file
+def gf(request):
+
+    access_key = request.GET.get('ak')
+    
+    if not access_key:
+
+        return render(request, '404.html')
+
+    qs = AccessKey.objects.filter(id1c=access_key)
+
+    if qs.count() == 0:
+
+        return render(request, '404.html')
+
+    cu = Users1c.objects.filter(name='upload').all().get()
+
+    return file_attachment(request.GET.get('id'), "", request.GET.get('name'))
 
 
 def containerstatuses(request):
