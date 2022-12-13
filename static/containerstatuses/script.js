@@ -531,13 +531,18 @@ function saveStatus(){
 
 }
 
+function newUid() {
+    let u = Date.now().toString(16) + Math.random().toString(16) + '0'.repeat(16);
+    return [u.substr(0, 8), u.substr(8, 4), '4000-8' + u.substr(13, 3), u.substr(16, 12)].join('-');
+}
+
 
 function onClickAddTc() {
     
     popupet = document.querySelector('#popupet');
 
     popupet.querySelector('#tc_edit_header').innerHTML = 'Статус транспортного контейнера ';
-    popupet.querySelector('#transportcontainer').value = '';
+    popupet.querySelector('#transportcontainer').value = newUid();
     popupet.querySelector('#tc_edit_internal_number').value = '';
     popupet.querySelector('#tc_edit_deliverer_number').value = '';
     popupet.querySelector('#tc_edit_product_supplier').value = '';
