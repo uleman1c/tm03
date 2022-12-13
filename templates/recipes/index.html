@@ -80,10 +80,10 @@
 
            {% for el in elements %}
 
-            <div class="row mb-3">
-              <div class="col-3 themed-grid-col">{{ el.created }}</div>
-              <div class="col-7 themed-grid-col" onclick="location = '../view_recipe?id={{ el.id1c }}'" style="cursor: pointer;">{{ el.contractor.name }} / {{ el.color_number }} / {{ el.comments }} </div>
-              <div id="{{ el.id1c }}" class="col-2 themed-grid-col">
+            <div class="row">
+              <div class="col-3 themed-grid-col-row">{{ el.created }}</div>
+              <div class="col-7 themed-grid-col-row" onclick="location = '../view_recipe?id={{ el.id1c }}'" style="cursor: pointer;">{{ el.contractor.name }} / {{ el.color_number }} / {{ el.comments }} </div>
+              <div id="{{ el.id1c }}" class="col-2 themed-grid-col-row">
                   {% if el.delivered1c %}
                       Да
                   {% else %}
