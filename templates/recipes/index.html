@@ -82,13 +82,14 @@
 
             <div class="row mb-3">
               <div class="col-3 themed-grid-col">{{ el.created }}</div>
-              <div class="col-7 themed-grid-col">{{ el.contractor.name }} / {{ el.color_number }} / {{ el.comments }}</div>
+              <div class="col-7 themed-grid-col" onclick="location = '../view_recipe?id={{ el.id1c }}'" style="cursor: pointer;">{{ el.contractor.name }} / {{ el.color_number }} / {{ el.comments }} </div>
               <div id="{{ el.id1c }}" class="col-2 themed-grid-col">
                   {% if el.delivered1c %}
                       Да
                   {% else %}
                       <a href="#" onclick="sendto1c_recipe('{{ el.id1c }}')" id="checkout_order" class="btn btn-success" style="font-size: 1.5rem; width: 100%">Отправить</a>
-                  {% endif %}</div>
+                  {% endif %}
+              </div>
             </div>
 
             {% endfor %}
