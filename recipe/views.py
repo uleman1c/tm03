@@ -278,13 +278,26 @@ def attachedfile(request):
     return FileResponse(open(filename, 'rb'), filename=full_name)
 
 
-def startGetLeftovers(warehouseid):
+def startGetLeftovers(cu):
 
     server_address = AUTH_DATA['addr'] + "/hs/dta/obj" 
 
-    data = []
-    data.append({'request': 'getLeftoversFromUpr', 'parameters': {'warehouse': warehouseid}})
+    uws = list()
+    
+    uws.append(cu.warehouse.id1c)
 
+
+    data = []
+    data.append({'request': 'getLeftoversFromUpr', 'parameters': {'warehouse': cu.warehouse.id1c}})
+
+    uwsq = UserWarehouse.objects.filter(user=cu)
+
+    for uw in uwsq:
+
+        uws.append(uw.warehouse.id1c)
+
+        data.append({'request': 'getLeftoversFromUpr', 'parameters': {'warehouse': uw.warehouse.id1c}})
+        
     res = dict()
 
     res['result'] = True
@@ -313,7 +326,7 @@ def add_recipe(request):
 
         sgl = request.GET.get('sgl')
         if sgl:
-            return JsonResponse(startGetLeftovers(cu.warehouse.id1c))
+            return JsonResponse(startGetLeftovers(cu))
 
         cc = Contractors.objects.filter(id1c=request.POST['contractor']).all().get()
 
@@ -366,7 +379,7 @@ def add_recipe(request):
 
     else:
 
-        request_sgl = startGetLeftovers(cu.warehouse.id1c)
+        request_sgl = startGetLeftovers(cu)
 
         if request_sgl['result']:
 

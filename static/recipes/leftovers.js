@@ -82,7 +82,33 @@ function getLeftovers() {
         ep.querySelector("#loading").classList.add('hidden');
         ep.querySelector("#reload").classList.remove('hidden');
 
-        leftovers = jr.leftovers;
+        jr.leftovers.forEach(function (welement){
+
+          welement.leftovers.forEach(function(element){
+
+            found = false;
+            leftovers.forEach(function(fel){
+
+              if(element.productid == fel.productid 
+                && element.characteristicid == fel.characteristicid){
+
+                found = true;
+
+                fel.quantity = fel.quantity + element.quantity;
+
+              }
+
+            });
+
+            if(!found){
+
+              leftovers.push(element);
+
+            }
+
+          });
+
+        });
 
 
 
