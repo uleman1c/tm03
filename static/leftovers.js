@@ -69,19 +69,29 @@ function getLeftovers() {
 
         var ep = document.querySelector("#products");
         
-        ep.querySelector("#loading").style.display = 'none';
+        document.querySelector("#loading").style.display = 'none';
 
-        jr.leftovers.forEach(element => {
+        jr.leftovers.forEach(welement => {
 
-          productstr = element.product;
-          if(element.characteristic){
-            productstr = productstr + ' (' + element.characteristic + ')';
-          }
+          ep.innerHTML = ep.innerHTML
+            + '<h3 class="text-center" style="font-size: 2rem;">Остатки по складу ' + welement.warehouse + '</h3>'
+            + '<div class="row">'
+            + '<div class="col-10 themed-grid-col" style="text-align: center">Номенклатура</div>'
+            + '<div class="col-2 themed-grid-col" style="text-align: center">Количество</div>'
+            + '</div>';
 
-          ep.innerHTML = ep.innerHTML + '<div class="row">'
-            + '<div class="col-10 themed-grid-col">' + productstr + '</div>'
-            + '<div class="col-2 themed-grid-col">' + element.quantity + '</div>'
-          + '</div>';
+        welement.leftovers.forEach(element => {
+
+            productstr = element.product;
+            if(element.characteristic){
+              productstr = productstr + ' (' + element.characteristic + ')';
+            }
+
+            ep.innerHTML = ep.innerHTML + '<div class="row">'
+              + '<div class="col-10 themed-grid-col">' + productstr + '</div>'
+              + '<div class="col-2 themed-grid-col">' + element.quantity + '</div>'
+            + '</div>';
+          });
 
         });
 

@@ -41,3 +41,10 @@ class ContainerFilesInfoBotUser(models.Model):
     
     user = models.ForeignKey(Users1c, on_delete=models.CASCADE)
 
+
+class UserWarehouse(models.Model):
+
+    user = models.ForeignKey(Users1c, on_delete=models.CASCADE)
+    warehouse = models.ForeignKey(Warehouses, on_delete=models.CASCADE)
+
+    

@@ -8,7 +8,7 @@ from contractors.models import Contractors
 from products.models import Characteristics, Products
 from recipe.models import RecipeOrder, Recipe, RecipeGoods
 
-from users1c.models import Users1c
+from users1c.models import UserWarehouse, Users1c
 
 import pytz 
 import requests
@@ -95,9 +95,24 @@ def leftovers(request):
 
     server_address = AUTH_DATA['addr'] + "/hs/dta/obj" # + "?request=getLeftovers&warehouse=" + cu.warehouse.id1c
 
+    uws = list()
+    
+    uws.append(cu.warehouse.id1c)
+
+
     data = []
     data.append({'request': 'getLeftoversFromUpr', 'parameters': {'warehouse': cu.warehouse.id1c}})
 
+    uwsq = UserWarehouse.objects.filter(user=cu)
+
+
+
+    for uw in uwsq:
+
+        uws.append(uw.warehouse.id1c)
+
+        data.append({'request': 'getLeftoversFromUpr', 'parameters': {'warehouse': uw.warehouse.id1c}})
+        
     res = dict()
 
     res['result'] = True
@@ -106,6 +121,7 @@ def leftovers(request):
 
         data_dict = requests.post(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']),  data=json.dumps(data)).json()
         requestid = data_dict['requestid']
+
 
     except Exception as ex:
         tasks_list = list()
@@ -142,21 +158,32 @@ def getleftovers(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" + "?request=getLeftoversUpr&warehouse=" + cu.warehouse.id1c
+    leftovers = list()
+    leftovers.append({'warehouse':cu.warehouse.name, 'wid':cu.warehouse.id1c})
 
+    uwq = UserWarehouse.objects.filter(user=cu)
+    for uw in uwq:
+        leftovers.append({'warehouse':uw.warehouse.name, 'wid':uw.warehouse.id1c})
+        
     res = dict()
 
     res['result'] = True
 
-    try:
+    for leftover in leftovers:
 
-        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
-        res['leftovers'] = data_dict['responses'][0]['LeftoversUpr']
+        server_address = AUTH_DATA['addr'] + "/hs/dta/obj" + "?request=getLeftoversUpr&warehouse=" + leftover['wid']
 
-    except Exception as ex:
-        tasks_list = list()
-        res['message'] = str(sys.exc_info())
-        res['result'] = False
+        try:
+
+            data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+            leftover['leftovers'] = data_dict['responses'][0]['LeftoversUpr']
+
+        except Exception as ex:
+            tasks_list = list()
+            res['message'] = str(sys.exc_info())
+            res['result'] = False
+
+    res['leftovers'] = leftovers
 
     return JsonResponse(res)
 
