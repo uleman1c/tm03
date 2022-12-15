@@ -318,7 +318,7 @@ def add_recipe(request):
             cidc = request.POST['goods[' + str(curInd) + '][cid1c]']
 
             cho = None
-            if cidc:
+            if cidc and cidc != '00000000-0000-0000-0000-000000000000':
                 cho = Characteristics.objects.filter(id1c=cidc).all().get()
 
             RecipeGoods.objects.create(recipe=ro, product=go, characteristic=cho, quantity=request.POST['goods[' + str(curInd) + '][quantity]'] )

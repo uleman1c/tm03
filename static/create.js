@@ -109,7 +109,7 @@ function checkoutRecipe(){
                  console.log(data);
                  location.href = "../recipes/";
              },
-             error: function(){
+             error: function(jqXHR, exception){
                  console.log("error")
              }
          })
