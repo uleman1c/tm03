@@ -27,29 +27,25 @@
         }
     </style>
 
-        <div class="container py-3" style="max-width: 95%">
+    <div class="container py-3" style="max-width: 95%">
 
-            <input type="text" id="requestid" style="display: none;" value="{{ requestid }}">
-            <h3 class="text-center" style="font-size: 2rem;">Остатки по складу {{ cu.warehouse.name }}</h3>
+        <input type="text" id="requestid" style="display: none;" value="{{ requestid }}">
 
-             <div class="row mb-3">
-              <div class="col-10 themed-grid-col" style="text-align: center">Номенклатура</div>
-              <div class="col-2 themed-grid-col" style="text-align: center">Количество</div>
-            </div>
+        <h3 id="loading" class="text-center" style="font-size: 2rem;">Загрузка...</h3>
 
-            <div id="products">
+        <h3 id="zeroleftovers" class="text-center" style="font-size: 2rem; display: none;">Нет остатков</h3>
 
-                <h3 id="loading" class="text-center" style="font-size: 2rem;">Загрузка...</h3>
+        <div id="products">
 
-                <h3 id="zeroleftovers" class="text-center" style="font-size: 2rem; display: none;">Нет остатков</h3>
-            </div>
 
-            <div class="container py-3 col-6">
-                <a href="/" id="main_menu" class="w-100 btn btn-lg btn-primary">Главное меню</a>
-            </div>
+
+        </div>
+
+        <div class="container py-3 col-6">
+            <a href="/" id="main_menu" class="w-100 btn btn-lg btn-primary">Главное меню</a>
+        </div>
 
     </div>
-
 
 </body>
 </html>
