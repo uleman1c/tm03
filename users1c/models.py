@@ -48,3 +48,9 @@ class UserWarehouse(models.Model):
     warehouse = models.ForeignKey(Warehouses, on_delete=models.CASCADE)
 
     
+class UserOutcomeWarehouse(models.Model):
+
+    user = models.ForeignKey(Users1c, on_delete=models.CASCADE)
+    warehouse = models.ForeignKey(Warehouses, on_delete=models.CASCADE)
+
+    

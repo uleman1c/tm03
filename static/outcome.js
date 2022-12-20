@@ -69,17 +69,30 @@ function getOutcome() {
 
         var ep = document.querySelector("#orders");
         
-        ep.querySelector("#loading").style.display = 'none';
+        document.querySelector("#loading").style.display = 'none';
 
-        jr.outcome.forEach(element => {
+        jr.outcome.forEach(welement => {
 
-          ep.innerHTML = ep.innerHTML + '<div class="row">'
-            + '<a href="/prnform?id=' + element.Распоряжение + '" class="col-1 themed-grid-col">'
-            + '<img src="/static/print.png" style="width: 100%"></img>'
-            + '</a>'
-            + '<div class="col-9 themed-grid-col" data-id1c="' + element.Распоряжение + '">' + element.ПолучательСтр + ", " + element.РаспоряжениеСтр + ', ' + element.Комментарий + '</div>'
-            + '<div class="col-2 themed-grid-col" style="text-align: center;">' + element.ДатаОтгрузки + '</div>'
-          + '</div>';
+          ep.innerHTML = ep.innerHTML
+            +'<h3 class="text-center" style="font-size: 2rem;">Отгрузка со склада ' + welement.warehouse + '</h3>'
+
+            +'<div class="row mb-3">'
+              +'<div class="col-10 themed-grid-col" style="text-align: center">Распоряжение</div>'
+              +'<div class="col-2 themed-grid-col" style="text-align: center">Дата отгрузки</div>'
+            +'</div>';
+ 
+  
+          welement.outcome.forEach(element => {
+
+            ep.innerHTML = ep.innerHTML + '<div class="row">'
+              + '<a href="/prnform?id=' + element.Распоряжение + '" class="col-1 themed-grid-col">'
+              + '<img src="/static/print.png" style="width: 100%"></img>'
+              + '</a>'
+              + '<div class="col-9 themed-grid-col" data-id1c="' + element.Распоряжение + '">' + element.ПолучательСтр + ", " + element.РаспоряжениеСтр + ', ' + element.Комментарий + '</div>'
+              + '<div class="col-2 themed-grid-col" style="text-align: center;">' + element.ДатаОтгрузки + '</div>'
+            + '</div>';
+
+          });
 
         });
 
