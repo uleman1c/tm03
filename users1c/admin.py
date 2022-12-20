@@ -24,8 +24,18 @@ class UserWarehouseAdmin(admin.ModelAdmin):
     class Meta:
         model = UserWarehouse
 
+class UserOutcomeWarehouseAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in UserOutcomeWarehouse._meta.fields]
+    search_fields = [field.name for field in UserOutcomeWarehouse._meta.fields]
+
+    class Meta:
+        model = UserOutcomeWarehouse
+
+
 
 admin.site.register(Users1c, Users1cAdmin)
 admin.site.register(ContainerFilesInfoBotUser, ContainerFilesInfoBotUserAdmin)
 admin.site.register(UserWarehouse, UserWarehouseAdmin)
+admin.site.register(UserOutcomeWarehouse, UserOutcomeWarehouseAdmin)
+
 

@@ -8,7 +8,7 @@ from contractors.models import Contractors
 from products.models import Characteristics, Products
 from recipe.models import RecipeOrder, Recipe, RecipeGoods
 
-from users1c.models import UserWarehouse, Users1c
+from users1c.models import UserOutcomeWarehouse, UserWarehouse, Users1c
 
 import pytz 
 import requests
@@ -194,25 +194,37 @@ def getoutcome(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    server_address = AUTH_DATA['addr'] + "/hs/dta/obj" + "?request=getOutcomeUpr&warehouse=" + cu.warehouse.id1c
+    outcome = list()
+    outcome.append({'warehouse':cu.warehouse.name, 'wid':cu.warehouse.id1c})
 
+    uwq = UserWarehouse.objects.filter(user=cu)
+    for uw in uwq:
+        outcome.append({'warehouse':uw.warehouse.name, 'wid':uw.warehouse.id1c})
+        
     res = dict()
 
     res['result'] = True
 
-    try:
+    for cur_outcome in outcome:
 
-        data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
-        res['outcome'] = data_dict['responses'][0]['OutcomeUpr']
+        server_address = AUTH_DATA['addr'] + "/hs/dta/obj" + "?request=getOutcomeUpr&warehouse=" + cur_outcome['wid']
 
-        for el in res['outcome']:
-            if el['ДатаОтгрузки']:
-                el['ДатаОтгрузки'] = datetime.datetime.strptime(el['ДатаОтгрузки'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y')
+        try:
 
-    except Exception as ex:
-        tasks_list = list()
-        res['message'] = str(sys.exc_info())
-        res['result'] = False
+            data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+            cur_outcome['outcome'] = data_dict['responses'][0]['OutcomeUpr']
+
+            for el in cur_outcome['outcome']:
+                if el['ДатаОтгрузки']:
+                    el['ДатаОтгрузки'] = datetime.datetime.strptime(el['ДатаОтгрузки'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y')
+
+        except Exception as ex:
+            tasks_list = list()
+            res['message'] = str(sys.exc_info())
+            res['result'] = False
+
+    res['outcome'] = outcome
+
 
     return JsonResponse(res)
 
@@ -511,6 +523,10 @@ def outcome(request):
     data = []
     data.append({'request': 'getOutcomeFromUpr', 'parameters': {'warehouse': user.warehouse.id1c}})
 
+    uwq = UserOutcomeWarehouse.objects.filter(user=user)
+    for uw in uwq:
+        data.append({'request': 'getOutcomeFromUpr', 'parameters': {'warehouse': uw.warehouse.id1c}})
+        
     res = dict()
 
     res['result'] = True
