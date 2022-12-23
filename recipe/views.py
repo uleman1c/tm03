@@ -346,7 +346,7 @@ def add_recipe(request):
         color_number = request.POST['colorNumber']
         end_product = request.POST['endproduct']
         end_product_text = request.POST['endproducttext']
-        quantity = int(request.POST['endproductquantity'])
+        quantity = int(request.POST['endproductquantity'].replace('.', '')) / 100
         orderid = request.POST['orderid']
 
         ep = None
