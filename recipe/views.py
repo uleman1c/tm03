@@ -402,6 +402,8 @@ def add_recipe(request):
 
             order = RecipeOrder.objects.filter(id1c=orderid).all().get()
 
+            orderquantity = '{:.2f}'.format(order.quantity)
+
             return render(request, 'recipes/recordfromorder.html', locals())
 
         else:

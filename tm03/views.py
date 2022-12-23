@@ -19,6 +19,7 @@ from access_key.models import AccessKey
 from contractors.models import Contractors
 from currency.models import Currency
 from file.models import File, FileOwner, FileVersion
+from login.views import user_allowed
 from products.models import Products
 from products.models import Characteristics
 from products.models import Warehouses
@@ -2357,3 +2358,34 @@ def uploadtest(cur_request):
 
 def checkout(request):
     return render(request, 'index.html', locals())
+
+
+def login2(request):
+    
+    if request.method == 'GET':
+
+        ret = request.GET.get('ret')
+        if not ret:
+            ret = ''
+
+        if 'userLogged' in request.session:
+            return redirect('/') #w = 1 # return redirect(url('profile', username=session['userLogged']))
+    
+        return render(request, 'login.html', locals())
+
+    elif request.method == 'POST':
+        
+        if user_allowed(request.POST['user'], request.POST['password']):
+            request.session.permanent = request.POST.get('remember') == 'remember-me'
+            request.session['userLogged'] = request.POST['username'].lower().strip()
+
+            return redirect('..' + request.POST['ret'])
+
+        else:
+                
+            ret = request.POST.get('ret')
+            if not ret:
+                ret = ''
+
+            return render(request, 'login.html', locals())
+
