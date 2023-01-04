@@ -926,10 +926,28 @@ def uploadAttachment(request, cu):
 
 def fileversions(request):
 
-    if 'userLogged' not in request.session:
+    user_name = request.GET.get('u')
+    if user_name:
+
+        user_name = user_name.lower()
+
+        qs = Users1c.objects.filter(name=user_name)
+
+        if qs.count() == 0:
+
+            user_name = None
+
+    if not user_name and 'userLogged' not in request.session:
         return redirect('../login/?ret=/fileversions/')
 
-    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+    if not user_name:
+        user_name = request.session['userLogged'].lower()
+
+    cu = Users1c.objects.filter(name=user_name).all().get()
+#    if 'userLogged' not in request.session:
+#        return redirect('../login/?ret=/fileversions/')
+
+#    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
     if request.method == 'GET':
 
