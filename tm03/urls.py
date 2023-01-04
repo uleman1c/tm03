@@ -54,6 +54,7 @@ urlpatterns = [
     path('sdekreqs/', views.sdekreqs, name='sdekreqs'),
     path('containerstatuses/', views.containerstatuses, name='containerstatuses'),
     path('fileversions/', views.fileversions, name='fileversions'),
+    path('fileversionsar/', views.fileversionsar, name='fileversionsar'),
     path('tchystory/', views.tchystory, name='tchystory'),
     path('curencecuorses/', views.curencecuorses, name='curencecuorses'),
     path('upfa/', views.upfa, name='upfa'),

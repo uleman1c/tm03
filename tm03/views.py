@@ -924,7 +924,7 @@ def uploadAttachment(request, cu):
     return res
 
 
-def fileversions(request):
+def fileversionsarray(request):
 
     user_name = request.GET.get('u')
     if user_name:
@@ -944,128 +944,107 @@ def fileversions(request):
         user_name = request.session['userLogged'].lower()
 
     cu = Users1c.objects.filter(name=user_name).all().get()
-#    if 'userLogged' not in request.session:
-#        return redirect('../login/?ret=/fileversions/')
 
-#    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
+    container_name = request.GET.get('cname')
+
+    fatt = request.GET.get('fatt')
+    if fatt:
+        return file_attachment(fatt, request.GET.get('ext'), urllib.parse.unquote(request.GET.get('full_name')))
+
+    smtcfib = request.GET.get('smtcfib')
+    if smtcfib:
+        send_msg_to_container_files_info_bot(smtcfib)
+
+    ownerid = request.GET.get('id')
+    ownername = request.GET.get('name')
+    cid = request.GET.get('cid')
+
+    in_t = request.GET.get('in_t') == '1'
+    if not in_t:
+
+        server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=' + ownername + '&id=' + ownerid
+
+        res = dict()
+
+        res['result'] = True
+
+        try:
+
+            data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
+
+        except Exception as ex:
+            tasks_list = list()
+            res['message'] = str(sys.exc_info())
+            res['result'] = False
+
+        ccfp = None
+        for attf in data_dict['responses'][0]['AttachedFiles']:
+
+            if attf['Идентификатор'] == cid:
+                ccfp = attf
+
+    else:
+
+        ccf = File.objects.filter(idname=cid).all().get()
+    
+        ext = ''
+        name = ccf.name
+
+        spl = ccf.name.split('.')
+
+        if len(spl) > 1:
+
+            ext = spl[len(spl) - 1]
+
+            spl.remove(ext)
+
+            name = '.'.join(spl)
+
+        ccfp = {'Идентификатор': cid, 'Имя': name, 'Расширение': ext, 'ДатаСоздания': ccf.created.strftime('%Y%m%d%H%M%S'), 'Автор': ccf.user.name}
+
+    ccfp['ownerid'] = ownerid
+    ccfp['ownername'] = ownername
+
+    name_ext = ccfp['Имя'] + '.' + ccfp['Расширение']
+
+    fv = FileVersion.objects.filter(file_id=ccfp['Идентификатор'], is_deleted=False).order_by('created')
+
+    res = dict()
+    versions = list()
+
+    versions.append({'created': datetime.datetime.strptime(ccfp['ДатаСоздания'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y %H:%M:%S'), 'number': 0,
+        'user': ccfp['Автор'], 'name': ccfp['Имя'] + '.' + ccfp['Расширение'], 'ext': ccfp['Расширение'], 'id': ccfp['Идентификатор'], 'in_t':in_t})
+
+    for cfv in fv:
+
+        cur_version_file = File.objects.filter(idname=cfv.version_id).all().get()
+        
+        versions.append({'created': cfv.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y %H:%M:%S'), 'number': cfv.number,
+            'user': cfv.user.name, 'name': cur_version_file.name, 'id': cfv.version_id, 'in_t':True})
+
+
+    return versions
+
+
+def fileversionsar(request):
+
+    res = dict()
+    res['success'] = True
+    res['versions'] = fileversionsarray(request)
+
+    return JsonResponse(res)
+
+
+def fileversions(request):
+
+    if 'userLogged' not in request.session:
+        return redirect('../login/?ret=/fileversions/')
+
+    cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
     if request.method == 'GET':
 
-        container_name = request.GET.get('cname')
-
-        fatt = request.GET.get('fatt')
-        if fatt:
-            return file_attachment(fatt, request.GET.get('ext'), urllib.parse.unquote(request.GET.get('full_name')))
-
-        smtcfib = request.GET.get('smtcfib')
-        if smtcfib:
-            send_msg_to_container_files_info_bot(smtcfib)
-
-        ownerid = request.GET.get('id')
-        ownername = request.GET.get('name')
-        cid = request.GET.get('cid')
-
-        in_t = request.GET.get('in_t') == '1'
-        if not in_t:
-
-            server_address = AUTH_DATA['addr'] + '/hs/dta/obj?request=getAttachedFiles&type=doc&name=' + ownername + '&id=' + ownerid
-
-            res = dict()
-
-            res['result'] = True
-
-            try:
-
-                data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd'])).json()
-
-            except Exception as ex:
-                tasks_list = list()
-                res['message'] = str(sys.exc_info())
-                res['result'] = False
-
-            ccfp = None
-            for attf in data_dict['responses'][0]['AttachedFiles']:
-
-                if attf['Идентификатор'] == cid:
-                    ccfp = attf
-
-        else:
-
-            ccf = File.objects.filter(idname=cid).all().get()
-        
-            ext = ''
-            name = ccf.name
-
-            spl = ccf.name.split('.')
-
-            if len(spl) > 1:
-
-                ext = spl[len(spl) - 1]
-
-                spl.remove(ext)
-
-                name = '.'.join(spl)
-
-            ccfp = {'Идентификатор': cid, 'Имя': name, 'Расширение': ext, 'ДатаСоздания': ccf.created.strftime('%Y%m%d%H%M%S'), 'Автор': ccf.user.name}
-
-        ccfp['ownerid'] = ownerid
-        ccfp['ownername'] = ownername
-
-        name_ext = ccfp['Имя'] + '.' + ccfp['Расширение']
-
-        fv = FileVersion.objects.filter(file_id=ccfp['Идентификатор'], is_deleted=False).order_by('created')
-
-        res = dict()
-        versions = list()
-
-        versions.append({'created': datetime.datetime.strptime(ccfp['ДатаСоздания'], '%Y%m%d%H%M%S').strftime('%d.%m.%Y %H:%M:%S'), 'number': 0,
-            'user': ccfp['Автор'], 'name': ccfp['Имя'] + '.' + ccfp['Расширение'], 'ext': ccfp['Расширение'], 'id': ccfp['Идентификатор'], 'in_t':in_t})
-
-        
-
-        for cfv in fv:
-
-            cur_version_file = File.objects.filter(idname=cfv.version_id).all().get()
-            
-            versions.append({'created': cfv.created.astimezone(pytz.timezone('Europe/Moscow')).strftime('%d.%m.%Y %H:%M:%S'), 'number': cfv.number,
-                'user': cfv.user.name, 'name': cur_version_file.name, 'id': cfv.version_id, 'in_t':True})
-
-
-        if False:
-
-            fid = request.GET.get('id')
-            ext = request.GET.get('ext')
-
-            server_address = AUTH_DATA['addr'] + '/hs/dta/files/' + request.GET.get('type') + '/' + request.GET.get('name') + '/' + fid + '/dfdghfgd'
-
-            res = dict()
-
-            res['result'] = True
-
-            try:
-
-                data_dict = requests.get(server_address, auth=(AUTH_DATA['user'], AUTH_DATA['pwd']))
-
-            except Exception as ex:
-                tasks_list = list()
-                res['message'] = str(sys.exc_info())
-                res['result'] = False
-
-        #                    response = FileResponse(file)
-        #                   response['Content-Type'] = 'application/octet-stream'
-        #                  response['Content-Disposition'] = 'attachment;filename='+FileName
-
-        # return HttpResponse(content=data_dict.content, content_type='application/' + ext, filename=fid + '.' + ext)
-
-            filename = "contfiles\\" + str(uuid.uuid4()) + "." + ext
-
-            f = open(filename, 'wb')
-            f.write(data_dict.content)
-            f.close()
-
-
-
-
+        versions = fileversionsarray(request)
 
         return render(request, 'containerstatuses/fileversions.html', locals())
 
