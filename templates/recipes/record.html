@@ -17,8 +17,10 @@
         <div class="container py-3" style="max-width: 100%">
             <div style="display: flex;">
                 <h1>Рецепт</h1>
+                <a href="#" onclick="checkoutRecipe()" id="checkout_order" class="btn btn-success" style="left: 70%;position: absolute;">Записать</a>
                 <a href="/" id="main_menu" class="btn btn-lg btn-primary" style="transform: translate(-107%, 0px); position: absolute;left: 100%; width: max-content;">Главное меню</a>
             </div>
+
                 <div style="width: 100%">
                     <input type="search" id="contractor" class="form-control" onkeyup="keyUpContractorL()" autocomplete="false" placeholder="Контрагент...">
                     <ul id="contractorsList" class="list-unstyled mb-0 dropdownscrolllist"></ul>
@@ -64,11 +66,6 @@
                         <input readonly type="number" id="goodsLeftover" class="form-control" style="width: 5%; float: left;" autocomplete="false" placeholder="0">
                        <a href="#" onclick="delGoodItem(0)" id="checkout_order" class="btn btn-danger" style="width: 5%;">-</a>
                     </div>
-                </div>
-
-                <div>
-
-                <a href="#" onclick="checkoutRecipe()" id="checkout_order" class="btn btn-success" style="left: 25%;position: absolute;margin-top: 5%;width: 50%;">Записать</a>
                 </div>
 
 
