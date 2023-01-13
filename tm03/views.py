@@ -1046,6 +1046,20 @@ def fileversions(request):
 
         versions = fileversionsarray(request)
 
+        container_name = request.GET.get('cname')
+        ownerid = request.GET.get('id')
+        ownername = request.GET.get('name')
+        cid = request.GET.get('cid')
+
+        ccfp = {'Идентификатор': cid}
+
+        ccfp['ownerid'] = ownerid
+        ccfp['ownername'] = ownername
+
+        fatt = request.GET.get('fatt')
+        if fatt:
+            return file_attachment(fatt, request.GET.get('ext'), request.GET.get('full_name'))
+
         return render(request, 'containerstatuses/fileversions.html', locals())
 
     elif request.method == 'POST':
