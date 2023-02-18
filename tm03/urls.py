@@ -50,7 +50,9 @@ urlpatterns = [
     path('sdekreqs/', views.sdekreqs, name='sdekreqs'), # knit
 
     path('lpl2/', views.lpl2, name='lpl2'),
-    path('sha1/', views.sha1, name='sha1'),
+    
+    # path('sha1/', views.sha1, name='sha1'), # fg
+
     path('bitrixwh/', views.bitrixwh, name='bitrixwh'),
     path('skladthr/', views.skladthr, name='skladthr'),
     path('savesdek/', views.savesdek, name='savesdek'),
