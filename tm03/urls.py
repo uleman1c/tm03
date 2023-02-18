@@ -49,7 +49,7 @@ urlpatterns = [
     path('lpl/', views.lpl, name='lpl'), # knit
     path('sdekreqs/', views.sdekreqs, name='sdekreqs'), # knit
 
-    path('lpl2/', views.lpl2, name='lpl2'),
+    path('lpl2/', views.lpl2, name='lpl2'), # knit
     
     # path('sha1/', views.sha1, name='sha1'), # fg
 
