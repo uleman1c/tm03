@@ -44,14 +44,16 @@ urlpatterns = [
     path('executedmtask/', views.executedmtask, name='executedmtask'),
     path('upload/', views.upload, name='upload'),
     path('uploadtest/', views.uploadtest, name='uploadtest'),
-    path('lp/', views.lp, name='lp'),
-    path('lpl/', views.lpl, name='lpl'),
+    
+    path('lp/', views.lp, name='lp'), # knit
+    path('lpl/', views.lpl, name='lpl'), # knit
+    path('sdekreqs/', views.sdekreqs, name='sdekreqs'), # knit
+
     path('lpl2/', views.lpl2, name='lpl2'),
     path('sha1/', views.sha1, name='sha1'),
     path('bitrixwh/', views.bitrixwh, name='bitrixwh'),
     path('skladthr/', views.skladthr, name='skladthr'),
     path('savesdek/', views.savesdek, name='savesdek'),
-    path('sdekreqs/', views.sdekreqs, name='sdekreqs'),
     path('containerstatuses/', views.containerstatuses, name='containerstatuses'),
     path('fileversions/', views.fileversions, name='fileversions'),
     path('fileversionsar/', views.fileversionsar, name='fileversionsar'),
