@@ -264,7 +264,7 @@ function onTransportContainerClick(transportcontainer){
                     document.querySelector('#zip_file').style = 'display: block';
 
                     files_table.innerHTML = files_table.innerHTML 
-                    + fileRow(сelement.ИдентификаторКонтейнера, сelement.ИдентификаторФайла, сelement.Имя, сelement.Расширение,
+                    + fileRow(сelement.ИдентификаторКонтейнера, сelement.ИдентификаторВерсии ? сelement.ИдентификаторВерсии : сelement.ИдентификаторФайла, сelement.Имя, сelement.Расширение,
                         сelement.Картинка, сelement.Автор, сelement.ДатаСоздания, сelement.Описание, сelement.in_t, 'ТранспортныйКонтейнер', сelement.Версия); 
                 }
 
