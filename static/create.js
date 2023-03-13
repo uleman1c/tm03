@@ -1034,7 +1034,7 @@ function keyUpContractorL(e) {
                     '<li>'
                         + '<div class="p-2" style="float: left; width: 100%; display: flex; align-items: center">'
                             + '<div style="float: left; width: 100%">'
-                                + '<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#" onclick="onContractorClick(\'' + value.name + '\', \'' + value.id1c + '\')" style="font-size: ' + font_size + '; white-space: normal" data-id1c="' + value.id1c + '">' + value.name + '</a>'
+                                + '<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#" onclick="onContractorClick(\'' + value.name.replaceAll('"', '') + '\', \'' + value.id1c + '\')" style="font-size: ' + font_size + '; white-space: normal" data-id1c="' + value.id1c + '">' + value.name + '</a>'
                             + '</div>'
                         + '</div>'
                     + '</li>');
