@@ -45,11 +45,11 @@ urlpatterns = [
     path('upload/', views.upload, name='upload'),
     path('uploadtest/', views.uploadtest, name='uploadtest'),
     
-    path('lp/', views.lp, name='lp'), # knit
-    path('lpl/', views.lpl, name='lpl'), # knit
-    path('sdekreqs/', views.sdekreqs, name='sdekreqs'), # knit
+    # path('lp/', views.lp, name='lp'), # knit
+    # path('lpl/', views.lpl, name='lpl'), # knit
+    # path('sdekreqs/', views.sdekreqs, name='sdekreqs'), # knit
 
-    path('lpl2/', views.lpl2, name='lpl2'), # knit
+    # path('lpl2/', views.lpl2, name='lpl2'), # knit
     
     # path('sha1/', views.sha1, name='sha1'), # fg
 
