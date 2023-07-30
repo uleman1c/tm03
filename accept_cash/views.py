@@ -42,7 +42,7 @@ def accepts(request):
     form = AcceptCash(request.POST or None)
 
 
-    elements = AcceptCash.objects.filter(user=cu).order_by('delivered1c', '-created').all()[:20]
+    elements = AcceptCash.objects.filter(user=cu).order_by('delivered1c', '-created').all()[:200]
     elements_to_send = AcceptCash.objects.filter(user=cu, delivered1c=False).all()
 
     return render(request, 'accepts/index.html', locals())
