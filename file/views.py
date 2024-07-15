@@ -22,6 +22,8 @@ import io
 from django.http import FileResponse, HttpResponse
 from django.db import connection
 
+filespath = 'D:\\Files\\'
+
 
 def filepart_clear_data(request):
 
@@ -43,8 +45,6 @@ def filepart_clear_data(request):
 
     return JsonResponse(res)
 
-
-
 def getfile(request):
 
     if 'userLogged' not in request.session:
@@ -52,7 +52,7 @@ def getfile(request):
         
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    filespath = 'I:\\Files\\'
+    
     
     curUid = request.GET.get('id')
 
@@ -77,8 +77,6 @@ def gfbp(request):
         
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    filespath = 'I:\\Files\\'
-    
     curUid = request.headers.get('id')
     pos = int(request.headers.get('pos'))
 
@@ -110,8 +108,6 @@ def files(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    filespath = 'I:\\Files\\'
-    
     if request.method == 'POST':
 
         curUid = request.headers.get('id')
@@ -265,8 +261,6 @@ def setFullPath(allfiles):
 
 def el(request):
 
-    filespath = 'I:\\Files\\'
-    
     if request.method == 'POST':
 
         if 'userLogged' not in request.session:
@@ -323,8 +317,6 @@ def el(request):
 
 def ul(request):
 
-    filespath = 'I:\\Files\\'
-    
     if request.method == 'POST':
 
         if 'userLogged' not in request.session:
@@ -402,8 +394,6 @@ def ulbyparentid(request):
 
 def ulgf(request):
 
-    filespath = 'I:\\Files\\'
-    
     if request.method == 'POST':
 
         reqjs = json.loads(request.body)
@@ -463,8 +453,6 @@ def ulgf(request):
 
 def eln(request):
 
-    filespath = 'I:\\Files\\'
-    
     if request.method == 'GET':
 
         idname = request.GET.get('id')
@@ -502,8 +490,6 @@ def addFolder(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    filespath = 'I:\\Files\\'
-    
     if request.method == 'POST':
 
         co = File.objects.create(user=cu, name=request.POST.get('filename'), is_folder=True, parent_id=request.POST.get('parent_id'))
@@ -520,8 +506,6 @@ def setFolder(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    filespath = 'I:\\Files\\'
-    
     if request.method == 'POST':
 
         co = File.objects.filter(user=cu, idname=request.POST.get('idname')).all().get()
@@ -541,8 +525,6 @@ def setToBasket(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    filespath = 'I:\\Files\\'
-    
     if request.method == 'POST':
 
         co = File.objects.filter(user=cu, idname=request.POST.get('idname')).all().get()
@@ -563,8 +545,6 @@ def fileRename(request):
 
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    filespath = 'I:\\Files\\'
-    
     if request.method == 'POST':
 
         co = File.objects.filter(user=cu, idname=request.POST.get('idname')).all().get()
@@ -588,8 +568,6 @@ def filesold(request):
         
     cu = Users1c.objects.filter(name=request.session['userLogged'].lower()).all().get()
 
-    filespath = 'I:\\Files\\'
-    
     if request.method == 'POST':
         for file in request.FILES.getlist('photo'):
 

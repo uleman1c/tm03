@@ -20,6 +20,9 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from tm03 import views, settings
 
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
@@ -82,6 +85,12 @@ urlpatterns = [
     path('', include('access_key.urls')),
     path('', include('reminder.urls')),
     path('', include('recipe.urls')),
+
+
+
+    
 ]
+
+urlpatterns += staticfiles_urlpatterns()
 
               # + static(settings.STATIC_URL, document_root = os.path.join(settings.BASE_DIR, 'static'))

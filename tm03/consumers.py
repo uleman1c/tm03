@@ -65,7 +65,7 @@ class FileConsumer(WebsocketConsumer):
         curUid = text_data_json['file_name']
         pos = text_data_json['pos']
 
-        filespath = 'I:\\Files\\'
+        filespath = 'D:\\Files\\'
 
         fr = open(filespath + curUid + ".tmp",'rb')
 
